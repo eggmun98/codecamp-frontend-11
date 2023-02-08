@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true, // 다른사람들이 만든 라이브러리들도 타입을 체크 할건지? 아니면 내가 만든 타입만 체크 할건지
+    "strict": true, // 타입을 엄격하게 볼건지?
+    "forceConsistentCasingInFileNames": true, // 파일 이름들을 대소문자를 구분해서 무시할건지 무시할거면 트루
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/section09/09-01-board-edit/index.js",
+    "pages/section11/11-01-event-bubbling/index.js",
+    "src/commons/components/units/board/07-write/BoardWrite.presenter.js"
+  ], // 검사할 파일
+  "exclude": ["node_modules"] // 제외할 파일
+}

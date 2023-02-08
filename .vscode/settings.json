@@ -1,0 +1,4 @@
+{
+  "editor.formatOnSave": true, // 이 파일을 만들면 동료 개발자들에게 세팅을 공유할 수 있음
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>this의 이해</title>
+    <script>
+      class ClassCounterPage {
+        count = 10;
+        onClickCount() => {
+          console.log(this.count); // 방법1) 화살표 함수로 변경하는 방법
+        }
+        render() {
+          const button = document.createElement("button");
+          button.count = 100;
+          button.innerText = "카운트 올리기!!";
+          button.addEventListener("click", this.onClickCount);
+
+          document.body.appendChild(button);
+        }
+      }
+
+      window.onload = () => {
+        const counter = new ClassCounterPage();
+        counter.render();
+      };
+    </script>
+  </head>
+  <body></body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>this의 이해</title>
+    <script>
+      class ClassCounterPage {
+        count = 10;
+        onClickCount() {
+          console.log(this.count); // 여기서 디스는 버튼에 있는 디스이다.....
+        }
+        render() {
+          const button = document.createElement("button"); // 리액트에서 이형식을 리액트가 알아서 바꿔주면서 실행을함
+          button.count = 100;
+          button.innerText = "카운트 올리기!!";
+          button.addEventListener("click", this.onClickCount.bind(this)); // 여기서의 디스는 이 클래스에 있는 디스가 맞다. // 바인드는 this를 온클릭카운터에 연결 시켜줘즉 온클릭카운터에도 쓸수 있다. 바인드 쓰면 10 나오고
+          // 아니면 100 나올거임 이 방법은 .bind(this)을 통해 this를 연결시키는 방법이다.
+          document.body.appendChild(button);
+        }
+      }
+
+      window.onload = () => {
+        const counter = new ClassCounterPage();
+        counter.render();
+      };
+    </script>
+  </head>
+  <body></body>
+</html> -->
