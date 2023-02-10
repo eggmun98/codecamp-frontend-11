@@ -8,9 +8,10 @@ import _ from "lodash";
 export default function BoardListPage() {
   const router = useRouter();
 
-  const [qqq, setQqq] = useState(1);
+  const [number, setNumber] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [myindex, setMyindex] = useState(1);
+  const [lastNumber, setLastNumber] = useState(1);
 
   // 게시글 쿼리
   const { data, refetch } = useQuery(FETCH_BOARDS);
@@ -19,6 +20,8 @@ export default function BoardListPage() {
 
   // 게시글 갯수 쿼리
   const { data: dataCount } = useQuery(FETCH_BOARD_COUNT);
+
+  console.log(dataCount);
 
   // 게시글 들어가는 버튼
   const onClickListButton = (event: MouseEvent<HTMLDivElement>) => {
@@ -41,8 +44,10 @@ export default function BoardListPage() {
 
   return (
     <BoardListUI
-      qqq={qqq} // qqq를  바로 자식이 보더리스트프리젠터에 보냄
-      setQqq={setQqq}
+      setLastNumber={setLastNumber}
+      lastNumber={lastNumber}
+      number={number} // qqq를  바로 자식이 보더리스트프리젠터에 보냄
+      setNumber={setNumber}
       refetch={refetch}
       count={dataCount?.fetchBoardsCount}
       onClickListButton={onClickListButton}
