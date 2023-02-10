@@ -41,7 +41,8 @@ export default function BoardListPage() {
 
   return (
     <BoardListUI
-      qqq={qqq}
+      qqq={qqq} // qqq를  바로 자식이 보더리스트프리젠터에 보냄
+      setQqq={setQqq}
       refetch={refetch}
       count={dataCount?.fetchBoardsCount}
       onClickListButton={onClickListButton}

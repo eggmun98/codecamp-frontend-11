@@ -5,7 +5,7 @@ export const ListButton = styled.button`
   background-color: #282424;
   color: white;
   margin: 10px;
-  color: ${(props) => (props.isActive ? "#8f3636" : "white")};
+  color: ${(props) => (props.isActive ? "red" : "white")};
   cursor: pointer;
 `;
 

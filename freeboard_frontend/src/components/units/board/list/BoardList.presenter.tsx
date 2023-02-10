@@ -47,7 +47,18 @@ export default function BoardListUI(props) {
           <tbody key={index}>
             <tr>
               <L.TableData style={{ textAlign: "start", paddingLeft: "50px" }}>
-                {index}
+                {props.qqq * 10 + index - 9}
+                {/* 이거를 한 이유는 바로 자식인 페이지네이션콘테이너에서 페이지값을 qqq로 state 끌어오기를
+                통하여 * 10을 해줘 그러면 1 *10 하면 10이고 거기에 인덱스를 0~10 중에서 더하여 
+                -9를 빼면 번호가 나온다!! 이건 내가 만들었지만 이해를 못했다.. */}
+                {/* 추가 설명을 하자면 qqq는 page가 1이면 1이다
+              즉 페이지가 9라면 9*10을 통해서 90이라는 번호를 만드는데
+              그 9페이지에서는 각 90이라는 번호가 똑같이 들어있을거다
+              거기서 똑같은 번호를 방지하기 위해서
+              index를 더하여 90 91 92 93 94 95 96 97 98을 해준거다 
+              근데 -9를 해준 이유는  페이지는 1부터 시작한다. 그래서 이렇게 안해준다면
+               1페이지에서는 페이지가 qqq인 1이고 거기서 *10을 한다면 10부터 시작을 하기 때문에
+               -9을 해줘서 1페이지는 1부터 시작하게 되어 9페이지를 가면 80부터 시작하게 된다!     */}
               </L.TableData>
               <L.TableData
                 style={{ textAlign: "start" }}
@@ -83,6 +94,7 @@ export default function BoardListUI(props) {
           <Paginations01
             refetch={props.refetch}
             count={props.count}
+            setQqq={props.setQqq} // 이거를 보내는 이유는 페이지네이션에서 페이지값을 받아와서 리스트에서 번호를 불러오기 위해서이다!
             // setMyindex={props.setMyindex}
           ></Paginations01>
           {/* <L.WriterButton onClick={props.onClickWriterButton}>
