@@ -26,6 +26,7 @@ export const MainDesign = styled.div`
   color: white;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 export const RowDesign = styled.div`
@@ -43,7 +44,7 @@ export const ColDesign = styled.div`
 export default function LayoutPage(props) {
   const router = useRouter();
 
-  const HIDDEN_LAYOUT = ["/boards"];
+  const HIDDEN_LAYOUT = ["/boards", "/mypage"];
 
   console.log(router);
   const hidden_layout = HIDDEN_LAYOUT.includes(router.asPath);
@@ -55,7 +56,13 @@ export default function LayoutPage(props) {
         {hidden_layout && <SideBarPage></SideBarPage>}
         <ColDesign>
           <BannerPage></BannerPage>
-          <div style={{ display: "flex", flexDirection: "row" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
             <div>{props.children}</div>
             {hidden_layout && <SubBarPage></SubBarPage>}
           </div>

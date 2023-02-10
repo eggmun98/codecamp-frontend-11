@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
   /* width: 1920px;  */
-  width: 95%;
+  width: 75%;
   display: flex;
   flex-direction: column;
   /* align-items: center; */
@@ -12,7 +12,7 @@ export const MainTalbe = styled.table`
   border-bottom: 1px solid black;
   border-top: 1px solid black;
   border-collapse: collapse;
-  width: 1200px;
+  width: 1250px;
   text-align: center;
 `;
 
@@ -26,11 +26,13 @@ export const TableData = styled.td`
   border-bottom: 1px solid #bdbdbd;
   color: white;
   height: 52px;
+  cursor: pointer;
 `;
 
 export const ListWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 `;
 
 // export const ListButton = styled.button`
@@ -51,11 +53,15 @@ export const WriterWrapper = styled.div`
   flex-direction: row;
   justify-content: flex-end;
   padding-top: 40px;
+  /* margin-top: 20px; */
+  /* margin-bottom: 50px; */
 `;
 
 export const WriterButton = styled.button`
   width: 171px;
   height: 52px;
   border: 1px solid #f2f2f2;
-  border-radius: 10px;
+  /* border-radius: 10px;  */
+  cursor: pointer;
+  margin-left: 650px;
 `;

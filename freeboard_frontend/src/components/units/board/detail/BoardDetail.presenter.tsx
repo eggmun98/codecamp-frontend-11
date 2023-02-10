@@ -84,12 +84,12 @@ export default function BoardDetailUI(props) {
         </D.YoutubeWrapper>
         <D.UpDownWrapper>
           <D.UpBox>
-            <D.UpButton onClick={props.onClickUp}></D.UpButton>
-            <D.UpText>{props.up}</D.UpText>
+            <D.UpButton onClick={props.onClickLikeButton}></D.UpButton>
+            <D.UpText>{props.data?.fetchBoard.likeCount}</D.UpText>
           </D.UpBox>
           <D.DownBox>
-            <D.DownButton onClick={props.onClickDown}></D.DownButton>
-            <D.DownText>{props.down}</D.DownText>
+            <D.DownButton onClick={props.onClickDisLikeButton}></D.DownButton>
+            <D.DownText>{props.data?.fetchBoard.dislikeCount}</D.DownText>
           </D.DownBox>
         </D.UpDownWrapper>
       </D.Wrapper>

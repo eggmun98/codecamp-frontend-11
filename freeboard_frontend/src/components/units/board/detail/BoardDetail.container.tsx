@@ -2,7 +2,13 @@ import { ChangeEvent, MouseEvent, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import BoardDetailUI from "./BoardDetail.presenter";
-import { FETCH_BOARD, DELETE_BOARD } from "./BoardDetail.queries";
+import {
+  FETCH_BOARD,
+  DELETE_BOARD,
+  CREATE_BOARD,
+  LIKE_BOARD,
+  DISLIKE_BOARD,
+} from "./BoardDetail.queries";
 import {
   IMutation,
   IMutationCreateBoardArgs,
@@ -17,6 +23,10 @@ interface IBoardDetailPage {
 
 export default function BoardDetailPage() {
   const router = useRouter();
+
+  // const [create_board] = useMutation(CREATE_BOARD);
+  const [like_board] = useMutation(LIKE_BOARD);
+  const [dislike_board] = useMutation(DISLIKE_BOARD);
 
   const [opa, setOpa] = useState(0);
   const [up, setUp] = useState(0);
@@ -62,24 +72,46 @@ export default function BoardDetailPage() {
     }
   }
 
-  // 임시로 만든 업 다운 버튼
-  function onClickUp() {
-    setUp(up + 1);
-  }
+  console.log(data);
 
-  function onClickDown() {
-    setDown(down + 1);
-  }
+  // 좋아요 버튼
+  const onClickLikeButton = () => {
+    const result = like_board({
+      variables: { boardId: router.query.num },
+      refetchQueries: [
+        {
+          query: FETCH_BOARD,
+          variables: { boardId: router.query.num },
+        },
+      ],
+    });
+  };
+
+  // 싫어요 버튼
+  const onClickDisLikeButton = () => {
+    const result = dislike_board({
+      variables: { boardId: router.query.num },
+      refetchQueries: [
+        {
+          query: FETCH_BOARD,
+          variables: { boardId: router.query.num },
+        },
+      ],
+    });
+  };
+
+  // 임시로 만든 업 다운 버튼
+  function onClickUp() {}
+
+  function onClickDown() {}
 
   return (
     <BoardDetailUI
       opa={opa}
-      up={up}
-      down={down}
+      onClickLikeButton={onClickLikeButton}
+      onClickDisLikeButton={onClickDisLikeButton}
       data={data}
       onPoint={onPoint}
-      onClickUp={onClickUp}
-      onClickDown={onClickDown}
       onClickListButton={onClickListButton}
       onClickDeleteButton={onClickDeleteButton}
       onClickEditBUtton={onClickEditBUtton}

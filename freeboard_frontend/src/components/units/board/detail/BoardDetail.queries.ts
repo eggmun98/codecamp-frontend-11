@@ -9,6 +9,8 @@ export const FETCH_BOARD = gql`
       title
       contents
       youtubeUrl
+      likeCount
+      dislikeCount
       boardAddress {
         zipcode
         address
@@ -23,5 +25,26 @@ export const FETCH_BOARD = gql`
 export const DELETE_BOARD = gql`
   mutation deleteBoard($boardId: ID!) {
     deleteBoard(boardId: $boardId)
+  }
+`;
+
+// 좋아요 싫어요
+export const CREATE_BOARD = gql`
+  mutation createBoard($createBoardInput: CreateBoardInput!) {
+    createBoard(createBoardInput: $createBoardInput) {
+      _id
+    }
+  }
+`;
+
+export const LIKE_BOARD = gql`
+  mutation likeBoard($boardId: ID!) {
+    likeBoard(boardId: $boardId)
+  }
+`;
+
+export const DISLIKE_BOARD = gql`
+  mutation dislikeBoard($boardId: ID!) {
+    dislikeBoard(boardId: $boardId)
   }
 `;

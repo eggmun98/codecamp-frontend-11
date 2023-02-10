@@ -2,10 +2,15 @@ import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { FETCH_BOARDS, FETCH_BOARD_COUNT } from "./BoardList.queries";
 import BoardListUI from "./BoardList.presenter";
-import { MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
+import _ from "lodash";
 
 export default function BoardListPage() {
   const router = useRouter();
+
+  const [qqq, setQqq] = useState(1);
+  const [keyword, setKeyword] = useState("");
+  const [myindex, setMyindex] = useState(1);
 
   // 게시글 쿼리
   const { data, refetch } = useQuery(FETCH_BOARDS);
@@ -25,36 +30,28 @@ export default function BoardListPage() {
     router.push("/boards/new");
   };
 
-  // const [startPage, setStartPage] = useState(1);
-  // const lastPage = Math.ceil(dataCount?.fetchBoardsCount ?? 10) / 10;
+  const getDebounce = _.debounce((search) => {
+    refetch({ page: 1, search: search });
+    setKeyword(search);
+  }, 500);
 
-  // console.log(dataCount.fetchBoardsCount);
-
-  // const onClickPageButton = (event: MouseEvent<HTMLButtonElement>) => {
-  //   refetch({ page: Number(event.currentTarget.id) });
-  // };
-
-  // const onClickNextPage = () => {
-  //   if (startPage + 10 <= lastPage) {
-  //     setStartPage(startPage + 10);
-  //     refetch({ page: startPage + 10 });
-  //   }
-  // };
-
-  // const onClickPrevPage = () => {
-  //   if (startPage === 1) return;
-  //   setStartPage(startPage - 10);
-  //   refetch({ page: startPage - 10 });
-  // };
+  const onChangeSearchButton = (event: ChangeEvent<HTMLInputElement>): void => {
+    getDebounce(event.target.value);
+  };
 
   return (
     <BoardListUI
+      qqq={qqq}
       refetch={refetch}
       count={dataCount?.fetchBoardsCount}
       onClickListButton={onClickListButton}
       onClickWriterButton={onClickWriterButton}
       data={data}
       dataCount={dataCount}
+      onChangeSearchButton={onChangeSearchButton}
+      keyword={keyword}
+      // myindex={myindex}
+      // setMyindex={setMyindex}
     ></BoardListUI>
   );
 }

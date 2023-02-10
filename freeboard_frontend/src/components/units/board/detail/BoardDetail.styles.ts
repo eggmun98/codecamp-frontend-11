@@ -4,10 +4,12 @@ import { Rate } from "antd";
 
 //가장 바깥 웨퍼
 export const OutWrapper = styled.div`
-  width: 1920px;
+  width: 1420px;
   display: flex;
   flex-direction: column;
   /* align-items: center;  */
+  margin-left: 150px;
+  color: black;
 `;
 
 // 안쪽을 감싸는 웨퍼
@@ -23,6 +25,8 @@ export const Wrapper = styled.div`
   border: 1px solid black;
   border: none;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  background-color: whitesmoke;
+
   /* font-family: Arial, Helvetica, sans-serif;  */
 `;
 

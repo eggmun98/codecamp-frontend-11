@@ -9,7 +9,8 @@ export default function Paginations01(props): JSX.Element {
 
   const onClickPageButton = (event: MouseEvent<HTMLButtonElement>) => {
     const activedPage = Number(event.currentTarget.id);
-    setActivedPage(activedPage);
+    // props.setMyindex(activedPage);
+    // setActivedPage(activedPage );
     props.refetch({ page: Number(event.currentTarget.id) });
   };
 
