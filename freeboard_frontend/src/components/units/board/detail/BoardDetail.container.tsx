@@ -29,8 +29,6 @@ export default function BoardDetailPage() {
   const [dislike_board] = useMutation(DISLIKE_BOARD);
 
   const [opa, setOpa] = useState(0);
-  const [up, setUp] = useState(0);
-  const [down, setDown] = useState(0);
 
   // 게시글 쿼리
   const { data } = useQuery(FETCH_BOARD, {

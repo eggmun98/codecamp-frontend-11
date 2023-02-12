@@ -1,10 +1,9 @@
 import * as W from "./BoardWrite.styles";
-import { ChangeEvent, MouseEvent, useState } from "react";
-import { Button, Modal } from "antd";
+import { ChangeEvent, MouseEvent } from "react";
+import { Modal } from "antd";
 import DaumPostcodeEmbed from "react-daum-postcode";
-import { Address } from "cluster";
-import { IQuery } from "../../../commons/types/generated/types";
-
+import { v4 as uuidv4 } from "uuid";
+import Uploads01 from "../../../commons/uploads/01/Uploads01.container";
 interface IBoardWriteUIProps {
   data?: any;
   isEdit: boolean;
@@ -27,7 +26,7 @@ interface IBoardWriteUIProps {
   address: string;
 }
 
-export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
+export default function BoardWriteUI(props): JSX.Element {
   return (
     <W.Wrapper>
       <W.Title>{props.isEdit ? "게시글 수정" : "게시글 등록"}</W.Title>
@@ -77,11 +76,12 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
         <W.Label>주소</W.Label>
         <W.PostalCodeWrapper>
           <W.PostalCode
+            placeholder="07250"
             readOnly
             value={
-              props.zipcode
+              props.zipcode !== ""
                 ? props.zipcode
-                : props.data?.fetchBoard.boardAddress.zipcode ?? ""
+                : props.data?.fetchBoard.boardAddress?.zipcode ?? ""
             }
           ></W.PostalCode>
           <W.PostalCodeButton type="primary" onClick={props.addressShowModal}>
@@ -122,9 +122,14 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
       </W.YoutubeWrapper>
       <W.ImageWrapper>
         <W.Label>사진첨부</W.Label>
-        <W.UploadButton>+</W.UploadButton>
-        <W.UploadButton>+</W.UploadButton>
-        <W.UploadButton>+</W.UploadButton>
+        {props.fileUrls.map((el, index) => (
+          <Uploads01
+            key={uuidv4()}
+            index={index}
+            fileUrl={el}
+            onChangeFileUrls={props.onChangeFileUrls}
+          />
+        ))}
       </W.ImageWrapper>
       <W.OptionWrapper>
         <W.Label>메인설정</W.Label>

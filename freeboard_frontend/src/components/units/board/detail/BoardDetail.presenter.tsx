@@ -71,8 +71,16 @@ export default function BoardDetailUI(props: IBoardDetailUI) {
         <D.SubJectWrapper>
           <D.SubJect>{props.data?.fetchBoard.title}</D.SubJect>
         </D.SubJectWrapper>
+        {/* <D.ImageBox src="/img1.png"></D.ImageBox>  */}
         <D.ImageWrapper>
-          <D.ImageBox src="/img1.png"></D.ImageBox>
+          {props.data?.fetchBoard.images
+            ?.filter((el) => el)
+            .map((el) => (
+              <D.ImageBox
+                key={el}
+                src={`https://storage.googleapis.com/${el}`}
+              />
+            ))}
         </D.ImageWrapper>
         <D.ContentsWrapper>
           <D.Contents>{props.data?.fetchBoard.contents}</D.Contents>

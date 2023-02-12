@@ -41,6 +41,15 @@ export const FETCH_BOARD = gql`
         addressDetail
       }
       createdAt
+      images
+    }
+  }
+`;
+
+export const UPLOAD_FILE = gql`
+  mutation uploadFile($file: Upload!) {
+    uploadFile(file: $file) {
+      url
     }
   }
 `;

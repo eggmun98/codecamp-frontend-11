@@ -1,20 +1,26 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent } from "react";
+import { useEffect, useState } from "react";
+import { useRef } from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_BOARD, UPDATE_BOARD, FETCH_BOARD } from "./BoardWrite.queries";
+import {
+  CREATE_BOARD,
+  UPDATE_BOARD,
+  FETCH_BOARD,
+  UPLOAD_FILE,
+} from "./BoardWrite.queries";
 import BoardWriteUI from "./BoardWrite.presenter";
 import {
   IQuery,
   IUpdateBoardInput,
 } from "../../../commons/types/generated/types";
-import { Address } from "react-daum-postcode";
 
 interface IBoardWritePageProps {
   data?: any;
   isEdit: boolean;
 }
 
-export default function BoardWritePage(props: IBoardWritePageProps) {
+export default function BoardWritePage(props) {
   const router = useRouter();
 
   // 작성했던 게시글 불러오기
@@ -23,6 +29,7 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
       boardId: router.query.num,
     },
   });
+  console.log(data);
 
   const [create_board] = useMutation(CREATE_BOARD);
   const [update_board] = useMutation(UPDATE_BOARD);
@@ -42,6 +49,10 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
   const [zipcode, setZipcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
+
+  const [fileUrls, setFileUrls] = useState(["", "", ""]);
+
+  // 이미지파일 저장 변수
 
   // 작성자 공백이 아니면 에러 표시 제거
   function writerCheck(event: ChangeEvent<HTMLInputElement>) {
@@ -84,6 +95,25 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
     setYoutubeUrl(event.target.value);
   }
 
+  // 파일 저장 함수 // index는 몇번째 칸인지 fileUrl은 이미지 경로를 넣는 변수임!!
+  function onChangeFileUrls(fileUrl: string, index: number): void {
+    const newFileUrls = [...fileUrls]; // 위에 스테이트 파일변수를 구조분해 할당 시킨다!!
+    newFileUrls[index] = fileUrl; // index, fileUrl의 매개변수를 할당!
+    setFileUrls(newFileUrls); // 파일들을 최종적으로 여기에 담는다!!
+  }
+
+  // 유즈이펙트로 이미지를 디폴트벨류 대신 써줄 수 있음 근데 단점으로는 렌더링을 한번 더 하게 됨!
+  // 그게 싫으면 프리젠터에서 porps.fileUrl !== "" 이거를 적으셈!!
+
+  useEffect(() => {
+    const images = data?.fetchBoard.images;
+    console.log("image:는?? ", images);
+    if (images !== undefined && images !== null) setFileUrls([...images]);
+  }, [data]);
+  // 서버에서 이미지 데이터를 가져온다 그리고 const images 변수에 담는다
+  // 그리고 만약 images가 언디파인드랑 널값이 아니라면 setfileUrls는 [...images]을 할당해 준다.
+  // 그리고 [data]가 변할때마다 실행!
+
   // 게시글 등록 버튼과 공백 체크
   const onClickCreateButton = async () => {
     if (writer === "") {
@@ -114,11 +144,11 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
               address: address,
               addressDetail: addressDetail,
             },
+            images: [...fileUrls],
           },
         },
       });
       router.push("/boards/board/" + result.data.createBoard._id);
-      // console.log(result);
     }
   };
 
@@ -129,18 +159,12 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
 
   // 게시글 수정하는 버튼
   const onClickUpdateButton = async () => {
-    // if (
-    //   !title &&
-    //   !content &&
-    //   !youtubeUrl &&
-    //   !address &&
-    //   !addressDetail &&
-    //   !zipcode
-    // ) {
-    //   alert("수정한 내용이 없습니다.");
-    // }
+    const currentFiles = JSON.stringify(fileUrls);
+    const defaultFiles = JSON.stringify(props.data?.fetchBoard.images);
+    const isChangedFiles = currentFiles !== defaultFiles;
 
     const myVariables: IUpdateBoardInput = {}; // 빈객체 선언과 할당
+    if (isChangedFiles) myVariables.images = fileUrls;
     if (title !== "") myVariables.title = title;
     if (content !== "") myVariables.contents = content;
     if (youtubeUrl !== "") myVariables.youtubeUrl = youtubeUrl;
@@ -154,12 +178,6 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
         myVariables.boardAddress.addressDetail = addressDetail;
     }
 
-    // try {
-    //   if (typeof router.query.num !== "string") {
-    //     alert("시스템에 문제가 생겼습니다.");
-    //     return;
-    //   }
-
     const result2 = await update_board({
       variables: {
         boardId: router.query.num,
@@ -168,10 +186,7 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
       },
     });
     router.push(`/boards/board/${result2.data.updateBoard._id}`);
-    console.log(router);
   };
-
-  // const onClickAddressSearch = () => {};
 
   const handleComplete = (data: any) => {
     addressShowModal();
@@ -205,6 +220,8 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
       error4={error4}
       isEdit={props.isEdit}
       data={data}
+      fileUrls={fileUrls}
+      onChangeFileUrls={onChangeFileUrls}
     ></BoardWriteUI>
   );
 }

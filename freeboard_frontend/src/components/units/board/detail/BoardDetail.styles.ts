@@ -117,8 +117,8 @@ export const ImageWrapper = styled.div`
 `;
 
 export const ImageBox = styled.img`
-  /* width: 996px;
-  height: 480px; */
+  width: 996px;
+  height: 480px;
 `;
 
 // 게시글 내용칸
