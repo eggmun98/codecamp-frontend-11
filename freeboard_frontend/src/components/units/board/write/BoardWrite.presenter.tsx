@@ -2,6 +2,8 @@ import * as W from "./BoardWrite.styles";
 import { ChangeEvent, MouseEvent, useState } from "react";
 import { Button, Modal } from "antd";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { Address } from "cluster";
+import { IQuery } from "../../../commons/types/generated/types";
 
 interface IBoardWriteUIProps {
   data?: any;
@@ -12,13 +14,20 @@ interface IBoardWriteUIProps {
   contentCheck?: (event: ChangeEvent<HTMLInputElement>) => void;
   onClickCreateButton: (event: MouseEvent<HTMLButtonElement>) => void;
   onClickUpdateButton: (event: MouseEvent<HTMLButtonElement>) => void;
+  addressShowModal: () => void;
+  handleComplete: (data: any) => void;
+  addressDetailCheck: (event: ChangeEvent<HTMLInputElement>) => void;
+  youtubeUrlCheck: (event: ChangeEvent<HTMLInputElement>) => void;
   error1: string;
   error2: string;
   error3: string;
   error4: string;
+  zipcode: string;
+  isOpen: boolean;
+  address: string;
 }
 
-export default function BoardWriteUI(props) {
+export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
   return (
     <W.Wrapper>
       <W.Title>{props.isEdit ? "게시글 수정" : "게시글 등록"}</W.Title>

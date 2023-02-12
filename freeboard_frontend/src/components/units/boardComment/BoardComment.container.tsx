@@ -20,6 +20,11 @@ import {
 } from "../../commons/types/generated/types";
 import BoardCommentUI from "./BoardComment.presenter";
 
+interface IBoardCommentProps {
+  data?: any;
+  isEdit: boolean;
+}
+
 export default function BoardCommentPage() {
   const router = useRouter();
 

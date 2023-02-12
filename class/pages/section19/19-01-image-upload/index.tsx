@@ -27,9 +27,10 @@ export default function ImageUploadPage(): JSX.Element {
   ): Promise<void> => {
     const file = event.target.files?.[0]; // 배열로 들어오는 이유 <input type="fle" multiple /> 일 때, 여러개 드래그 가능!
     // 값이 없을 경우가 있으니 옵셔널체인지 써야함!
+    console.log(event.target.files);
 
     const result = await uploadFile({ variables: { file } }); // 변수 파일에 파일을 넣어서 $파일에 전달!
-    console.log(result.data?.uploadFile);
+    // console.log(result.data?.uploadFile);
     setImageUrl(result.data?.uploadFile.url ?? "");
   };
   return (

@@ -6,7 +6,7 @@
 //   WriterWrapper,
 //   WriterButton,
 // } from "./BoardList.styles";
-import { MouseEvent } from "react";
+import { ChangeEvent, MouseEvent } from "react";
 import Paginations01 from "../../../commons/paginations01/Paginations01.container";
 import { IQuery } from "../../../commons/types/generated/types";
 import * as L from "./BoardList.styles";
@@ -16,20 +16,27 @@ interface IBoardListUI {
   onClickWriterButton: () => void;
   onClickListButton: (event: MouseEvent<HTMLDivElement>) => void;
   data?: Pick<IQuery, "fetchBoards">;
+  count: number;
+  dataCount?: Pick<IQuery, "fetchBoardsCount">;
+  number: number;
+  keyword: string;
+  onChangeSearchButton: (event: ChangeEvent<HTMLInputElement>) => void;
+  refetch: number;
+  setNumber: number;
+  writer?: string;
 }
 
-export default function BoardListUI(props) {
+export default function BoardListUI(props: IBoardListUI) {
   const getDot = (str: string) => {
     return str.length <= 8 ? str : `${str.slice(0, 8)}...`;
   }; // 일정 글자 수 넘어가면 ...으로 보이게 하는거임!!
 
-  const last = props.lastNumber * 10;
+  // const last = props.lastNumber * 10;
   const start = props.number * 10;
-  const sum = props.lastNumber * 10 - props.dataCount?.fetchBoardsCount;
-  const hop = props.lastNumber * 10 - props.number * 10;
+  // const sum = props.lastNumber * 10 - props.dataCount?.fetchBoardsCount;
+  // const hop = props.lastNumber * 10 - props.number * 10;
   const originalLast = props.dataCount?.fetchBoardsCount;
 
-  console.log(sum);
   return (
     <L.Wrapper>
       <L.MainTalbe>
@@ -105,21 +112,19 @@ export default function BoardListUI(props) {
       <div style={{ width: "100%", display: "row", justifyContent: "row" }}>
         <L.ListWrapper>
           <Paginations01
-            setLastNumber={props.setLastNumber}
+            // setLastNumber={props.setLastNumber}
             refetch={props.refetch}
             count={props.count}
             setNumber={props.setNumber} // 이거를 보내는 이유는 페이지네이션에서 페이지값을 받아와서 리스트에서 번호를 불러오기 위해서이다!
-            // setMyindex={props.setMyindex}
           ></Paginations01>
-          {/* <L.WriterButton onClick={props.onClickWriterButton}>
-            게시물 등록하기
-          </L.WriterButton> */}
+        </L.ListWrapper>
+        <L.SearchWrapper>
           <input
             type="text"
             onChange={props.onChangeSearchButton}
-            style={{ outlineColor: "#8f3636" }}
+            style={{ outlineColor: "#8f3636", width: "600px" }}
           ></input>
-        </L.ListWrapper>
+        </L.SearchWrapper>
         {/* 
         <L.WriterWrapper>
           <L.WriterButton onClick={props.onClickWriterButton}>

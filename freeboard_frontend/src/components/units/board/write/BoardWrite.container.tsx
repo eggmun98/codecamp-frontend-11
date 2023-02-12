@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_BOARD, UPDATE_BOARD, FETCH_BOARD } from "./BoardWrite.queries";
 import BoardWriteUI from "./BoardWrite.presenter";
-import { IUpdateBoardInput } from "../../../commons/types/generated/types";
+import {
+  IQuery,
+  IUpdateBoardInput,
+} from "../../../commons/types/generated/types";
+import { Address } from "react-daum-postcode";
 
 interface IBoardWritePageProps {
   data?: any;
@@ -169,10 +173,11 @@ export default function BoardWritePage(props: IBoardWritePageProps) {
 
   // const onClickAddressSearch = () => {};
 
-  const handleComplete = (data): void => {
+  const handleComplete = (data: any) => {
     addressShowModal();
     setAddress(data.address);
     setZipcode(data.zonecode);
+    // setZipcode(data.zipcode);
   };
 
   const addressShowModal = () => {

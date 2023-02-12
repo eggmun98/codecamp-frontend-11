@@ -2,9 +2,7 @@ import styled from "@emotion/styled";
 import { Button, Modal } from "antd";
 
 export const Wrapper = styled.div`
-  margin: 100px;
-  /* margin-right: 100px; */
-  margin-left: 200px;
+  margin: 20px;
   width: 1200px;
   display: flex;
   flex-direction: column;
@@ -13,11 +11,14 @@ export const Wrapper = styled.div`
   padding-right: 102px;
   padding-top: 60px;
   padding-bottom: 100px;
-  border: 1px solid black;
+  border: 10px solid black;
   border: none;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
   color: black;
   background-color: white;
+  /* border: 3px solid #8f3636;  */
+  border-radius: 10px;
+
   /* font-family: Arial, Helvetica, sans-serif;  */
 `;
 

@@ -33,8 +33,16 @@ export const ListWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-left: 280px;
 `;
 
+export const SearchWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-left: 280px;
+`;
 // export const ListButton = styled.button`
 //   border: none;
 //   background-color: white;

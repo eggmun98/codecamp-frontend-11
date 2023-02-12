@@ -4,11 +4,11 @@ import { Rate } from "antd";
 
 //가장 바깥 웨퍼
 export const OutWrapper = styled.div`
-  width: 1420px;
+  width: 1200px;
   display: flex;
   flex-direction: column;
-  /* align-items: center;  */
-  margin-left: 150px;
+  margin: 20px;
+
   color: black;
 `;
 
@@ -17,7 +17,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 1200px;
-  margin: 100px;
+  /* margin: 100px; */
   padding-top: 20px;
   padding-left: 102px;
   padding-right: 102px;
@@ -26,6 +26,7 @@ export const Wrapper = styled.div`
   border: none;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
   background-color: whitesmoke;
+  border-radius: 10px;
 
   /* font-family: Arial, Helvetica, sans-serif;  */
 `;
@@ -191,12 +192,15 @@ export const DownText = styled.div`
 //
 
 // 목록으로, 수정하기, 삭제하기
-export const MiddleWrapper = styled.div``;
+export const MiddleWrapper = styled.div`
+  margin-left: 300px;
+  margin-top: 50px;
+`;
 
 export const MiddleWrapperButton = styled.button`
   width: 179px;
   height: 45px;
-  margin-left: 100px;
+
   margin-right: 24px;
   border: 1px solid #bdbdbd;
   background-color: white;

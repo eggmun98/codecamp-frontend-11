@@ -27,9 +27,11 @@ interface IBoardDetailUI {
   onClickUp: () => void;
   onClickDown: () => void;
   onPoint: () => void;
+  onClickLikeButton: () => void;
+  onClickDisLikeButton: () => void;
 }
 
-export default function BoardDetailUI(props) {
+export default function BoardDetailUI(props: IBoardDetailUI) {
   return (
     <D.OutWrapper>
       <D.Wrapper>

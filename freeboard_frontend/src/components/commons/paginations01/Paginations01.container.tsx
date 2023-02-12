@@ -6,12 +6,12 @@ export default function Paginations01(props): JSX.Element {
   const [startPage, setStartPage] = useState(1);
   const lastPage = Math.ceil(props.count / 10);
   const [activedPage, setActivedPage] = useState(1);
-  props.setLastNumber(lastPage);
+  // props.setLastNumber(lastPage);
 
   console.log(lastPage);
   const onClickPageButton = (event: MouseEvent<HTMLButtonElement>) => {
     const activedPage = Number(event.currentTarget.id);
-    // props.setMyindex(activedPage);
+
     props.setNumber(Number(event.currentTarget.id)); // setNumber에 페이지 값을 담아서 state 끌어 오르기를 통해서 바로부모한테 전달함
     // 그래서 페이지 번호를 나타낼거임!!
     console.log(Number(event.currentTarget.id));

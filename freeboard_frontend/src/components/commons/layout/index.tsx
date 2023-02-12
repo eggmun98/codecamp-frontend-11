@@ -45,17 +45,19 @@ export default function LayoutPage(props) {
   const router = useRouter();
 
   const HIDDEN_LAYOUT = ["/boards", "/mypage"];
+  const HIDDEN_SIGN = ["/sign/signup", "/sign/signin"];
 
   console.log(router);
   const hidden_layout = HIDDEN_LAYOUT.includes(router.asPath);
+  const hidden_sign = HIDDEN_SIGN.includes(router.asPath);
 
   return (
     <MainDesign>
-      <HeaderPage></HeaderPage>
+      {!hidden_sign && <HeaderPage></HeaderPage>}
       <RowDesign>
-        {hidden_layout && <SideBarPage></SideBarPage>}
+        {!hidden_sign && <SideBarPage></SideBarPage>}
         <ColDesign>
-          <BannerPage></BannerPage>
+          {!hidden_sign && <BannerPage></BannerPage>}
           <div
             style={{
               display: "flex",
@@ -64,7 +66,7 @@ export default function LayoutPage(props) {
             }}
           >
             <div>{props.children}</div>
-            {hidden_layout && <SubBarPage></SubBarPage>}
+            {!hidden_sign && <SubBarPage></SubBarPage>}
           </div>
         </ColDesign>
       </RowDesign>

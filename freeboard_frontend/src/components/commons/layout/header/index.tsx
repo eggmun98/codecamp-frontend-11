@@ -1,5 +1,7 @@
 import styled from "@emotion/styled";
 import { css, keyframes } from "@emotion/react";
+import { useAmp } from "next/amp";
+import { useRouter } from "next/router";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -15,20 +17,6 @@ const Wrapper = styled.div`
 
   /* background-color: #2a2626; */
 `;
-
-// const titlemove = keyframes`
-//   0% {
-//     font-size: 60px;
-//   }
-
-//   90% {
-//     font-size: 20px;
-//   }
-
-//   100% {
-//     font-size: 35px;
-//   }
-// `;
 
 const logomove = keyframes`
   0%{
@@ -110,17 +98,30 @@ const SighUp = styled.button`
 `;
 
 export default function HeaderPage() {
+  const router = useRouter();
+
+  const MainPageButton = () => {
+    router.push("/boards");
+  };
+
+  const SignInButton = () => {
+    router.push("/sign/signin");
+  };
+
+  const SignUpButton = () => {
+    router.push("/sign/signup");
+  };
   return (
     <>
       <Wrapper>
-        <LeftWrapper>
+        <LeftWrapper onClick={MainPageButton}>
           <LogoImg src="/header/myLogo.png"></LogoImg>
 
           <LogoTitle>Egg Mun</LogoTitle>
         </LeftWrapper>
         <RightWrapper>
-          <Login>로그인</Login>
-          <SighUp>회원가입</SighUp>
+          <Login onClick={SignInButton}>로그인</Login>
+          <SighUp onClick={SignUpButton}>회원가입</SighUp>
         </RightWrapper>
       </Wrapper>
     </>

@@ -104,7 +104,7 @@ export default function ImageUploadPage(): JSX.Element {
         type="file"
         onChange={onChangeFile}
         ref={fileRef}
-        accept="image/jpeg,image/png"
+        accept="image/jpeg,image/png" // 인풋 태그 accept속성은 지정한 확장자만 넣을 수 있게 해주는 기능을 가지고 있음
       ></input>
       <img src={"https:/storage.googleapis.com/" + imageUrl}></img>
       <button onClick={onClickSubmit}>GRAPHQL-API 요청하기</button>

@@ -10,7 +10,7 @@ export default function BoardListPage() {
 
   const [number, setNumber] = useState(1);
   const [keyword, setKeyword] = useState("");
-  const [myindex, setMyindex] = useState(1);
+  // const [myindex, setMyindex] = useState(1);
   const [lastNumber, setLastNumber] = useState(1);
 
   // 게시글 쿼리
@@ -33,6 +33,7 @@ export default function BoardListPage() {
     router.push("/boards/new");
   };
 
+  // 검색 기능
   const getDebounce = _.debounce((search) => {
     refetch({ page: 1, search: search });
     setKeyword(search);
@@ -47,7 +48,7 @@ export default function BoardListPage() {
       setLastNumber={setLastNumber}
       lastNumber={lastNumber}
       number={number} // qqq를  바로 자식이 보더리스트프리젠터에 보냄
-      setNumber={setNumber}
+      // setNumber={setNumber}
       refetch={refetch}
       count={dataCount?.fetchBoardsCount}
       onClickListButton={onClickListButton}

@@ -5,12 +5,16 @@ import { Rate } from "antd";
 //댓글창
 export const CommentWrapper = styled.div`
   width: 1200px;
-  margin-left: 250px;
   display: flex;
   flex-direction: column;
+  margin: 20px;
+
   /* padding-top: 40px; */
   border-top: 1px solid #bdbdbd;
   /* overflow: hidden; */
+  background-color: white;
+  color: black;
+  border-radius: 10px;
 `;
 
 // 댓글 작성칸
