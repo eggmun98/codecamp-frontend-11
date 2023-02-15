@@ -5,6 +5,9 @@ import {
   ApolloLink,
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../stores";
 
 const GLOBAL_STATE = new InMemoryCache();
 
@@ -13,8 +16,42 @@ interface IApolloSettingProps {
 }
 
 export default function ApolloSetting(props: IApolloSettingProps): JSX.Element {
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState); // [accessToken, setAccessToken] setAccessToken을 안쓰니 지움
+  // console.log(accessToken);
+
+  // 1. 프리렌더링 예제 - process.browser 방법
+  // if (process.browser) {
+  //   // 지금 브라우저니
+  //   console.log("나는 지금 브라우저이다!!");
+  //   alert("반갑습니다.");
+  //   const result = localStorage.getItem("accessToken");
+  //   console.log(result);
+  //   setAccessToken(result ?? "");
+  // } else {
+  //   console.log(
+  //     "지금은 프론트엔드 서버다!!!(즉, yarn dev로 실행시킨 프로그램 내부이다!"
+  //   );
+  // }
+
+  // 2. 프리렌더링 예제 = typeof window 방법
+  // 너 지금 브라우저니???를 윈도우를 이용하여 알수 있음!!
+  // if (typeof window !== "undefined") {
+  //   console.log("나는 지금 브라우저다!");
+  // } else {
+  //   console.log("나는 지금 프론트엔드 서버이다!");
+  // }
+
+  // 3. 프리렌더링 무시 - useEffect 방법
+  useEffect(() => {
+    // console.log("나는 지금 브라우저이다!");
+    const result = localStorage.getItem("accessToken");
+    console.log(result);
+    setAccessToken(result ?? "");
+  }, []);
+
   const uploadLink = createUploadLink({
     uri: "http://backend-practice.codebootcamp.co.kr/graphql",
+    headers: { Authorization: `Bearer ${accessToken}` }, // 모든 api를 요청할때 마다 헤더부분에 추가한다!
   });
 
   const client = new ApolloClient({

@@ -12,7 +12,7 @@ export default function FireBasePage(): JSX.Element {
     const board = collection(getFirestore(firebaseApp), "board");
 
     void addDoc(board, {
-      writer: "철수",
+      writer: "문성진",
       title: "안녕하세요",
       contents: "반갑습니다",
     });
