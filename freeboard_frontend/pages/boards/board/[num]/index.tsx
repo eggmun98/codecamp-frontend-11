@@ -4,7 +4,8 @@ import BoardCommentPage from "../../../../src/components/units/boardComment/Boar
 export default function SubPage() {
   return (
     <>
-      <BoardDetailPage></BoardDetailPage>;<BoardCommentPage></BoardCommentPage>
+      <BoardDetailPage></BoardDetailPage>
+      <BoardCommentPage></BoardCommentPage>
     </>
   );
 }

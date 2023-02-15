@@ -44,11 +44,14 @@ export default function SideBarPage() {
     router.push("/boards/new");
   };
 
+  const onClickNoticeButton = () => {
+    router.push("/notice/writer");
+  };
   return (
     <>
       <Wrapper>
         <Button onClick={onClcikNewButton}>새글 작성</Button>
-        <Button>공지 사항</Button>
+        <Button onClick={onClickNoticeButton}>공지 사항</Button>
         <Button>인기 게시글</Button>
         <Button>즐겨 찾기</Button>
         <Button onClick={onClickBoardButton}>자유 게시판</Button>

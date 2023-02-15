@@ -1,4 +1,7 @@
 import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+import Router, { useRouter } from "next/router";
 
 export const MainWrapper = styled.div`
   /* width: 1920px;  
@@ -124,26 +127,83 @@ export const ButtonStyled = styled.button`
   margin-bottom: 20px;
 `;
 
+const CREATE_USER = gql`
+  mutation createUser($createUserInput: CreateUserInput!) {
+    createUser(createUserInput: $createUserInput) {
+      _id
+    }
+  }
+`;
+
 export default function SignUpPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [name, setName] = useState("");
+
+  const [create_user] = useMutation(CREATE_USER);
+
+  const router = useRouter();
+
+  const emailUp = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const passwordUp = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const passwordUpCheck = (event) => {
+    setPasswordCheck(event.target.value);
+  };
+
+  const nameUp = (event) => {
+    setName(event.target.value);
+  };
+
+  // email: email,
+  // password: password,
+  // name: name,
+  const onClickSignUp = async () => {
+    if (password !== passwordCheck) {
+      alert("비밀번호와 비밀번호 확인이 다릅니다!");
+      return;
+    }
+    const result = await create_user({
+      variables: {
+        createUserInput: {
+          email: email,
+          password: password,
+          name: name,
+        },
+      },
+    });
+    alert("회원가입 되었습니다!!");
+    router.push("/boards");
+  };
+
   return (
     <MainWrapper>
       <InWrapper>
         <LogoWrapper>Egg Mun</LogoWrapper>
         <OneWrapper>
           <TextStypled>이메일</TextStypled>
-          <InputStyled01></InputStyled01>
+          <InputStyled01 onChange={emailUp}></InputStyled01>
         </OneWrapper>
         <OneWrapper>
           <TextStypled>비밀번호</TextStypled>
-          <InputStyled01></InputStyled01>
+          <InputStyled01 onChange={passwordUp} type="password"></InputStyled01>
         </OneWrapper>
         <OneWrapper>
           <TextStypled>비밀번호 확인</TextStypled>
-          <InputStyled01></InputStyled01>
+          <InputStyled01
+            onChange={passwordUpCheck}
+            type="password"
+          ></InputStyled01>
         </OneWrapper>
         <OneWrapper>
           <TextStypled>이름</TextStypled>
-          <InputStyled01></InputStyled01>
+          <InputStyled01 onChange={nameUp}></InputStyled01>
         </OneWrapper>
         <OneWrapper>
           <TextStypled>생년월일</TextStypled>
@@ -180,7 +240,7 @@ export default function SignUpPage() {
             </SelectStyled02>
           </TwoWrapper>
         </OneWrapper>
-        <ButtonStyled>가입하기</ButtonStyled>
+        <ButtonStyled onClick={onClickSignUp}>가입하기</ButtonStyled>
       </InWrapper>
     </MainWrapper>
   );
