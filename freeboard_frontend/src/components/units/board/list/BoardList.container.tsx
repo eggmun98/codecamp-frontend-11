@@ -48,7 +48,7 @@ export default function BoardListPage() {
       setLastNumber={setLastNumber}
       lastNumber={lastNumber}
       number={number} // qqq를  바로 자식이 보더리스트프리젠터에 보냄
-      // setNumber={setNumber}
+      setNumber={setNumber}
       refetch={refetch}
       count={dataCount?.fetchBoardsCount}
       onClickListButton={onClickListButton}

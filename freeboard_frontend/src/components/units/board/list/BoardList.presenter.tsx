@@ -36,7 +36,8 @@ export default function BoardListUI(props: IBoardListUI) {
   // const sum = props.lastNumber * 10 - props.dataCount?.fetchBoardsCount;
   // const hop = props.lastNumber * 10 - props.number * 10;
   const originalLast = props.dataCount?.fetchBoardsCount;
-
+  console.log("originalLast :", originalLast);
+  console.log("start :", start);
   return (
     <L.Wrapper>
       <L.MainTalbe>

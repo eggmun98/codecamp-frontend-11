@@ -17,7 +17,11 @@ interface IFormData {
 // yup는 검증해주는 도구!
 
 export default function GraphqlMutationPage(): JSX.Element {
-  const { register, handleSubmit, formState } = useForm<IFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<IFormData>({
     resolver: yupResolver(schema), // 검사할 것을 불러옴
     mode: "onChange", // 언제 검사할 것인지 정함
     //  formState에 에러가 담김
@@ -43,12 +47,12 @@ export default function GraphqlMutationPage(): JSX.Element {
       {" "}
       {/* 새로고침 막으려면 wrapAsync 말고 다른거 가져오거나 eslintrc 끄기 */}
       작성자: <Input01 type="text" register={register("writer")}></Input01>
-      <div style={{ color: "red" }}>{formState.errors.writer?.message}</div>
+      <div style={{ color: "red" }}>{errors.writer?.message}</div>
       제목: <Input01 type="text" register={register("title")}></Input01>
-      <div style={{ color: "red" }}>{formState.errors.title?.message}</div>
+      <div style={{ color: "red" }}>{errors.title?.message}</div>
       내용: <Input01 type="password" register={register("contents")} />
-      <div style={{ color: "red" }}>{formState.errors.contents?.message}</div>
-      <Button01 title="등록하기" isActive={formState.isValid}></Button01>
+      <div style={{ color: "red" }}>{errors.contents?.message}</div>
+      <Button01 title="등록하기" isActive={isValid}></Button01>
     </form>
   );
 }
