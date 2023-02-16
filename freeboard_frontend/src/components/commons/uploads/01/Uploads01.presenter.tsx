@@ -15,7 +15,7 @@ export default function Uploads01UI(props): JSX.Element {
           src={`https://storage.googleapis.com/${props.fileUrl}`}
         />
       ) : (
-        <UploadButton onClick={props.onClickUpload}>
+        <UploadButton onClick={props.onClickUpload} type="button">
           <>+</>
           <>Upload</>
         </UploadButton>

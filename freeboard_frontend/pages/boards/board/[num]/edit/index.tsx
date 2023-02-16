@@ -1,5 +1,5 @@
-import BoardWritePage from "../../../../../src/components/units/board/write/BoardWrite.container";
+import BoardWriteUI from "../../../../../src/components/units/board/write";
 
 export default function MainEditPage() {
-  return <BoardWritePage isEdit={true}></BoardWritePage>;
+  return <BoardWriteUI isEdit={true}></BoardWriteUI>;
 }

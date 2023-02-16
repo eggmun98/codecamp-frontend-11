@@ -1,46 +1,85 @@
-import SignUpUiPage from "./SignUp.presenter";
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { CREATE_USER } from "./SignUp.queries";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import * as U from "./SignUp.styles";
+import { useForm } from "react-hook-form";
+import { useMutationCreateUser } from "../../../commons/hooks/mutations/useMutationCreateUser";
+import { useSignUpMode } from "../../../commons/hooks/customs/signUpMode";
 
 export default function SignUpPage() {
-  const [create_user] = useMutation(CREATE_USER);
-
-  const router = useRouter();
-
   const { register, handleSubmit, formState } = useForm({});
-
-  const onClickSignUp = async (data) => {
-    if (data.password !== data.passwordCheck) {
-      alert("비밀번호와 비밀번호 확인이 다릅니다!");
-      return;
-    }
-
-    console.log(data.email);
-    console.log(data.password);
-    console.log(data.name);
-    const result = await create_user({
-      variables: {
-        createUserInput: {
-          email: data.email,
-          password: data.password,
-          name: data.name,
-        },
-      },
-    });
-
-    alert("회원가입 되었습니다!!");
-    router.push("/boards");
-  };
+  const { onClickSignUp } = useSignUpMode();
 
   return (
-    <SignUpUiPage
-      onClickSignUp={onClickSignUp}
-      handleSubmit={handleSubmit}
-      register={register}
-    ></SignUpUiPage>
+    <form onSubmit={handleSubmit(onClickSignUp)}>
+      <U.MainWrapper>
+        <U.InWrapper>
+          <U.LogoWrapper>Egg Mun</U.LogoWrapper>
+          <U.OneWrapper>
+            <U.TextStypled>이메일</U.TextStypled>
+            <U.InputStyled01
+              type="text"
+              {...register("email")}
+            ></U.InputStyled01>
+          </U.OneWrapper>
+          <U.OneWrapper>
+            <U.TextStypled>비밀번호</U.TextStypled>
+            <U.InputStyled01
+              type="password"
+              {...register("password")}
+            ></U.InputStyled01>
+          </U.OneWrapper>
+          <U.OneWrapper>
+            <U.TextStypled>비밀번호 확인</U.TextStypled>
+            <U.InputStyled01
+              type="password"
+              {...register("passwordCheck")}
+            ></U.InputStyled01>
+          </U.OneWrapper>
+          <U.OneWrapper>
+            <U.TextStypled>이름</U.TextStypled>
+            <U.InputStyled01 {...register("name")}></U.InputStyled01>
+          </U.OneWrapper>
+          <U.OneWrapper>
+            <U.TextStypled>생년월일</U.TextStypled>
+            <U.LowWrapper>
+              <U.InputStyled02 maxLength={4}></U.InputStyled02>
+              <U.SelectStyled01 id="sel">
+                <option disabled={true} selected={true}>
+                  월
+                </option>
+                <option>01</option>
+                <option>02</option>
+                <option>03</option>
+                <option>04</option>
+                <option>05</option>
+                <option>06</option>
+                <option>07</option>
+                <option>08</option>
+                <option>09</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+              </U.SelectStyled01>
+              <U.InputStyled02 maxLength={2}></U.InputStyled02>
+            </U.LowWrapper>
+            <U.TwoWrapper>
+              <U.TextStypled>성별</U.TextStypled>
+              <U.SelectStyled02 id="sel">
+                <option disabled={true} selected={true}>
+                  성별
+                </option>
+                <option>남자</option>
+                <option>여자</option>
+                <option>선택안함</option>
+              </U.SelectStyled02>
+            </U.TwoWrapper>
+          </U.OneWrapper>
+          <U.ButtonStyled>가입하기</U.ButtonStyled>
+        </U.InWrapper>
+      </U.MainWrapper>
+    </form>
   );
 }
