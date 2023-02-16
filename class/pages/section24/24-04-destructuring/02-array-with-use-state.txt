@@ -1,0 +1,54 @@
+ function useState(초기값)  {
+
+
+    let state = 초기값
+
+    const setState = (변경값) => {
+        state = 변경값
+        console.log(`${state}에서 ${변경값}으로 값을 변경하겠습니다!!`) // 1. state 변경하기
+        console.log(`변경된${변경값}을 사용해서 컴포넌트를 리렌더링 하겠습니다!!`) // 2. 해당 컴포넌트를 리렌더링 시키기(render함수)
+    }
+    
+    return [state, setState]
+
+
+const [count, setcount] = useSatae(10)
+undefined
+count
+10
+setCount
+
+
+setcount(10)
+10에서 10으로 값을 변경하겠습니다!!
+VM2318:7 변경된10을 사용해서 컴포넌트를 리렌더링 하겠습니다!!
+
+
+
+
+
+
+// 위 방법으로는 리렌더링 안되니 꼼수방법이 있음 그게 아래의 방법!!
+
+function useState(초기값){
+    const state = {
+        value: 초기값
+    }
+    const setState = (변경값) => {
+        state.value = 변경값
+        console.log("값을 변경합니다.")
+        console.log("컴포넌트를 리렌더링합니다.")
+    }
+    return [state, setState]
+}
+undefined
+const [count, setCount] = useState(10)
+undefined
+count.value
+10
+setCount(5)
+VM819:7 값을 변경합니다.
+VM819:8 컴포넌트를 리렌더링합니다.
+undefined
+count.value
+5

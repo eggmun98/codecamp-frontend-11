@@ -9,14 +9,10 @@ import { useForm } from "react-hook-form";
 import * as I from "./SignIn.styles";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./SignIn.validation";
-import { OmitProps } from "antd/es/transfer/ListBody";
 import Input01 from "../../../../commons/input";
 
 export default function SignInPage() {
   const router = useRouter();
-
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
 
   const [login_user] = useMutation(LOGIN_USER);
 
@@ -26,14 +22,6 @@ export default function SignInPage() {
     resolver: yupResolver(schema),
     mode: "onChange",
   });
-
-  // const onChangeEmail = (event) => {
-  //   setEmail(event.target.value);
-  // };
-
-  // const onChangePassword = (event) => {
-  //   setPassword(event.target.value);
-  // };
 
   const onClickLoginButton = async (data) => {
     console.log(data);

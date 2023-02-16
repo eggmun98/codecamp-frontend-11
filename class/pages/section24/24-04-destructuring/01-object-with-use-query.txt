@@ -1,0 +1,38 @@
+function useQuery (qqq) {
+                // qqq API 요청하기
+    return {
+        data: {fetchBoard: {writer: "철수"}},
+        refetch: () => {
+            console.log("리페치가 실행됩니다!!")
+        }
+    }
+}
+
+undefined
+const {} = useQue
+VM691:1 Uncaught ReferenceError: useQue is not defined
+    at <anonymous>:1:12
+(anonymous) @ VM691:1
+const {data, refetch} = useQuery("FETCH_BOARD")
+undefined
+data.fetchBoard.writer
+'철수'
+data.refetch
+undefined
+refetch
+() => {
+            console.log("리페치가 실행됩니다!!")
+        }
+refetch()
+VM650:6 리페치가 실행됩니다!!
+undefined
+const result = useQuery("FETCH_BOARD")
+undefined
+result.data.fet
+undefined
+result.data.fetchBoard.writer
+'철수'
+result.refetch
+() => {
+            console.log("리페치가 실행됩니다!!")
+        }
