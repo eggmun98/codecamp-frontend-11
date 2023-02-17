@@ -1,15 +1,15 @@
 import * as D from "./BoardDetail.styles";
 import { useRouter } from "next/router";
-import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
+import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useQueryFetchBoard } from "../../../commons/hooks/queries/useQueryFetchBoard";
-import { useBoardDeleteMode } from "../../../commons/hooks/customs/boardDelete";
-import { useBoardLikeMode } from "../../../commons/hooks/customs/boardLike";
-import { useBoardDisLikeMode } from "../../../commons/hooks/customs/BoardDIsLike";
+import { useBoardDeleteMode } from "../../../commons/hooks/customs/useBoardDeleteMode";
+import { useBoardLikeMode } from "../../../commons/hooks/customs/useBoardLikeMode";
+import { useBoardDisLikeMode } from "../../../commons/hooks/customs/useBoardDIsLikeMode";
 import { onPointMode } from "../../../commons/hooks/customs/onPointMode";
 
 export default function BoardDetailUI() {
   const router = useRouter();
-  const { onClickMoveTopage } = useMoveToPage();
+  const { onClickMoveToPage } = useMoveToPageMode();
   const { onClickDeleteButton } = useBoardDeleteMode();
   const { onClickLikeButton } = useBoardLikeMode();
   const { onClickDisLikeButton } = useBoardDisLikeMode();
@@ -84,11 +84,11 @@ export default function BoardDetailUI() {
       </D.Wrapper>
 
       <D.MiddleWrapper>
-        <D.MiddleWrapperButton onClick={onClickMoveTopage("/boards/")}>
+        <D.MiddleWrapperButton onClick={onClickMoveToPage("/boards/")}>
           목록으로
         </D.MiddleWrapperButton>
         <D.MiddleWrapperButton
-          onClick={onClickMoveTopage(
+          onClick={onClickMoveToPage(
             "/boards/board/" + router.query.num + "/edit"
           )}
         >

@@ -1,12 +1,7 @@
-import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { useRouter } from "next/router";
-import { CREATE_USER } from "./SignUp.queries";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as U from "./SignUp.styles";
 import { useForm } from "react-hook-form";
-import { useMutationCreateUser } from "../../../commons/hooks/mutations/useMutationCreateUser";
-import { useSignUpMode } from "../../../commons/hooks/customs/signUpMode";
+import { useSignUpMode } from "../../../commons/hooks/customs/useSignUpMode";
 
 export default function SignUpPage() {
   const { register, handleSubmit, formState } = useForm({});

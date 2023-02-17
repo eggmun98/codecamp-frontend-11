@@ -1,15 +1,14 @@
 import Paginations01 from "../../../commons/paginations01/Paginations01.container";
 import * as L from "./BoardList.styles";
 import { v4 as uuidv4 } from "uuid";
-import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
+import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useQueryFetchBoards } from "../../../commons/hooks/queries/useQueryFetchBoards";
 import { useQueryFetchBoarCount } from "../../../commons/hooks/queries/useQueryFetchBoardCount";
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { useState } from "react";
 import _ from "lodash";
-import { getDebounceMode } from "../../../commons/hooks/customs/getDebounce";
 
 export default function BoardListUI() {
-  const { onClickMoveTopage } = useMoveToPage();
+  const { onClickMoveToPage } = useMoveToPageMode();
   const { data, refetch } = useQueryFetchBoards();
   const { data: dataCount } = useQueryFetchBoarCount();
   // const { onChangeSearchButton, keyword, getDebounce } = getDebounceMode();
@@ -61,7 +60,7 @@ export default function BoardListUI() {
               <L.TableData
                 style={{ textAlign: "start" }}
                 id={el._id}
-                onClick={onClickMoveTopage(`/boards/board/${el._id}`)}
+                onClick={onClickMoveToPage(`/boards/board/${el._id}`)}
               >
                 {el.title
                   .replaceAll(keyword, `@#$${keyword}@#$`)

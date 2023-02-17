@@ -1,45 +1,17 @@
-import { useMutation } from "@apollo/client";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "../../../../commons/stores";
-import { LOGIN_USER } from "./SignIn.queries";
 import { useForm } from "react-hook-form";
 import * as I from "./SignIn.styles";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./SignIn.validation";
 import Input01 from "../../../../commons/input";
+import { useSignInMode } from "../../../commons/hooks/customs/useSignInMode";
 
 export default function SignInPage() {
-  const router = useRouter();
-
-  const [login_user] = useMutation(LOGIN_USER);
-
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const { onClickLoginButton } = useSignInMode();
 
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema),
     mode: "onChange",
   });
-
-  const onClickLoginButton = async (data) => {
-    console.log(data);
-    const result = await login_user({
-      variables: {
-        email: data.email,
-        password: data.password,
-      },
-    });
-    const accessToken = result.data?.loginUser.accessToken;
-    console.log(accessToken);
-
-    if (accessToken === undefined) {
-      alert("로그인에 실패하였습니다. 다시 시도해주세요!");
-      return;
-    }
-    setAccessToken(accessToken);
-    router.push("/boards");
-  };
 
   return (
     <form onSubmit={handleSubmit(onClickLoginButton)}>
