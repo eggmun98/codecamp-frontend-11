@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { useMutationDisLikeBoard } from "../mutations/useMutationBoardDisLike";
-import { FETCH_BOARD } from "../queries/useQueryFetchBoard";
+import { useMutationDisLikeBoard } from "../mutations/board/useMutationBoardDisLike";
+import { FETCH_BOARD } from "../queries/board/useQueryFetchBoard";
 
 export const useBoardDisLikeMode = () => {
   const router = useRouter();

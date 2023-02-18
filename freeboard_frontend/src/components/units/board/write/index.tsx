@@ -11,7 +11,7 @@ import { IUpdateBoardInput } from "../../../commons/types/generated/types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./BoardWrite.validation";
-import { useQueryFetchBoard } from "../../../commons/hooks/queries/useQueryFetchBoard";
+import { useQueryFetchBoard } from "../../../commons/hooks/queries/board/useQueryFetchBoard";
 
 export default function BoardWriteUI(props): JSX.Element {
   const router = useRouter();
@@ -202,12 +202,12 @@ export default function BoardWriteUI(props): JSX.Element {
             value={
               address
                 ? address
-                : boardData?.fetchBoard.boardAddress.address ?? ""
+                : boardData?.fetchBoard?.boardAddress?.address ?? ""
             }
           ></W.PostalCodeMain>
           <W.PostalCodeSub
             {...register("addressDetail")}
-            defaultValue={boardData?.fetchBoard.boardAddress.addressDetail}
+            defaultValue={boardData?.fetchBoard?.boardAddress?.addressDetail}
           ></W.PostalCodeSub>
         </W.AddressWrapper>
         <W.YoutubeWrapper>

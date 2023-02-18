@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
+import { useMoveToPageMode } from "../../hooks/customs/useMoveToPageMode";
 
 const Wrapper = styled.div`
   width: 15%;
@@ -30,33 +31,17 @@ const Button = styled.button`
 `;
 
 export default function SideBarPage() {
-  const router = useRouter();
-
-  const onClickMyPageButton = () => {
-    router.push("/mypage");
-  };
-
-  const onClickBoardButton = () => {
-    router.push("/boards");
-  };
-
-  const onClcikNewButton = () => {
-    router.push("/boards/new");
-  };
-
-  const onClickNoticeButton = () => {
-    router.push("/notice/writer");
-  };
+  const { onClickMoveToPage } = useMoveToPageMode();
   return (
     <>
       <Wrapper>
-        <Button onClick={onClcikNewButton}>새글 작성</Button>
-        <Button onClick={onClickNoticeButton}>공지 사항</Button>
+        <Button onClick={onClickMoveToPage("/boards/new")}>새글 작성</Button>
+        <Button onClick={onClickMoveToPage("/notice/writer")}>공지 사항</Button>
         <Button>인기 게시글</Button>
         <Button>즐겨 찾기</Button>
-        <Button onClick={onClickBoardButton}>자유 게시판</Button>
-        <Button>중고 마켓</Button>
-        <Button onClick={onClickMyPageButton}>마이페이지</Button>
+        <Button onClick={onClickMoveToPage("/boards")}>자유 게시판</Button>
+        <Button onClick={onClickMoveToPage("/markets")}>중고 마켓</Button>
+        <Button onClick={onClickMoveToPage("/mypage")}>마이페이지</Button>
       </Wrapper>
     </>
   );

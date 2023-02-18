@@ -101,7 +101,7 @@ export default function BoardCommentPage() {
     event: MouseEvent<HTMLButtonElement>
   ) => {
     // console.log(passId);
-    console.log(CommentsData.fetchBoardComments[myIndex].rating);
+    // console.log(CommentsData.fetchBoardComments[myIndex].rating);
     const updateBoardCommentInput: { contents?: string; rating?: number } = {};
     // 만약 수정한 값이 빈값일 경우 원래 있던 값을 남기기 위해서 이프문 작성함
     // if (updateBoardCommentInput.contents === "")

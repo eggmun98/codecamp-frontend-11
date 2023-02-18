@@ -1,7 +1,7 @@
 import * as D from "./BoardDetail.styles";
 import { useRouter } from "next/router";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
-import { useQueryFetchBoard } from "../../../commons/hooks/queries/useQueryFetchBoard";
+import { useQueryFetchBoard } from "../../../commons/hooks/queries/board/useQueryFetchBoard";
 import { useBoardDeleteMode } from "../../../commons/hooks/customs/useBoardDeleteMode";
 import { useBoardLikeMode } from "../../../commons/hooks/customs/useBoardLikeMode";
 import { useBoardDisLikeMode } from "../../../commons/hooks/customs/useBoardDIsLikeMode";

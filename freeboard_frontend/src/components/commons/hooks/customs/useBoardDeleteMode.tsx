@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useMutationDeleteBoard } from "../mutations/useMutationDeleteBoard";
+import { useMutationDeleteBoard } from "../mutations/board/useMutationDeleteBoard";
 
 export const useBoardDeleteMode = () => {
   const router = useRouter();

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useMutationCreateUser } from "../mutations/useMutationCreateUser";
+import { useMutationCreateUser } from "../mutations/board/useMutationCreateUser";
 
 export const useSignUpMode = () => {
   const router = useRouter();

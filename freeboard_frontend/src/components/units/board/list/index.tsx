@@ -2,14 +2,15 @@ import Paginations01 from "../../../commons/paginations01/Paginations01.containe
 import * as L from "./BoardList.styles";
 import { v4 as uuidv4 } from "uuid";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
-import { useQueryFetchBoards } from "../../../commons/hooks/queries/useQueryFetchBoards";
-import { useQueryFetchBoarCount } from "../../../commons/hooks/queries/useQueryFetchBoardCount";
+import { useQueryFetchBoards } from "../../../commons/hooks/queries/board/useQueryFetchBoards";
+import { useQueryFetchBoarCount } from "../../../commons/hooks/queries/board/useQueryFetchBoardCount";
 import { useState } from "react";
 import _ from "lodash";
 
 export default function BoardListUI() {
   const { onClickMoveToPage } = useMoveToPageMode();
   const { data, refetch } = useQueryFetchBoards();
+  console.log("게시판 리스트 데이터 :", data);
   const { data: dataCount } = useQueryFetchBoarCount();
   // const { onChangeSearchButton, keyword, getDebounce } = getDebounceMode();
 
@@ -27,8 +28,9 @@ export default function BoardListUI() {
   }; // 일정 글자 수 넘어가면 ...으로 보이게 하는거임!!
 
   const start = number * 10;
-
   const originalLast = dataCount?.fetchBoardsCount;
+  console.log("오리지널라스트", originalLast);
+  console.log("스타트", start);
 
   return (
     <L.Wrapper>

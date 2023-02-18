@@ -20,13 +20,13 @@ export const FETCH_BOARDS = gql`
 `;
 
 export const MainDesign = styled.div`
-  width: 1920px;
+  width: 100%;
   background-color: #282424;
   /* background-color: rgb(49, 49, 49); */
   color: white;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; ;
 `;
 
 export const RowDesign = styled.div`
@@ -38,7 +38,10 @@ export const RowDesign = styled.div`
 export const ColDesign = styled.div`
   display: flex;
   flex-direction: column;
-  width: 85%;
+  width: 100%;
+  .aaa {
+    width: 100%;
+  }
 `;
 
 export default function LayoutPage(props) {
@@ -65,7 +68,7 @@ export default function LayoutPage(props) {
               justifyContent: "space-between",
             }}
           >
-            <div>{props.children}</div>
+            <div className="aaa">{props.children}</div>
             {!hidden_sign && <SubBarPage></SubBarPage>}
           </div>
         </ColDesign>

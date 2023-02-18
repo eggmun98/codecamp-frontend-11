@@ -1,18 +1,19 @@
 import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
-  /* width: 1920px;  */
-  width: 75%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
+  background-color: #282424;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const MainTalbe = styled.table`
   border-bottom: 1px solid black;
   border-top: 1px solid black;
   border-collapse: collapse;
-  width: 1250px;
+  width: 100%;
   text-align: center;
 `;
 

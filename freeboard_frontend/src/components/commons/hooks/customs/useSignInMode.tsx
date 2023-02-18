@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../../../commons/stores";
-import { LOGIN_USER } from "../mutations/useMutationLoginUser";
+import { LOGIN_USER } from "../mutations/board/useMutationLoginUser";
 
 export const useSignInMode = () => {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
@@ -24,6 +24,7 @@ export const useSignInMode = () => {
       return;
     }
     setAccessToken(accessToken);
+    localStorage.setItem("accessToken", accessToken);
     router.push("/boards");
   };
 

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useState } from "react";
-import { useQueryFetchBoards } from "../queries/useQueryFetchBoards";
+import { useQueryFetchBoards } from "../queries/board/useQueryFetchBoards";
 
 export const getDebounceMode = () => {
   const { data, refetch } = useQueryFetchBoards();
