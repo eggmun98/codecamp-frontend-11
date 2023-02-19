@@ -106,6 +106,7 @@ export default function BoardWriteUI(props): JSX.Element {
 
   const handleComplete = (boardData: any) => {
     addressShowModal();
+    console.log(boardData);
     setAddress(boardData.address);
     setZipcode(boardData.zonecode);
     // setZipcode(data.zipcode);

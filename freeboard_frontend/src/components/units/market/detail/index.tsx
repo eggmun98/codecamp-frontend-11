@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { string } from "yup";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/useMutationItemDelete";
+import InfiniteScroll from "react-infinite-scroller";
+import { useAuth } from "../../../commons/hooks/customs/useAuth";
 
 const FETCH_USEDITEM = gql`
   query fetchUseditem($useditemId: ID!) {
@@ -15,6 +17,7 @@ const FETCH_USEDITEM = gql`
       remarks
       contents
       price
+      images
     }
   }
 `;
@@ -80,6 +83,8 @@ const CREATE_USED_ITEM_QUESTION_ANSWER = gql`
 `;
 
 export default function MarketDetailPage() {
+  useAuth();
+
   const router = useRouter();
   // console.log("라우터", router);
   const [create_used_item_question] = useMutation(CREATE_USED_ITEM_QUESION);
@@ -101,6 +106,8 @@ export default function MarketDetailPage() {
       useditemId: router.query.number,
     },
   });
+
+  console.log(data);
 
   // 상품 댓글 쿼리
   const { data: QuestionsData } = useQuery(FETCH_USED_ITEM_QUESTIONS, {
@@ -196,6 +203,14 @@ export default function MarketDetailPage() {
         <div>부 상품 명: {data?.fetchUseditem.remarks}</div>
         <div>가격: {data?.fetchUseditem.price}</div>
         <div>상품 설명: {data?.fetchUseditem.contents}</div>
+        {data?.fetchUseditem.images
+          ?.filter((el) => el)
+          .map((el) => (
+            <div>
+              <div>상품 이미지</div>
+              <img src={`https://storage.googleapis.com/${el}`}></img>
+            </div>
+          ))}
       </form>
 
       <div>

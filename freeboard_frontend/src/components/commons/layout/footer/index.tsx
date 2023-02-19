@@ -5,7 +5,7 @@ const Wrapper = styled.div`
   height: 300px;
   z-index: 0;
   /* background-color: #c1b74b;  */
-  background-color: #070707;
+  /* background-color: #070707;  */
   display: flex;
   flex-direction: row;
   justify-content: flex-start;

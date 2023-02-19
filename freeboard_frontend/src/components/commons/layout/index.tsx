@@ -21,9 +21,11 @@ export const FETCH_BOARDS = gql`
 
 export const MainDesign = styled.div`
   width: 100%;
-  background-color: #282424;
-  /* background-color: rgb(49, 49, 49); */
-  color: white;
+  /* background-color: #9fccd7; */
+  /* background-color: #131315; */
+
+  background-color: rgb(49, 49, 49);
+  color: black;
   display: flex;
   flex-direction: column;
   overflow: hidden; ;
