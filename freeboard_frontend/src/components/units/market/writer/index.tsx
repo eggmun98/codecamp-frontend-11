@@ -8,6 +8,12 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Modal } from "antd";
 import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+
+const ReactQuill = dynamic(async () => await import("react-quill"), {
+  ssr: false,
+});
 
 const UPLOAD_FILE = gql`
   mutation uploadFile($file: Upload!) {
@@ -24,7 +30,7 @@ declare const window: typeof globalThis & {
 export default function MarketWriterPage(props) {
   useAuth();
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, trigger, setValue } = useForm(); // 나중에 에러 잡을때 contents는 트리거 안에 넣어주기!!
   const router = useRouter();
   const [create_used_item] = useMutationItemCreate();
   const [update_used_item] = useMutationItemUpdate();
@@ -182,6 +188,10 @@ export default function MarketWriterPage(props) {
     setIsOpen((prev) => !prev);
   };
 
+  const onChangeContents = (value: string) => {
+    setValue("contents", value === "<p><br></p>" ? "" : value);
+  };
+
   return (
     <>
       {/* <script
@@ -198,7 +208,8 @@ export default function MarketWriterPage(props) {
         상품명: <input {...register("name")}></input>
         부가 상품명: <input {...register("remarks")}></input>
         가격: <input {...register("price")}></input>
-        상품 설명: <input {...register("contents")}></input>
+        {/* 상품 설명: <input {...register("contents")}></input>  */}
+        상품 내용: <ReactQuill onChange={onChangeContents}></ReactQuill>
         {imageUrls.map((el, index) => (
           <div key={uuidv4()} style={{ margin: 30 }}>
             <div>이미지 등록</div>

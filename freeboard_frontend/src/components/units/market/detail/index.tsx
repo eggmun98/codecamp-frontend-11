@@ -8,6 +8,7 @@ import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageM
 import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/useMutationItemDelete";
 import InfiniteScroll from "react-infinite-scroller";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
+import Dompurify from "dompurify";
 
 const FETCH_USEDITEM = gql`
   query fetchUseditem($useditemId: ID!) {
@@ -302,7 +303,13 @@ export default function MarketDetailPage() {
         <div>상품명: {data?.fetchUseditem.name}</div>
         <div>부 상품 명: {data?.fetchUseditem.remarks}</div>
         <div>가격: {data?.fetchUseditem.price}</div>
-        <div>상품 설명: {data?.fetchUseditem.contents}</div>
+        {typeof window !== "undefined" && (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: Dompurify.sanitize(data?.fetchUseditem.contents),
+            }}
+          ></div>
+        )}
         {data?.fetchUseditem.images
           ?.filter((el) => el)
           .map((el) => (
