@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
+  color: black;
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #282424;
+  /* background-color: #282424;  */
   justify-content: center;
   align-items: center;
 `;
@@ -19,13 +20,11 @@ export const MainTalbe = styled.table`
 
 export const TableHead = styled.th`
   border-bottom: 1px solid #bdbdbd;
-  color: white;
   height: 52px;
 `;
 
 export const TableData = styled.td`
   border-bottom: 1px solid #bdbdbd;
-  color: white;
   height: 52px;
   cursor: pointer;
 `;
@@ -69,7 +68,7 @@ export const WriterWrapper = styled.div`
 export const WriterButton = styled.button`
   width: 171px;
   height: 52px;
-  border: 1px solid #f2f2f2;
+  border: 1px solid black;
   /* border-radius: 10px;  */
   cursor: pointer;
   margin-left: 650px;

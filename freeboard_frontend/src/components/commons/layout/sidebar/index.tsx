@@ -3,23 +3,22 @@ import { useRouter } from "next/router";
 import { useMoveToPageMode } from "../../hooks/customs/useMoveToPageMode";
 
 const Wrapper = styled.div`
-  width: 15%;
-  height: 1920px;
-  background-color: #8f3636;
+  width: 100%;
+  height: 100px;
+  background-color: #489bb0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-around;
   align-items: center;
-  padding-top: 100px;
 `;
 
 const Button = styled.button`
   /* width: 200px; */
   height: 35px;
   /* background-color: rgba(49, 49, 49, 0.1);  */
-  background-color: #8f3636;
+  background-color: #489bb0;
   font-size: 15px;
   color: white;
-  margin-bottom: 50px;
   border: none;
   cursor: pointer;
   &:hover {

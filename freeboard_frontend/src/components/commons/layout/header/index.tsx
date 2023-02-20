@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import { css, keyframes } from "@emotion/react";
 import { useAmp } from "next/amp";
 import { useRouter } from "next/router";
+import { gql, useMutation } from "@apollo/client";
+import { useState } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -12,7 +14,8 @@ const Wrapper = styled.div`
   padding-left: 40px;
   padding-right: 40px;
   padding-top: 0px;
-  background-color: #489bb0;
+  color: #489bb0;
+  /* background-color: #489bb0; */
 
   /* background-color: #5321d0;  */
   /* background-color: #282424;  */
@@ -71,7 +74,6 @@ const LogoImg = styled.img`
 const LogoTitle = styled.div`
   font-size: 30px;
   font-weight: 700;
-  color: white;
 
   margin-top: 50px;
 `;
@@ -99,9 +101,16 @@ const SighUp = styled.button`
   border: none;
 `;
 
+// const LOGOUT_USER = gql`
+//   mutation logoutUser: Boolean!) {
+
+//   }
+// `;
+
 export default function HeaderPage() {
   const router = useRouter();
-
+  // const [logout_user] = useMutation(LOGOUT_USER);
+  // const [boolean, setBoolean] = useState(false);
   const MainPageButton = () => {
     router.push("/boards");
   };
@@ -113,6 +122,12 @@ export default function HeaderPage() {
   const SignUpButton = () => {
     router.push("/sign/signup");
   };
+
+  // const onClickLogout = async () => {
+  //   setBoolean(true);
+  //   await logout_user(true);
+  // };
+
   return (
     <>
       <Wrapper>
@@ -124,6 +139,7 @@ export default function HeaderPage() {
         <RightWrapper>
           <Login onClick={SignInButton}>로그인</Login>
           <SighUp onClick={SignUpButton}>회원가입</SighUp>
+          {/* <Login onClick={onClickLogout}>로그아웃</Login>  */}
         </RightWrapper>
       </Wrapper>
     </>

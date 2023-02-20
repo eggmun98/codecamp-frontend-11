@@ -75,6 +75,9 @@ export default function MarketWriterPage(props) {
           price: Number(data.price),
           contents: data.contents,
           images: [...imageUrls],
+          useditemAddress: {
+            address: address,
+          },
         },
       },
     });
@@ -132,22 +135,22 @@ export default function MarketWriterPage(props) {
         let map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
         // 주소-좌표 변환 객체를 생성합니다
-        var geocoder = new window.kakao.maps.services.Geocoder();
+        let geocoder = new window.kakao.maps.services.Geocoder();
 
         // 주소로 좌표를 검색합니다
         geocoder.addressSearch(address, function (result, status) {
           // 정상적으로 검색이 완료됐으면
           if (status === window.kakao.maps.services.Status.OK) {
-            var coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+            let coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
 
             // 결과값으로 받은 위치를 마커로 표시합니다
-            var marker = new window.kakao.maps.Marker({
+            let marker = new window.kakao.maps.Marker({
               map: map,
               position: coords,
             });
 
             // 인포윈도우로 장소에 대한 설명을 표시합니다
-            var infowindow = new window.kakao.maps.InfoWindow({
+            let infowindow = new window.kakao.maps.InfoWindow({
               content: address,
             });
             infowindow.open(map, marker);
@@ -166,11 +169,12 @@ export default function MarketWriterPage(props) {
 
   //
 
-  const handleComplete = (boardData: any) => {
+  const handleComplete = (Data: any) => {
     addressShowModal();
-    console.log(boardData);
-    setAddress(boardData.address);
-    setZipcode(boardData.zonecode);
+    console.log(Data);
+    setAddress(Data.address);
+    console.log("셋어드레스 : ", address);
+    setZipcode(Data.zonecode);
     // setZipcode(data.zipcode);
   };
 

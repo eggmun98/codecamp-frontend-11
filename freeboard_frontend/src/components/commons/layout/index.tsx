@@ -23,8 +23,8 @@ export const MainDesign = styled.div`
   width: 100%;
   /* background-color: #9fccd7; */
   /* background-color: #131315; */
-
-  background-color: rgb(49, 49, 49);
+  /* background-color: rgb(49, 49, 49); */
+  background-color: white;
   color: black;
   display: flex;
   flex-direction: column;
@@ -58,24 +58,9 @@ export default function LayoutPage(props) {
 
   return (
     <MainDesign>
-      {!hidden_sign && <HeaderPage></HeaderPage>}
-      <RowDesign>
-        {!hidden_sign && <SideBarPage></SideBarPage>}
-        <ColDesign>
-          {!hidden_sign && <BannerPage></BannerPage>}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <div className="aaa">{props.children}</div>
-            {!hidden_sign && <SubBarPage></SubBarPage>}
-          </div>
-        </ColDesign>
-      </RowDesign>
-      {hidden_layout && <FooterPage></FooterPage>}
+      <HeaderPage></HeaderPage>
+      <SideBarPage></SideBarPage>
+      <div className="aaa">{props.children}</div>
     </MainDesign>
   );
 }

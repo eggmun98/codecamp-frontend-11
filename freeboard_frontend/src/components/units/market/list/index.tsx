@@ -5,6 +5,7 @@ import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageM
 import InfiniteScroll from "react-infinite-scroller";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import _ from "lodash";
+import { IBoard } from "../../../commons/types/generated/types";
 
 const FETCH_USED_ITEMS = gql`
   query fetchUseditems($page: Int, $search: String) {
@@ -15,6 +16,9 @@ const FETCH_USED_ITEMS = gql`
       contents
       price
       tags
+      seller {
+        name
+      }
     }
   }
 `;
@@ -61,6 +65,41 @@ export default function MarKetListPage() {
     console.log(data);
   };
 
+  const onClickBesket = (basket: IBoard) => () => {
+    console.log(basket);
+
+    // 1. 기존 장바구니 가져오기!
+    const baskets: IBoard[] = JSON.parse(
+      localStorage.getItem("baskets") ?? "[]"
+    );
+
+    // 2. 이미 담겼는지 확인하기!!
+    const temp = baskets.filter((el) => el._id === basket._id);
+    if (temp.length >= 1) {
+      // temp의 길이가 1이상이거나 같다면 오류메세지 띄우기!!
+      alert("이미 담으신 물품 ㅇ비니다!!");
+      return;
+    }
+
+    const { __typename, ...rest } = baskets.push(basket);
+
+    // 4. 추가된 장바구니 저장하기
+    localStorage.setItem("baskets", JSON.stringify(baskets));
+    return basket;
+  };
+
+  const [baskets, setBaskets] = useState();
+
+  useEffect(() => {
+    // Perform localStorage action
+    setBaskets(JSON.parse(localStorage.getItem("baskets") ?? "[]"));
+  }, []);
+
+  console.log(baskets);
+
+  // const onClickBesketDelete = (dex) => () => {
+  //   alert("장바구니 삭제");
+  // };
   return (
     <>
       <div>
@@ -68,18 +107,27 @@ export default function MarKetListPage() {
       </div>
       검색어입력: <input type="text" onChange={onChangeSearch}></input>
       <InfiniteScroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
-        {data?.fetchUseditems.map((el, index) => (
-          <div
-            id={el._id}
-            style={{ marginBottom: "20px" }}
-            onClick={onClickMoveToPage("/markets/market/" + el._id)}
-          >
-            <div>상품 명 : {el.name}</div>
-            <div>부 상품 명 : {el.remarks} </div>
-            <div>가격: {el.price}</div>
-            <div>상품 설명: {el.contents}</div>
+        <div style={{ display: "flex" }}>
+          <div>
+            {data?.fetchUseditems.map((el, index) => (
+              <>
+                <div
+                  id={el._id}
+                  style={{ marginBottom: "20px" }}
+                  onClick={onClickMoveToPage("/markets/market/" + el._id)}
+                >
+                  <div>판매자: {el.seller.name} </div>
+                  <div>상품 명 : {el.name}</div>
+                  <div>부 상품 명 : {el.remarks} </div>
+                  <div>가격: {el.price}</div>
+                  <div>상품 설명: {el.contents}</div>
+                </div>
+                <button onClick={onClickBesket(el)}>장바구니 담기</button>
+              </>
+            ))}
           </div>
-        ))}
+          <div></div>
+        </div>
       </InfiniteScroll>
     </>
   );
