@@ -7,7 +7,7 @@ import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Modal } from "antd";
-import DaumPostcodeEmbed from "react-daum-postcode";
+import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
 
 const UPLOAD_FILE = gql`
   mutation uploadFile($file: Upload!) {
@@ -36,7 +36,7 @@ export default function MarketWriterPage(props) {
   const [zipcode, setZipcode] = useState("");
   const [address, setAddress] = useState("");
 
-  // 실질적인 이미지 버튼
+  // 실질적인 이미지 버튼2
   const onChangeImageUpload = async (event) => {
     const file = event.target.files?.[0];
     console.log("file은 어떻게? :", event.target.files);
@@ -49,12 +49,12 @@ export default function MarketWriterPage(props) {
     console.log("이벤트 타겟 아이디:", event.target.id);
   };
 
-  // 숨겨진 이미지 버튼
+  // 숨겨진 이미지 버튼3
   const onClickImageNonoMode = () => {
     fileRef.current?.click();
   };
 
-  // 이미지 버튼 함수
+  // 이미지 버튼 함수1
   const onChangeImageUrls = (imageUrl: string, index: number) => {
     const newImageUrls = [...imageUrls];
     newImageUrls[index] = imageUrl;
@@ -169,7 +169,7 @@ export default function MarketWriterPage(props) {
 
   //
 
-  const handleComplete = (Data: any) => {
+  const handleComplete = (Data: Address) => {
     addressShowModal();
     console.log(Data);
     setAddress(Data.address);
@@ -226,7 +226,7 @@ export default function MarketWriterPage(props) {
             주소창 열기
           </button>
         </div>
-        <div id="clickLatlng"></div>
+        {/* <div id="clickLatlng"></div> */}
         <button>{props.isEdit ? "상품수정" : "상품등록"}</button>
       </form>
       <div>

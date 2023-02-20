@@ -2,8 +2,9 @@ import styled from "@emotion/styled";
 import { css, keyframes } from "@emotion/react";
 import { useAmp } from "next/amp";
 import { useRouter } from "next/router";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
+import { IQuery } from "../../types/generated/types";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -87,17 +88,15 @@ const Login = styled.button`
   font-size: 16px;
   border: none;
   outline: none;
-  color: white;
-  background-color: #282424;
+  background-color: white;
 `;
 
 const SighUp = styled.button`
   padding: 10px 16px;
   font-weight: 700;
   font-size: 16px;
-  color: white;
   margin-left: 20px;
-  background-color: #282424;
+  background-color: white;
   border: none;
 `;
 
@@ -107,7 +106,19 @@ const SighUp = styled.button`
 //   }
 // `;
 
+const FETCH_USER_LOGGED_IN = gql`
+  query {
+    fetchUserLoggedIn {
+      email
+      name
+    }
+  }
+`;
+
 export default function HeaderPage() {
+  const { data } =
+    useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
+
   const router = useRouter();
   // const [logout_user] = useMutation(LOGOUT_USER);
   // const [boolean, setBoolean] = useState(false);
@@ -137,7 +148,11 @@ export default function HeaderPage() {
           <LogoTitle>Egg Mun</LogoTitle>
         </LeftWrapper>
         <RightWrapper>
-          <Login onClick={SignInButton}>로그인</Login>
+          {data?.fetchUserLoggedIn.name ? (
+            data?.fetchUserLoggedIn.name + "님 환영합니다"
+          ) : (
+            <Login onClick={SignInButton}>로그인</Login>
+          )}
           <SighUp onClick={SignUpButton}>회원가입</SighUp>
           {/* <Login onClick={onClickLogout}>로그아웃</Login>  */}
         </RightWrapper>

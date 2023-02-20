@@ -40,7 +40,7 @@ export default function StaticRoutingMovedPage(): JSX.Element {
     // 3. 내가 클릭한거 추가하기
     // delete basket.__typename; // 좋지 못한 사례 원본 데이터를 건들기 때문에!! 그래서 rest 방식을 이용해야 한다!! // 안전하지 못한 사례
     const { __typename, ...rest } = basket; // 즉 __typename만빼고 rest에 나머지가 담겨질 수 있다! rest이름은 바꿀 수 있음! // 안전한 사례
-    baskets.push(basket);
+    s.push(basket);
 
     // 4. 추가된 장바구니 저장하기
     localStorage.setItem("baskets", JSON.stringify(baskets)); // 로컬 스토리지에는 문자열만 받을 수 있기 때문에 객체를 문자열로 변경 후 넣어줘야 한다!

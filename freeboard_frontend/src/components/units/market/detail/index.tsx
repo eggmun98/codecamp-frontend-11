@@ -198,7 +198,7 @@ export default function MarketDetailPage() {
   // 상품 댓글 수정하는 버튼
   const onClickQuestionUpdate = async (d, event) => {
     // console.log(d);
-    // console.log("이벤트 타겟 아이디", event.target.id);
+    console.log("이벤트 타겟 아이디", event);
 
     const result = await update_used_item({
       variables: {
