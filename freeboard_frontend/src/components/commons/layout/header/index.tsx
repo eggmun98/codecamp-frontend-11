@@ -145,7 +145,7 @@ export default function HeaderPage() {
         <LeftWrapper onClick={MainPageButton}>
           <LogoImg src="/header/myLogo.png"></LogoImg>
 
-          <LogoTitle>Egg Mun</LogoTitle>
+          <LogoTitle>알바 Mun</LogoTitle>
         </LeftWrapper>
         <RightWrapper>
           {data?.fetchUserLoggedIn.name ? (

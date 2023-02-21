@@ -43,7 +43,7 @@ export default function MarketWriterPage(props) {
   const [address, setAddress] = useState("");
 
   // 실질적인 이미지 버튼2
-  const onChangeImageUpload = async (event) => {
+  const onChangeImageUpload = async (event): JSX.Element => {
     const file = event.target.files?.[0];
     console.log("file은 어떻게? :", event.target.files);
     const result = await upload_file({

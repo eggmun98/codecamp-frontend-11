@@ -9,6 +9,7 @@ import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/
 import InfiniteScroll from "react-infinite-scroller";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import Dompurify from "dompurify";
+import MarketAnswerPage from "../marketAnswer";
 
 const FETCH_USEDITEM = gql`
   query fetchUseditem($useditemId: ID!) {
@@ -77,7 +78,9 @@ const FETCH_USED_ITEM_QUESTIONS = gql`
 
 const FETCH_USED_ITEM_QUESTIONS_ANSWERS = gql`
   query fetchUseditemQuestionAnswers($useditemQuestionId: ID!) {
-    fetchUseditemQuestionAnswers(useditemQuestionId: $useditemQuestionId)
+    fetchUseditemQuestionAnswers(useditemQuestionId: $useditemQuestionId) {
+      _id
+    }
   }
 `;
 
@@ -99,12 +102,12 @@ declare const window: typeof globalThis & {
   kakao?: any;
 };
 
-export default function MarketDetailPage() {
+export default function MarketDetailPage(): JSX.Element {
   useAuth();
 
   const buttonRef = useRef(null);
   const router = useRouter();
-  // console.log("라우터", router);
+  console.log("라우터", router);
   const [create_used_item_question] = useMutation(CREATE_USED_ITEM_QUESION);
   const [delete_used_item_question] = useMutation(DELETE_USED_ITEM_QUESTION);
   const [update_used_item] = useMutation(UPDATE_USED_ITEM_QUESTION);
@@ -138,13 +141,24 @@ export default function MarketDetailPage() {
       useditemId: router.query.number,
     },
   });
+
   const { data: AnswerData } = useQuery(FETCH_USED_ITEM_QUESTIONS_ANSWERS, {
     variables: {
-      useditemQuestionId: router.query.number,
+      useditemQuestionId: QuestionsData?.fetchUseditemQuestions[0]?._id,
     },
   });
-  console.log("앤서 데이터", AnswerData);
-  console.log("퀘스쳔 데이터", QuestionsData);
+
+  const onClickqqq = () => {
+    // console.log("qqq", QuestionsData);
+    // qqq.push(QuestionsData.fetchUseditemQuestions[0]._id);
+    QuestionsData.fetchUseditemQuestions.map((el) => {
+      qqq.push(el._id);
+    });
+    console.log("qqq2", qqq);
+
+    console.log(AnswerData);
+  };
+
   // console.log("라우터", router.query.number);
 
   // 상품 게시글 삭제 버튼
@@ -241,7 +255,7 @@ export default function MarketDetailPage() {
   //
 
   //
-
+  // 카카오 맵 지도
   useEffect(() => {
     const script = document.createElement("script");
 
@@ -298,6 +312,7 @@ export default function MarketDetailPage() {
 
   return (
     <>
+      <button onClick={onClickqqq}>반복문 실행 함수</button>
       <form style={{ margin: 30 }}>
         <div>작성자: {data?.fetchUseditem.seller.name}</div>
         <div>상품명: {data?.fetchUseditem.name}</div>
@@ -306,7 +321,9 @@ export default function MarketDetailPage() {
         {typeof window !== "undefined" && (
           <div
             dangerouslySetInnerHTML={{
-              __html: Dompurify.sanitize(data?.fetchUseditem.contents),
+              __html: Dompurify.sanitize(
+                "상품 설명:" + data?.fetchUseditem.contents
+              ),
             }}
           ></div>
         )}
@@ -365,6 +382,7 @@ export default function MarketDetailPage() {
             <button onClick={onClickAnswerWindow} id={String(dex)}>
               답변 달기
             </button>
+
             {answerIndex !== dex ? (
               ""
             ) : (
@@ -376,6 +394,7 @@ export default function MarketDetailPage() {
                 </form>
               </div>
             )}
+            <MarketAnswerPage el={el._id}></MarketAnswerPage>
           </div>
         ) : (
           <div>
@@ -393,65 +412,3 @@ export default function MarketDetailPage() {
     </>
   );
 }
-
-//
-
-//
-
-//
-
-//
-// return (
-//   <>
-//     <form style={{ margin: 30 }}>
-//       <div>상품명: {data?.fetchUseditem.name}</div>
-//       <div>부 상품 명: {data?.fetchUseditem.remarks}</div>
-//       <div>가격: {data?.fetchUseditem.price}</div>
-//       <div>상품 설명: {data?.fetchUseditem.contents}</div>
-//     </form>
-//     <div>
-//       <button onClick={onClickItemDeleteButton} style={{ marginRight: 30 }}>
-//         상품 삭제
-//       </button>
-//       <button style={{ marginRight: 30 }}>상품 목록</button>
-//       <button
-//         onClick={onClickMoveToPage(
-//           "/markets/market/" + data?.fetchUseditem._id + "/edit"
-//         )}
-//         style={{ marginRight: 30 }}
-//       >
-//         상품 수정
-//       </button>
-//     </div>
-//     <div style={{ margin: "30px" }}>
-//       <form onSubmit={handleSubmit(onClickQuestionCreate)}>
-//         <div>댓글 등록</div>
-//         댓글 내용: <input {...register("contents")}></input>
-//         <button>댓글 등록</button>
-//       </form>
-//     </div>
-//     {QuestionsData?.fetchUseditemQuestions.map((el, index) =>
-//       myIndex !== index ? (
-//         <div key={el._id} style={{ margin: 30 }}>
-//           <div>댓글 내용</div>
-//           <div>{el.contents}</div>
-//           <button id={el._id} onClick={onClickQuestionDelete}>
-//             댓글 삭제
-//           </button>
-//           <button id={String(index)} onClick={onClickQuestionEdit}>
-//             댓글 수정
-//           </button>
-//           <button>답변 달기</button>
-//         </div>
-//       ) : (
-//         <div key={el._id}>
-//           <form onSubmit={handleSubmit(onClickQuestionUpdate)}>
-//             <div>댓글 수정창</div>
-//             <input {...register("contents")}></input>
-//             <button id={el._id}>수정하기</button>
-//           </form>
-//         </div>
-//       )
-//     )}
-//   </>
-// );
