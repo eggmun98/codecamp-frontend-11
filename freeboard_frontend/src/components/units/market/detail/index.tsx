@@ -9,7 +9,7 @@ import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/
 import InfiniteScroll from "react-infinite-scroller";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import Dompurify from "dompurify";
-import MarketAnswerPage from "../marketAnswer";
+import MarketAnswerPage from "../marketComment/marketAnswer";
 
 const FETCH_USEDITEM = gql`
   query fetchUseditem($useditemId: ID!) {

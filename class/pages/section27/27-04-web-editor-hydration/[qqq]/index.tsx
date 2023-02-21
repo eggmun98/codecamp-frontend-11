@@ -52,15 +52,12 @@ export default function StaticRoutingMovedPage(): JSX.Element {
   );
 }
 
-
-  /* //  이거는 오류 생길거임 왜? 프리렌더링할떄 효과를 극대화하기 위해서 자체적으로
+/* //  이거는 오류 생길거임 왜? 프리렌더링할떄 효과를 극대화하기 위해서 자체적으로
 // {typeof window !== "undefined" && ( */
 
+/* //   <div */
 
-  /* //   <div */
-
-
-  /* //     style={{ color: "blue" }}
+/* //     style={{ color: "blue" }}
 //     dangerouslySetInnerHTML={{
 //       __html: Dompurify.sanitize(data?.fetchBoard?.contents),
 //     }}
@@ -70,4 +67,3 @@ export default function StaticRoutingMovedPage(): JSX.Element {
 // </div>
 // );
 // } */
-}

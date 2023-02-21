@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { IQuery } from "../../types/generated/types";
+import { useMoveToPageMode } from "../../hooks/customs/useMoveToPageMode";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -100,12 +101,6 @@ const SighUp = styled.button`
   border: none;
 `;
 
-// const LOGOUT_USER = gql`
-//   mutation logoutUser: Boolean!) {
-
-//   }
-// `;
-
 const FETCH_USER_LOGGED_IN = gql`
   query {
     fetchUserLoggedIn {
@@ -119,30 +114,12 @@ export default function HeaderPage() {
   const { data } =
     useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
 
-  const router = useRouter();
-  // const [logout_user] = useMutation(LOGOUT_USER);
-  // const [boolean, setBoolean] = useState(false);
-  const MainPageButton = () => {
-    router.push("/boards");
-  };
-
-  const SignInButton = () => {
-    router.push("/sign/signin");
-  };
-
-  const SignUpButton = () => {
-    router.push("/sign/signup");
-  };
-
-  // const onClickLogout = async () => {
-  //   setBoolean(true);
-  //   await logout_user(true);
-  // };
+  const { onClickMoveToPage } = useMoveToPageMode();
 
   return (
     <>
       <Wrapper>
-        <LeftWrapper onClick={MainPageButton}>
+        <LeftWrapper onClick={onClickMoveToPage("/boards")}>
           <LogoImg src="/header/myLogo.png"></LogoImg>
 
           <LogoTitle>알바 Mun</LogoTitle>
@@ -151,10 +128,11 @@ export default function HeaderPage() {
           {data?.fetchUserLoggedIn.name ? (
             data?.fetchUserLoggedIn.name + "님 환영합니다"
           ) : (
-            <Login onClick={SignInButton}>로그인</Login>
+            <Login onClick={onClickMoveToPage("/sign/signin")}>로그인</Login>
           )}
-          <SighUp onClick={SignUpButton}>회원가입</SighUp>
-          {/* <Login onClick={onClickLogout}>로그아웃</Login>  */}
+          <SighUp onClick={onClickMoveToPage("/sign/signup")}>회원가입</SighUp>(
+          <Login onClick={onClickMoveToPage("/markets/userPage")}>프로필</Login>
+          )
         </RightWrapper>
       </Wrapper>
     </>

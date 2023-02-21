@@ -121,6 +121,7 @@ export default function MarketWriterPage(props) {
 
   //
 
+  //   카카오맵 지도
   useEffect(() => {
     const script = document.createElement("script");
 
@@ -145,6 +146,7 @@ export default function MarketWriterPage(props) {
 
         // 주소로 좌표를 검색합니다
         geocoder.addressSearch(address, function (result, status) {
+          // 요 aeeress는 주소 라이브러리의 api를 불러와 주소값을 저장함
           // 정상적으로 검색이 완료됐으면
           if (status === window.kakao.maps.services.Status.OK) {
             let coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
@@ -157,7 +159,7 @@ export default function MarketWriterPage(props) {
 
             // 인포윈도우로 장소에 대한 설명을 표시합니다
             let infowindow = new window.kakao.maps.InfoWindow({
-              content: address,
+              content: address, // 주소 라이브러리의 api를 불러와 저장된 주소값을 저장
             });
             infowindow.open(map, marker);
 
