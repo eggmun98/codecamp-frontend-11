@@ -77,6 +77,7 @@ export default function MarketAnswerPage(props) {
         useditemQuestionAnswerId: e.target.id,
       },
     });
+    setMyindex(-1);
     alert("수정하였습니다.");
   };
 
@@ -103,9 +104,6 @@ export default function MarketAnswerPage(props) {
           </div>
         )
       )}
-
-      {/* <div>{data.fetchUseditemQuestionAnswers.contetns}</div> */}
-      {/* <div>{data}</div>  */}
     </div>
   );
 }

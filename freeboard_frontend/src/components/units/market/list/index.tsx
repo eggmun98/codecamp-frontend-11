@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { from, gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import _ from "lodash";
 import { IBoard } from "../../../commons/types/generated/types";
+import * as L from "./liststyles";
 
 const FETCH_USED_ITEMS = gql`
   query fetchUseditems($page: Int, $search: String) {
@@ -19,6 +20,7 @@ const FETCH_USED_ITEMS = gql`
       seller {
         name
       }
+      images
     }
   }
 `;
@@ -101,34 +103,32 @@ export default function MarKetListPage() {
   //   alert("장바구니 삭제");
   // };
   return (
-    <>
+    <L.MainWrapper>
       <div>
         <button onClick={onClickMoveToPage("/markets/new")}>상품 등록</button>
       </div>
       검색어입력: <input type="text" onChange={onChangeSearch}></input>
-      <InfiniteScroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
-        <div style={{ display: "flex" }}>
-          <div>
-            {data?.fetchUseditems.map((el, index) => (
-              <>
-                <div
-                  id={el._id}
-                  style={{ marginBottom: "20px" }}
-                  onClick={onClickMoveToPage("/markets/market/" + el._id)}
-                >
-                  <div>판매자: {el.seller.name} </div>
-                  <div>상품 명 : {el.name}</div>
-                  <div>부 상품 명 : {el.remarks} </div>
-                  <div>가격: {el.price}</div>
-                  <div>상품 설명: {el.contents}</div>
-                </div>
-                <button onClick={onClickBesket(el)}>장바구니 담기</button>
-              </>
-            ))}
-          </div>
-          <div></div>
-        </div>
-      </InfiniteScroll>
-    </>
+      <L.Scroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
+        {data?.fetchUseditems.map((el, index) => (
+          <L.ProductWrapper
+            id={el._id}
+            onClick={onClickMoveToPage("/markets/market/" + el._id)}
+          >
+            <L.ImageWrapper
+              src={`https://storage.googleapis.com/${el.images[0]}`}
+            ></L.ImageWrapper>
+            <div>판매자: {el.seller.name} </div>
+            <div>상품 명 : {el.name}</div>
+            <div>부 상품 명 : {el.remarks} </div>
+            <div>가격: {el.price}</div>
+            <div>상품 설명: {el.contents}</div>
+          </L.ProductWrapper>
+        ))}
+      </L.Scroll>
+    </L.MainWrapper>
   );
+}
+
+{
+  /* <button onClick={onClickBesket(el)}>장바구니 담기</button> */
 }

@@ -13,7 +13,6 @@ const Wrapper = styled.div`
 `;
 
 const Button = styled.button`
-  /* width: 200px; */
   height: 35px;
   /* background-color: rgba(49, 49, 49, 0.1);  */
   background-color: #489bb0;
@@ -26,7 +25,6 @@ const Button = styled.button`
     width: 200px;
     height: 35px;
   }
-  /* border-radius: 5px;  */
 `;
 
 export default function SideBarPage() {

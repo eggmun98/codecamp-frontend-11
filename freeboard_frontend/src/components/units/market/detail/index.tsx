@@ -1,12 +1,9 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { connectFirestoreEmulator } from "firebase/firestore/lite";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { string } from "yup";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/useMutationItemDelete";
-import InfiniteScroll from "react-infinite-scroller";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import Dompurify from "dompurify";
 import MarketAnswerPage from "../marketComment/marketAnswer";
@@ -76,14 +73,6 @@ const FETCH_USED_ITEM_QUESTIONS = gql`
   }
 `;
 
-const FETCH_USED_ITEM_QUESTIONS_ANSWERS = gql`
-  query fetchUseditemQuestionAnswers($useditemQuestionId: ID!) {
-    fetchUseditemQuestionAnswers(useditemQuestionId: $useditemQuestionId) {
-      _id
-    }
-  }
-`;
-
 const UPDATE_USED_ITEM_QUESTION = gql`
   mutation updateUseditemQuestion(
     $updateUseditemQuestionInput: UpdateUseditemQuestionInput!
@@ -141,25 +130,6 @@ export default function MarketDetailPage(): JSX.Element {
       useditemId: router.query.number,
     },
   });
-
-  const { data: AnswerData } = useQuery(FETCH_USED_ITEM_QUESTIONS_ANSWERS, {
-    variables: {
-      useditemQuestionId: QuestionsData?.fetchUseditemQuestions[0]?._id,
-    },
-  });
-
-  const onClickqqq = () => {
-    // console.log("qqq", QuestionsData);
-    // qqq.push(QuestionsData.fetchUseditemQuestions[0]._id);
-    QuestionsData.fetchUseditemQuestions.map((el) => {
-      qqq.push(el._id);
-    });
-    console.log("qqq2", qqq);
-
-    console.log(AnswerData);
-  };
-
-  // console.log("라우터", router.query.number);
 
   // 상품 게시글 삭제 버튼
   const onClickItemDeleteButton = async () => {
@@ -278,6 +248,9 @@ export default function MarketDetailPage(): JSX.Element {
         // 주소-좌표 변환 객체를 생성합니다
         let geocoder = new window.kakao.maps.services.Geocoder();
 
+        map.setDraggable(false);
+        map.setZoomable(false);
+
         // 주소로 좌표를 검색합니다
         geocoder.addressSearch(
           data?.fetchUseditem?.useditemAddress?.address,
@@ -312,7 +285,7 @@ export default function MarketDetailPage(): JSX.Element {
 
   return (
     <>
-      <button onClick={onClickqqq}>반복문 실행 함수</button>
+      {/* <button onClick={onClickqqq}>반복문 실행 함수</button>  */}
       <form style={{ margin: 30 }}>
         <div>작성자: {data?.fetchUseditem.seller.name}</div>
         <div>상품명: {data?.fetchUseditem.name}</div>
@@ -400,10 +373,8 @@ export default function MarketDetailPage(): JSX.Element {
           <div>
             <form onSubmit={handleSubmit(onClickQuestionUpdate)} id={el._id}>
               <div>댓글 수정창</div>
-              <input
-                {...register("contents")}
-                // defaultValue={el.contents}
-              ></input>
+              <input {...register("contents")}></input>
+
               <button id={el._id}>수정하기</button>
             </form>
           </div>

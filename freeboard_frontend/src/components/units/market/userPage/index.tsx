@@ -2,6 +2,8 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../../../commons/hooks/customs/useAuth";
+import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { IQuery } from "../../../commons/types/generated/types";
 
 const FETCH_USER_LOGGED_IN = gql`
@@ -29,10 +31,13 @@ declare const window: typeof globalThis & {
 }; // 윈도우 안에 IMP 타입을 정해주는거임 즉 카카오 맵 라이브러리도 똑같음
 
 export default function UserPage() {
+  useAuth();
   const { data } =
     useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
 
   const { register, handleSubmit } = useForm();
+
+  const { onClickMoveToPage } = useMoveToPageMode();
 
   const [create_pint_transaction_of_loading] = useMutation(
     CREATE_POINT_TRANSACTION_OF_LOADING
@@ -59,7 +64,7 @@ export default function UserPage() {
         pg: "kakaopay",
         pay_method: "card",
         // merchant_uid: "ORD20180131-0000011",  // 주석하면 주문번호가 자동으로 랜덤으로 바뀜 // 실무에서는 주문번호를 만들어야함
-        name: datas.point + "원",
+        name: "갤럭시s10",
         amount: datas.point,
         buyer_email: data?.fetchUserLoggedIn.email,
         buyer_name: data?.fetchUserLoggedIn.name,
@@ -94,8 +99,10 @@ export default function UserPage() {
 
   return (
     <div>
-      <div> 비밀번호 변경하기</div>
       <div> {data?.fetchUserLoggedIn.name}님의 페이지 입니다.</div>
+      <button onClick={onClickMoveToPage("/markets/userPage/passwordEdit")}>
+        비밀번호 변경하기
+      </button>
       <div> 프로필 사진</div>
       <div> 이름: </div>
       <div> 가입 날짜:</div>

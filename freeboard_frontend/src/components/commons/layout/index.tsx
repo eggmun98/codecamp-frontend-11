@@ -4,8 +4,8 @@ import styled from "@emotion/styled";
 import SideBarPage from "./sidebar";
 import SubBarPage from "./subbar";
 import FooterPage from "./footer";
-import Router, { useRouter } from "next/router";
 import { gql } from "@apollo/client";
+import { useRouter } from "next/router";
 
 export const FETCH_BOARDS = gql`
   query fetchBoards($page: Int) {
@@ -23,8 +23,8 @@ export const MainDesign = styled.div`
   width: 100%;
   /* background-color: #9fccd7; */
   /* background-color: #131315; */
-  /* background-color: rgb(49, 49, 49); */
-  background-color: white;
+  background-color: rgb(49, 49, 49);
+  /* background-color: white; */
   color: black;
   display: flex;
   flex-direction: column;

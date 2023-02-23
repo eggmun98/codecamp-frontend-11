@@ -8,12 +8,9 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Modal } from "antd";
 import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
-import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-
-const ReactQuill = dynamic(async () => await import("react-quill"), {
-  ssr: false,
-});
+import "react-quill/dist/quill.bubble.css";
+import * as W from "./writerStyles";
 
 const UPLOAD_FILE = gql`
   mutation uploadFile($file: Upload!) {
@@ -40,34 +37,87 @@ export default function MarketWriterPage(props) {
   const [upload_file] = useMutation(UPLOAD_FILE);
   const [isOpen, setIsOpen] = useState(false);
   const [zipcode, setZipcode] = useState("");
+  const [aaa, setAaa] = useState("");
+  const [bbb, setBbb] = useState("");
   const [address, setAddress] = useState("");
 
-  // 실질적인 이미지 버튼2
+  // 실질적인 이미지 버튼1
   const onChangeImageUpload = async (event): JSX.Element => {
-    const file = event.target.files?.[0];
-    console.log("file은 어떻게? :", event.target.files);
+    const file = event.target.files?.[0]; // file.name = "imageSrc1.png"
     const result = await upload_file({
       variables: { file: file },
     });
-    // setImageUrls(result.data?.uploadFile.url);
     onChangeImageUrls(result.data?.uploadFile.url, Number(event.target.id));
-    // console.log("result.data.", result.data.uploadFile.url);
-    console.log("이벤트 타겟 아이디:", event.target.id);
+    //  result.data?.uploadFile.url = imageSrc1.png
+  };
+
+  // 이미지 버튼 함수2
+  const onChangeImageUrls = (imageUrl: string, index: number) => {
+    const newImageUrls = [...imageUrls]; // newImageUrls = ["", "", ""] // 얕은 복사
+    newImageUrls[index] = imageUrl; // ["imageSrc1.png" , "", ""] = "imageSrc1.png" // 인덱스가 0일 경우
+    setImageUrls(newImageUrls); // ["imageSrc1.png" , "", ""] = "imageSrc1.png" // 인덱스가 0일 경우
   };
 
   // 숨겨진 이미지 버튼3
-  const onClickImageNonoMode = () => {
-    fileRef.current?.click();
-  };
+  // const onClickImageNonoMode = () => {
+  //   fileRef.current?.click();
+  // };
 
-  // 이미지 버튼 함수1
-  const onChangeImageUrls = (imageUrl: string, index: number) => {
-    const newImageUrls = [...imageUrls];
-    newImageUrls[index] = imageUrl;
-    setImageUrls(newImageUrls);
-    // console.log(index);
-    // console.log(imageUrl);
-    console.log(imageUrls);
+  const modules = {
+    toolbar: {
+      container: [
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ font: [] }],
+        [{ align: [] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }, "link"],
+        [
+          {
+            color: [
+              "#000000",
+              "#e60000",
+              "#ff9900",
+              "#ffff00",
+              "#008a00",
+              "#0066cc",
+              "#9933ff",
+              "#ffffff",
+              "#facccc",
+              "#ffebcc",
+              "#ffffcc",
+              "#cce8cc",
+              "#cce0f5",
+              "#ebd6ff",
+              "#bbbbbb",
+              "#f06666",
+              "#ffc266",
+              "#ffff66",
+              "#66b966",
+              "#66a3e0",
+              "#c285ff",
+              "#888888",
+              "#a10000",
+              "#b26b00",
+              "#b2b200",
+              "#006100",
+              "#0047b2",
+              "#6b24b2",
+              "#444444",
+              "#5c0000",
+              "#663d00",
+              "#666600",
+              "#003700",
+              "#002966",
+              "#3d1466",
+              "custom-color",
+            ],
+          },
+          { background: [] },
+        ],
+        ["image", "video"],
+        ["clean"],
+      ],
+    },
   };
 
   // 상품 등록 버튼
@@ -122,6 +172,7 @@ export default function MarketWriterPage(props) {
   //
 
   //   카카오맵 지도
+
   useEffect(() => {
     const script = document.createElement("script");
 
@@ -143,6 +194,9 @@ export default function MarketWriterPage(props) {
 
         // 주소-좌표 변환 객체를 생성합니다
         let geocoder = new window.kakao.maps.services.Geocoder();
+
+        map.setDraggable(false);
+        map.setZoomable(false);
 
         // 주소로 좌표를 검색합니다
         geocoder.addressSearch(address, function (result, status) {
@@ -179,7 +233,7 @@ export default function MarketWriterPage(props) {
 
   const handleComplete = (Data: Address) => {
     addressShowModal();
-    console.log(Data);
+    console.log("Data~~~~", Data);
     setAddress(Data.address);
     console.log("셋어드레스 : ", address);
     setZipcode(Data.zonecode);
@@ -195,54 +249,58 @@ export default function MarketWriterPage(props) {
   };
 
   return (
-    <>
-      {/* <script
-        type="text/javascript"
-        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=546bab6b1ad8e036b1f679bbb9af2e7c&libraries=services"
-      ></script> */}
-      <form
-        onSubmit={
-          props.isEdit
-            ? handleSubmit(onClickUpdateProduct)
-            : handleSubmit(onClickCreateProduct)
-        }
-      >
-        상품명: <input {...register("name")}></input>
-        부가 상품명: <input {...register("remarks")}></input>
-        가격: <input {...register("price")}></input>
-        {/* 상품 설명: <input {...register("contents")}></input>  */}
-        상품 내용: <ReactQuill onChange={onChangeContents}></ReactQuill>
-        {imageUrls.map((el, index) => (
-          <div key={uuidv4()} style={{ margin: 30 }}>
-            <div>이미지 등록</div>
-            <img
-              style={{ width: 50, height: 50, backgroundColor: "black" }}
-              onClick={onClickImageNonoMode}
-              src={"https:/storage.googleapis.com/" + imageUrls[index]}
-            ></img>
-            {/* <img src={"https:/storage.googleapis.com/" + imageUrls[index]}></img>  */}
-            <input
-              type="file"
-              id={String(index)}
-              // style={{ display: "none" }}
-              onChange={onChangeImageUpload}
-            ></input>
+    <W.MainWrapper>
+      <W.SubWrapper>
+        <form
+          onSubmit={
+            props.isEdit
+              ? handleSubmit(onClickUpdateProduct)
+              : handleSubmit(onClickCreateProduct)
+          }
+        >
+          <div>상품명</div>
+          <W.InputStyle01 {...register("name")}></W.InputStyle01>
+          <div>요약 </div>
+          <W.InputStyle01 {...register("remarks")}></W.InputStyle01>
+          <div>가격</div>
+          <W.InputStyle01 {...register("price")}></W.InputStyle01>
+          <div>상품 내용 </div>
+          <W.ReactQuill2
+            onChange={onChangeContents}
+            modules={modules}
+          ></W.ReactQuill2>
+          <div>이미지 등록</div>
+
+          {imageUrls.map((el, index) => (
+            <div key={uuidv4()} style={{ margin: 30 }}>
+              <img
+                style={{ width: 50, height: 50 }}
+                // onClick={onClickImageNonoMode}
+                src={"https:/storage.googleapis.com/" + imageUrls[index]}
+              ></img>
+              <input
+                type="file"
+                id={String(index)}
+                // style={{ display: "none" }}
+                onChange={onChangeImageUpload}
+              ></input>
+            </div>
+          ))}
+          <div>
+            <div id="map" style={{ width: 500, height: 400 }}></div>
+            <div>
+              <button
+                type="button"
+                onClick={addressShowModal}
+                style={{ background: "red" }}
+              >
+                주소 등록
+              </button>
+            </div>
           </div>
-        ))}
-        <div style={{ display: "flex" }}>
-          <div id="map" style={{ width: 500, height: 400 }}></div>
-          <button
-            type="button"
-            onClick={addressShowModal}
-            style={{ background: "red" }}
-          >
-            주소창 열기
-          </button>
-        </div>
-        {/* <div id="clickLatlng"></div> */}
-        <button>{props.isEdit ? "상품수정" : "상품등록"}</button>
-      </form>
-      <div>
+          <button>{props.isEdit ? "상품수정" : "상품등록"}</button>
+        </form>
+
         {isOpen && (
           <Modal
             title="주소"
@@ -253,7 +311,7 @@ export default function MarketWriterPage(props) {
             <DaumPostcodeEmbed onComplete={handleComplete}></DaumPostcodeEmbed>
           </Modal>
         )}
-      </div>
-    </>
+      </W.SubWrapper>
+    </W.MainWrapper>
   );
 }
