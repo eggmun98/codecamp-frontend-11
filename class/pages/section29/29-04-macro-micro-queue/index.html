@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>Document</title>
+    <script>
+      const onClickLoop = () => {
+        console.log("시작!!!!!!!"); // ***** 0번째 실행 즉 제일 먼저 실행!!
+
+        // 실행 순서 정리
+        // 시작!!
+        // 엄청 오래걸림 900000번째 반복문이 실행
+        // 끝
+        // 저는 프로미스1 // 마이크로 큐에서 실행
+        // 저는 프로미스2 // 마이크로 큐에서 실행
+        // 저는 셋타임아웃 // 매크로 큐에서 실행
+        // 저는 프로미스(셋타임아웃안) // 셋타임 아웃 실행하고 나서 보니 프로미스가 있어서 이거를 마이크로 큐에 넣음 그리고실행
+        // 저는 셋인터벌 // 매크로 큐에서 실행
+
+        // 비동기작업(매크로큐에 들어감) => 덜급해
+        setTimeout(() => {
+          // **** 5번쨰 실행
+          new Promise((resolve, _) => resolve("철수")).then(() => {
+            // ***** 6번째 실행 ****
+            console.log("저는 Promise(setTimeout 안에서 실행될 거에요!!!)"); // 마이크로 큐가 끝나고 매크로 큐가 실행이 되는데 setTImeout가 실행이 되었는데 밑에 어 프로미스가 있네 그럼 setTimeout안에 Promise를 마이크로 큐에 넣음 그리고 setTImeout 아네 프로미스가 실행
+          });
+
+          console.log("저는 setTimeout!! 매크로큐!! 0초 뒤에 실행될거에요.");
+        }, 0);
+
+        // 비동기 작업(마이크로큐에 들어감) => 급해 즉 마이크로 큐와 매크로 큐가 큐에 저장되어 있는데 둘중에 먼저 마이크로 큐를 먼저 콜스택에 넣어서 실행함!  ***3번쨰 실행***
+        new Promise((resolve, _) => resolve("철수")).then(() => {
+          console.log(
+            "저는 Promise(1)!!! 마이크로큐!! 0초 뒤에 실행될 거에요!"
+          );
+        });
+
+        // 비동기작업(매크로큐에 들어감)
+        setInterval(() => {
+          // **** 7번쨰 실행
+          console.log("저는 setInterval!! 매크로큐!!  0초마다 실행될 거에요!!"); // 마지막에 실행되면서 계속 콘솔로그에 찍힐거임
+        }, 0);
+
+        let sum = 0;
+        for (let i = 0; i <= 9000000000; i++) {
+          // ***** 1번쨰 실행
+          sum += 1;
+        }
+
+        // 비동기작업(마이크로큐에 들어감) **** 4번째 실행*****
+        new Promise((resolve, _) => resolve("철수")).then(() => {
+          console.log(
+            "저는 Promise(2)!!! 마이크로큐!! 0초 뒤에 실행될 거에요!"
+          );
+        });
+
+        console.log("끝!!!!!!!!!"); // **** 2번쨰 실행
+      };
+    </script>
+  </head>
+  <body>
+    <button onclick="onClickLoop()">시작하기</button>
+  </body>
+</html>

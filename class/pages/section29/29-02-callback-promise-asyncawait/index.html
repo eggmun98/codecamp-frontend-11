@@ -1,0 +1,114 @@
+<!-- `http://numbersapi.com/random?min=1&masx=200`-->
+<!-- `https://koreanjson.com/posts/${num}`-->
+<!-- `https://koreanjson.com/posts?userId=${userId}`-->
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>콜백과 친구들</title>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            //   function addEventListener(aaa, bbb) { // 이벤트 리스너가 이런식으로 만들어졌다고 가정할 수 있음! 완전히 같지는 않음!
+            //     // 세팅된 API 주소로 요청!!
+            //     const res = 70 // 셋팅된 API 주소로부터 받아온 결과
+
+            //     if(aaa === "load") {
+            //         bbb(res)
+            //     }
+
+            //   }
+
+            // 1. 랜덤함 숫자 받아오기(1~200)
+            // 2. 70번 게시글 조회
+            // 3. 작성자가 작성한 다른 글 불러오기
+
+            const myCallback = () => {
+                // await 가 없더 시절에 요청을 기다리는 법 // 이 코드는 틀릴 수 있음 멘토님꺼 보셈
+                const aa = new XMLHttpRequest();
+                aa.open("get", `http://numbersapi.com/random?min=1&masx=200`); // 여기까지 준비완료한거임
+                as.send(); // 요청을함
+                aa.addEventListener("load", (res) => {
+                    // 응답을 받아서 실행시켜줘
+                    console.log(res); // api 요청결과
+                    const num = res.target.response.split(" ")[0]; // 70 (랜덤 숫자)
+
+                    const bb = new XMLHttpRequest();
+                    bb.open("get", `https://koreanjson.com/posts/${num}`); // 여기까지 준비완료한거임
+                    bb.send(); // 요청을함
+                    bb.addEventListener("load", (res) => {
+                        console.log(res); // API 요청 결과
+                        const userID = JSON.parse(res.target.response).UserId; // 8 (작성자 ID)
+
+                        const cc = new XMLHttpRequest();
+                        cc.open("get", `https://koreanjson.com/posts?userId=${userId}`); // 여기까지 준비완료한거임
+                        cc.send(); // 요청을함
+                        cc.addEventListener("load", (res) => {
+                            console.log(res); // 최종 API 요청 결과
+                        });
+                    });
+                });
+            };
+
+            // new Promise((성공했을때실행시킬함수, 실해했을떄실행시킬함수) => { // 이게바로 프로미스이다!!
+            //     // 여기서 API 요청을 한다면 ??
+
+            //     try {
+            //         const response = "철수"; // 백엔드에서 "철수" 데이터 받아옴
+            //         성공했을떄실행시킬함수(response); // 성공하면 여기 실행
+            //     } catch (error) {
+            //         실패했을때실행시킬함수("실패했습니다."); // 실패하면 이거 실행
+            //     }
+            // })
+            //     .then(() => {
+            //         // 성고한 값이 들어감
+            //         console.log(qqq); // 철수
+            //     })
+            //     .catch((rrr) => {
+            //         console.log(rrr) // 실패했습니다.
+            //     });
+
+            const axios = {
+                get: () => {
+                    return new Promise((성공시, 실패시) => {});
+                },
+                post: () => {
+                    return new Promise((성공시, 실패시) => {});
+                },
+            };
+
+            const myPromise = () => {
+                console.log("1번째로 실행됩니다.");
+                axios.get(`http://numbersapi.com/random?min=1&masx=200`).then((qqq) => {
+                    console.log("2번쨰로 실행됩니다!!");
+                    return axios.get(`http://numbersapi.com/random?min=1&masx=200`).then((qqq) => {
+                        console.log("3번째로 실행됩니다!!");
+                        return axios.get(`http://numbersapi.com/random?min=1&masx=200`).then((qqq) => {
+                            console.log("4번째로 실행됩니다.");
+                            // qqq 최종 결과
+                        });
+                    });
+                });
+                console.log("5번쨰로 실행됩니다. // 위에 5콘솔들 실제로는 다른 순서로 실행됨!!");
+                // axios.get().then() // then이랑 캐치 둘다 가능! 왜 pormise니까!
+                // axios.get().catch()
+            };
+
+            // axios, fetch 등 => 대표적인 Promise를 지원하는 기능
+            // axios, fetch 등을 기다리는 2가지 방법
+            // 1. .then() 활용
+            // 2. await 활용 => 주의) await는 아무데나 붙인다고 뒤에껄 기다리는게 아님!! Promise 앞에 await를 붙여서 기다릴 수 있음
+            // 즉 axois가 Promise다 왜? Promise를 리턴하고 있으니까!!
+
+            const myAsyncAwait = async () => {
+                // 현재 사용하는 방식! myPromise()를 보면 직관적이지도 않고 순서도 이상하다 근데 이거는 직관적이고 순서가 올바르다!
+                await axios.get(`http://numbersapi.com/random?min=1&masx=200`);
+                await axios.get(`http://numbersapi.com/random?min=1&masx=200`);
+                await axios.get(`http://numbersapi.com/random?min=1&masx=200`);
+            };
+        </script>
+    </head>
+    <body>
+        <button onclick="myCallback()">AsyncAwait 연습하기</button>
+        <button onclick="myPromise()">Callback 연습하기</button>
+        <button onclick="myAsyncAwait()">Promise 연습하기</button>
+    </body>
+</html>

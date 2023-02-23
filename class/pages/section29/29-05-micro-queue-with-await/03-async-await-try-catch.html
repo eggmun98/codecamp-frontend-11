@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>이벤트루프</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+      const onClickLoop = () => {
+        // const aaa = () => { // 트라이 캐치 잘못된 사용 예 // 콘솔로그가 안뜰꺼임
+        //   try {
+        //     axios.get("https://qqqqqq.com");
+        //   } catch (error) {
+        //     console.log("에러가 발생하였습니다.");
+        //   }
+        // };
+        // aaa(); // aaa싫애되고 트라이를 만남 axois를 만나고 마이크로큐에 들어감 트라이 캐치중에 아무것도 없으니 그냥 정상종료 됨 왜? 더이상 할게 없으니 aaa함수는 끝남! 근데 마이크로 큐에 있떤 트라이를 실행하려고 했는데 이미 캐치가 끝나서 에러가 안잡힘
+        // 즉 어웨이트가 없으니 안기다리고 aaa가 종료됨 그래서 안되는거임 s
+
+        const bbb = async () => {
+          try {
+            await axios.get("https://qqqqqq.com"); // await는 기다리는거 처럼 보이는 거임! 그냥 마이크로 큐에서 들어가고 bbb 함수자체가 들어가니 들어갈때 어디까지 실행되었는지 저장하면서 들어가기 때문에
+            // 다시 콜스택에 갈때 마치 기다리는거처럼 보이는거임!!
+          } catch (error) {
+            console.log("에러가 발생하였습니다.");
+          }
+          bbb();
+        };
+      };
+    </script>
+  </head>
+  <body>
+    <button onclick="onClickLoop()">시작하기</button>
+  </body>
+</html>
