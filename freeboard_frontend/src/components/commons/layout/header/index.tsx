@@ -3,7 +3,7 @@ import { css, keyframes } from "@emotion/react";
 import { useAmp } from "next/amp";
 import { useRouter } from "next/router";
 import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMutation, IQuery } from "../../types/generated/types";
 import { useMoveToPageMode } from "../../hooks/customs/useMoveToPageMode";
 
@@ -18,10 +18,8 @@ const Wrapper = styled.div`
   padding-top: 0px;
   color: #489bb0;
   /* background-color: #489bb0; */
-
   /* background-color: #5321d0;  */
   /* background-color: #282424;  */
-
   /* background-color: #2a2626; */
 `;
 
@@ -168,7 +166,7 @@ export default function HeaderPage() {
             </>
           )}
 
-          {/* <button onClick={onClickButton}>임시 로그인 버튼</button>  */}
+          <button onClick={onClickButton}>테스트 버튼</button>
         </RightWrapper>
       </Wrapper>
     </>

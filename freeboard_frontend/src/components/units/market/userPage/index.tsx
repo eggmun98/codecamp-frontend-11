@@ -36,12 +36,6 @@ const FETCH_USED_ITEMSL_PICKED = gql`
   }
 `;
 
-const LOGOUT_USER = gql`
-  mutation logoutUser {
-    logoutUser
-  }
-`;
-
 declare const window: typeof globalThis & {
   IMP: any;
 }; // 윈도우 안에 IMP 타입을 정해주는거임 즉 카카오 맵 라이브러리도 똑같음
@@ -126,21 +120,8 @@ export default function UserPage() {
     }
   }, []);
 
-  const [logoutUser] = useMutation<Pick<IMutation, "logoutUser">>(LOGOUT_USER);
-
-  const qqqq = async () => {
-    try {
-      const { data } = await logoutUser();
-      console.log("qqqqqqqqqqqq", data);
-    } catch (err) {
-      if (err instanceof Error) console.log("qqqqqqqqqqErrr", err.message);
-    }
-  };
-
   return (
     <div>
-      <button onClick={qqqq}>qqqq</button>
-      <button>로그아웃</button>
       <div> {data?.fetchUserLoggedIn.name}님의 페이지 입니다.</div>
       <button onClick={onClickMoveToPage("/markets/userPage/passwordEdit")}>
         비밀번호 변경하기

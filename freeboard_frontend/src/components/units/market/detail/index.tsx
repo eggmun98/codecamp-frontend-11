@@ -118,7 +118,7 @@ declare const window: typeof globalThis & {
 };
 
 export default function MarketDetailPage(): JSX.Element {
-  // useAuth();
+  useAuth();
 
   const buttonRef = useRef(null);
   const router = useRouter();
