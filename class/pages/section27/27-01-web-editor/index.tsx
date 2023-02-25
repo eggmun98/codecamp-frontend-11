@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 const ReactQuill = dynamic(async () => await import("react-quill"), {
   ssr: false,
-}); // ser은 서버에서는 임폴트를 안해준다는 뜻
+}); // ssr은 서버에서는 임폴트를 안해준다는 뜻
 
 export default function WebEditorPage(): JSX.Element {
   // ReactQuill 만든 사람들이 만든 onChange 이므로 event는 안들어옴

@@ -23,6 +23,7 @@
     "firebase": "9.10.0",
     "generate": "^0.14.0",
     "graphql": "^16.6.0",
+    "graphql-request": "^5.1.0",
     "lodash": "^4.17.21",
     "next": "12.1.0",
     "react": "17.0.2",
@@ -34,7 +35,8 @@
     "recoil": "^0.7.6",
     "ts-node": "^10.9.1",
     "uuid": "^9.0.0",
-    "yup": "^1.0.0"
+    "yup": "^1.0.0",
+    "zen-observable": "^0.10.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.16.4",
@@ -46,6 +48,7 @@
     "@types/react": "17.0.2",
     "@types/react-infinite-scroller": "^1.2.3",
     "@types/uuid": "^9.0.0",
+    "@types/zen-observable": "^0.8.3",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.6.0",
