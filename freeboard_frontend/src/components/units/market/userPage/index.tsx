@@ -1,10 +1,12 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { pick } from "lodash";
 import { useRouter } from "next/router";
 import Script from "next/script";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
-import { IQuery } from "../../../commons/types/generated/types";
+import { IMutation, IQuery } from "../../../commons/types/generated/types";
 
 const FETCH_USER_LOGGED_IN = gql`
   query {
@@ -26,6 +28,20 @@ const CREATE_POINT_TRANSACTION_OF_LOADING = gql`
   }
 `;
 
+const FETCH_USED_ITEMSL_PICKED = gql`
+  query fetchUseditemsIPicked($search: String, $page: Int) {
+    fetchUseditemsIPicked(search: $search, page: $page) {
+      _id
+    }
+  }
+`;
+
+const LOGOUT_USER = gql`
+  mutation logoutUser {
+    logoutUser
+  }
+`;
+
 declare const window: typeof globalThis & {
   IMP: any;
 }; // 윈도우 안에 IMP 타입을 정해주는거임 즉 카카오 맵 라이브러리도 똑같음
@@ -34,6 +50,7 @@ export default function UserPage() {
   useAuth();
   const { data } =
     useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
+  console.log("유즈드쿼리인", data);
 
   const { register, handleSubmit } = useForm();
 
@@ -42,17 +59,24 @@ export default function UserPage() {
   const [create_pint_transaction_of_loading] = useMutation(
     CREATE_POINT_TRANSACTION_OF_LOADING
   );
+  console.log(create_pint_transaction_of_loading);
+
+  const { data: PickData } = useQuery(FETCH_USED_ITEMSL_PICKED);
+
+  console.log("PickData입니다", PickData);
 
   const router = useRouter();
 
-  // const onClickPoint = async (q) => {
-  //   const result = await create_pint_transaction_of_loading({
-  //     variables: {
-  //       amount: Number(q),
-  //     },
-  //   });
-  //   alert("충전하였습니다.");
-  // };
+  console.log;
+
+  const onClickPoint = async (qqq) => {
+    const result = await create_pint_transaction_of_loading({
+      variables: {
+        impUid: qqq,
+      },
+    });
+    alert("충전하였습니다.");
+  };
 
   const onClickPayment = (datas): void => {
     const IMP = window.IMP; // 생략 가능
@@ -77,28 +101,46 @@ export default function UserPage() {
         // callback
         if (rsp.success === true) {
           // 결제 성공 시 로직,
-          console.log(rsp);
+          console.log("rep", rsp);
           router.push("/markets/userPage");
-          const onClickPoint = async (datas) => {
-            const result = await create_pint_transaction_of_loading({
-              variables: {
-                impUid: "imp_417165449155",
-              },
-            });
-            alert("충전하였습니다.");
-          };
-          onClickPoint(datas.point);
 
-          // 백엔드에 결제 관련 데이터 넘겨주기!! => 뮤테이션 실행하기 // createPointTransactionOfLoading( 요청할때 아임포트 키를 넣어야함
+          onClickPoint(rsp.imp_uid);
         } else {
           // 결제 실패 시 로직,
         }
       }
     );
   };
+  let qqq = "";
+  const [aaa, setAaa] = useState();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const getDataLocalStorage = (name) => {
+        let localData = JSON.parse(localStorage.getItem(name));
+        return localData;
+      };
+
+      let localData = getDataLocalStorage("baskets");
+      qqq = localData;
+      setAaa(localData);
+    }
+  }, []);
+
+  const [logoutUser] = useMutation<Pick<IMutation, "logoutUser">>(LOGOUT_USER);
+
+  const qqqq = async () => {
+    try {
+      const { data } = await logoutUser();
+      console.log("qqqqqqqqqqqq", data);
+    } catch (err) {
+      if (err instanceof Error) console.log("qqqqqqqqqqErrr", err.message);
+    }
+  };
 
   return (
     <div>
+      <button onClick={qqqq}>qqqq</button>
+      <button>로그아웃</button>
       <div> {data?.fetchUserLoggedIn.name}님의 페이지 입니다.</div>
       <button onClick={onClickMoveToPage("/markets/userPage/passwordEdit")}>
         비밀번호 변경하기
@@ -121,6 +163,22 @@ export default function UserPage() {
         충전 금액:<input {...register("point")}></input>
         <button>충전하기</button>
       </form>
+
+      <div style={{ marginBottom: 30 }}>
+        <div>찜한 목록</div>
+      </div>
+
+      <div>
+        <div>오늘 본 목록</div>
+
+        {aaa &&
+          aaa.map((el, index) => (
+            <div>
+              <div>이름: {el.name}</div>
+              <div>가격: {el.price}</div>
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

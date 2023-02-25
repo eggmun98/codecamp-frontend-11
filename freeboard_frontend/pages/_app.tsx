@@ -25,8 +25,8 @@ export default function App({ Component }: AppProps): JSX.Element {
 
   return (
     <RecoilRoot>
+      <Global styles={globalStyles} />
       <ApolloSetting>
-        <Global styles={globalStyles} />
         <LayoutPage>
           <Component />
         </LayoutPage>

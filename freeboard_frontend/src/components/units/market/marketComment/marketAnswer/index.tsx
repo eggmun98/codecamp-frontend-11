@@ -1,4 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -39,7 +40,6 @@ export default function MarketAnswerPage(props) {
       useditemQuestionId: props.el,
     },
   });
-  console.log("대대대댓글대대댓글데이터", data);
 
   const [myindex, setMyindex] = useState(-1);
 
@@ -52,12 +52,19 @@ export default function MarketAnswerPage(props) {
 
   const { register, handleSubmit } = useForm();
 
+  const router = useRouter();
   // 대댓글 삭제버튼
   const onClickAnswerDelete = async (event) => {
     await delete_used_item_question_answer({
       variables: {
         useditemQuestionAnswerId: event.target.id,
       },
+      refetchQueries: [
+        {
+          query: FETCH_USED_ITEM_QUESTIONS_ANSWERS,
+          variables: { useditemId: router.query.number },
+        },
+      ],
     });
     alert("삭제하였습니다.");
   };

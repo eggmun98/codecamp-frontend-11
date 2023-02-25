@@ -23,7 +23,7 @@ export const MainDesign = styled.div`
   width: 100%;
   /* background-color: #9fccd7; */
   /* background-color: #131315; */
-  background-color: rgb(49, 49, 49);
+  /* background-color: rgb(49, 49, 49);  */
   /* background-color: white; */
   color: black;
   display: flex;

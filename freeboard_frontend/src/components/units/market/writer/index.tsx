@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useMutationItemCreate } from "../../../commons/hooks/mutations/product/useMutationItemCreate";
 import { useMutationItemUpdate } from "../../../commons/hooks/mutations/product/useMutationItemUpdate";
@@ -20,15 +20,42 @@ const UPLOAD_FILE = gql`
   }
 `;
 
+const FETCH_USEDITEM = gql`
+  query fetchUseditem($useditemId: ID!) {
+    fetchUseditem(useditemId: $useditemId) {
+      _id
+      name
+      remarks
+      contents
+      price
+      images
+      seller {
+        name
+        _id
+      }
+      useditemAddress {
+        address
+      }
+    }
+  }
+`;
+
 declare const window: typeof globalThis & {
   kakao?: any;
 };
 
 export default function MarketWriterPage(props) {
   useAuth();
+  const router = useRouter();
+  const { data } = useQuery(FETCH_USEDITEM, {
+    variables: {
+      useditemId: router.query.number,
+    },
+  });
+
+  console.log("수정페이지", data);
 
   const { register, handleSubmit, trigger, setValue } = useForm(); // 나중에 에러 잡을때 contents는 트리거 안에 넣어주기!!
-  const router = useRouter();
   const [create_used_item] = useMutationItemCreate();
   const [update_used_item] = useMutationItemUpdate();
   const [imageUrls, setImageUrls] = useState(["", "", ""]);
@@ -36,10 +63,13 @@ export default function MarketWriterPage(props) {
   console.log("이미이유알엘스", imageUrls);
   const [upload_file] = useMutation(UPLOAD_FILE);
   const [isOpen, setIsOpen] = useState(false);
-  const [zipcode, setZipcode] = useState("");
-  const [aaa, setAaa] = useState("");
-  const [bbb, setBbb] = useState("");
-  const [address, setAddress] = useState("");
+
+  const [address, setAddress] = useState(
+    data?.fetchUseditem.useditemAddress.address
+      ? data?.fetchUseditem.useditemAddress.address
+      : ""
+  );
+  console.log("어드레스", address);
 
   // 실질적인 이미지 버튼1
   const onChangeImageUpload = async (event): JSX.Element => {
@@ -153,6 +183,9 @@ export default function MarketWriterPage(props) {
             remarks: data.remarks,
             price: Number(data.price),
             contents: data.contents,
+            useditemAddress: {
+              address: address,
+            },
           },
           useditemId: router.query.number,
         },
@@ -188,6 +221,7 @@ export default function MarketWriterPage(props) {
           mapOption = {
             center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
             level: 3, // 지도의 확대 레벨
+            disableDoubleClickZoom: true,
           };
 
         let map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
@@ -233,10 +267,7 @@ export default function MarketWriterPage(props) {
 
   const handleComplete = (Data: Address) => {
     addressShowModal();
-    console.log("Data~~~~", Data);
     setAddress(Data.address);
-    console.log("셋어드레스 : ", address);
-    setZipcode(Data.zonecode);
     // setZipcode(data.zipcode);
   };
 
@@ -259,15 +290,25 @@ export default function MarketWriterPage(props) {
           }
         >
           <div>상품명</div>
-          <W.InputStyle01 {...register("name")}></W.InputStyle01>
+          <W.InputStyle01
+            {...register("name")}
+            defaultValue={data?.fetchUseditem.name}
+          ></W.InputStyle01>
           <div>요약 </div>
-          <W.InputStyle01 {...register("remarks")}></W.InputStyle01>
+          <W.InputStyle01
+            {...register("remarks")}
+            defaultValue={data?.fetchUseditem.remarks}
+          ></W.InputStyle01>
           <div>가격</div>
-          <W.InputStyle01 {...register("price")}></W.InputStyle01>
+          <W.InputStyle01
+            {...register("price")}
+            defaultValue={data?.fetchUseditem.price}
+          ></W.InputStyle01>
           <div>상품 내용 </div>
           <W.ReactQuill2
             onChange={onChangeContents}
             modules={modules}
+            defaultValue={data?.fetchUseditem.contents}
           ></W.ReactQuill2>
           <div>이미지 등록</div>
 

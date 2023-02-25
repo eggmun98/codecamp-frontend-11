@@ -2,9 +2,9 @@ import styled from "@emotion/styled";
 import { css, keyframes } from "@emotion/react";
 import { useAmp } from "next/amp";
 import { useRouter } from "next/router";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { IQuery } from "../../types/generated/types";
+import { IMutation, IQuery } from "../../types/generated/types";
 import { useMoveToPageMode } from "../../hooks/customs/useMoveToPageMode";
 
 const Wrapper = styled.div`
@@ -110,29 +110,65 @@ const FETCH_USER_LOGGED_IN = gql`
   }
 `;
 
+const LOGOUT_USER = gql`
+  mutation logoutUser {
+    logoutUser
+  }
+`;
+
 export default function HeaderPage() {
   const { data } =
     useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
 
   const { onClickMoveToPage } = useMoveToPageMode();
 
+  const client = useApolloClient();
+
+  const onClickButton = async (): Promise<void> => {
+    const result = await client.query({
+      query: FETCH_USER_LOGGED_IN,
+    });
+    console.log("onClickButton result:", result);
+  };
+
+  const [logout_user] = useMutation<Pick<IMutation, "logoutUser">>(LOGOUT_USER);
+
+  const logoutButton = async () => {
+    try {
+      const { data } = await logout_user();
+      alert("로그아웃 하였습니다.");
+    } catch (err) {
+      if (err instanceof Error) console.log(err.message);
+    }
+  };
+
   return (
     <>
       <Wrapper>
         <LeftWrapper onClick={onClickMoveToPage("/boards")}>
-          <LogoImg src="/header/myLogo.png"></LogoImg>
+          {/* <LogoImg src="/header/myLogo.png"></LogoImg>  */}
 
-          <LogoTitle>알바 Mun</LogoTitle>
+          <LogoTitle>Precious Time</LogoTitle>
         </LeftWrapper>
         <RightWrapper>
           {data?.fetchUserLoggedIn.name ? (
-            data?.fetchUserLoggedIn.name + "님 환영합니다"
+            <>
+              <Login onClick={onClickMoveToPage("/markets/userPage")}>
+                프로필
+              </Login>
+              <div>{data?.fetchUserLoggedIn.name}님 환영합니다</div>
+              <button onClick={logoutButton}>로그아웃</button>
+            </>
           ) : (
-            <Login onClick={onClickMoveToPage("/sign/signin")}>로그인</Login>
+            <>
+              <Login onClick={onClickMoveToPage("/sign/signin")}>로그인</Login>
+              <SighUp onClick={onClickMoveToPage("/sign/signup")}>
+                회원가입
+              </SighUp>
+            </>
           )}
-          <SighUp onClick={onClickMoveToPage("/sign/signup")}>회원가입</SighUp>(
-          <Login onClick={onClickMoveToPage("/markets/userPage")}>프로필</Login>
-          )
+
+          {/* <button onClick={onClickButton}>임시 로그인 버튼</button>  */}
         </RightWrapper>
       </Wrapper>
     </>

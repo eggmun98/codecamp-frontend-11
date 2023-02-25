@@ -1,8 +1,6 @@
-import { from, gql, useQuery } from "@apollo/client";
-import { useRouter } from "next/router";
+import { gql, useQuery } from "@apollo/client";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
-import InfiniteScroll from "react-infinite-scroller";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import _ from "lodash";
 import { IBoard } from "../../../commons/types/generated/types";
@@ -67,10 +65,11 @@ export default function MarKetListPage() {
     console.log(data);
   };
 
+  // 오늘 본 상품
   const onClickBesket = (basket: IBoard) => () => {
     console.log(basket);
 
-    // 1. 기존 장바구니 가져오기!
+    // 1. 기존에 본 상품 가져오기!
     const baskets: IBoard[] = JSON.parse(
       localStorage.getItem("baskets") ?? "[]"
     );
@@ -85,7 +84,7 @@ export default function MarKetListPage() {
 
     const { __typename, ...rest } = baskets.push(basket);
 
-    // 4. 추가된 장바구니 저장하기
+    // 4. 추가된 상품 저장하기
     localStorage.setItem("baskets", JSON.stringify(baskets));
     return basket;
   };
@@ -104,26 +103,34 @@ export default function MarKetListPage() {
   // };
   return (
     <L.MainWrapper>
+      <L.SearchInput
+        type="text"
+        onChange={onChangeSearch}
+        placeholder="🔎  상품 검색"
+      ></L.SearchInput>
       <div>
         <button onClick={onClickMoveToPage("/markets/new")}>상품 등록</button>
+        <button>필터</button>
       </div>
-      검색어입력: <input type="text" onChange={onChangeSearch}></input>
       <L.Scroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
-        {data?.fetchUseditems.map((el, index) => (
+        {data?.fetchUseditems.map((el) => (
           <L.ProductWrapper
             id={el._id}
             onClick={onClickMoveToPage("/markets/market/" + el._id)}
+            key={el._id}
           >
-            <L.ImageWrapper
-              src={`https://storage.googleapis.com/${el.images[0]}`}
-            ></L.ImageWrapper>
-            <div>판매자: {el.seller.name} </div>
-            <div>상품 명 : {el.name}</div>
-            <div>부 상품 명 : {el.remarks} </div>
-            <div>가격: {el.price}</div>
-            <div>상품 설명: {el.contents}</div>
+            {el.images[0] !== "" ? (
+              <L.ImageWrapper
+                src={`https://storage.googleapis.com/${el.images[0]}`}
+              ></L.ImageWrapper>
+            ) : (
+              <L.NoImageWrapper></L.NoImageWrapper>
+            )}
+            <div>{el.name}</div>
+            <div>{el.price}원</div>
+            <button onClick={onClickBesket(el)}>오늘 본 상품</button>
           </L.ProductWrapper>
-        ))}
+        )) ?? <div></div>}
       </L.Scroll>
     </L.MainWrapper>
   );
