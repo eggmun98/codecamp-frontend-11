@@ -13,7 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./BoardWrite.validation";
 import { useQueryFetchBoard } from "../../../commons/hooks/queries/board/useQueryFetchBoard";
 
-export default function BoardWriteUI(props): JSX.Element {
+export default function BoardWriteUI(props: any): JSX.Element {
   const router = useRouter();
 
   const { data: boardData } = useQueryFetchBoard();
@@ -51,8 +51,17 @@ export default function BoardWriteUI(props): JSX.Element {
   // 그리고 만약 images가 언디파인드랑 널값이 아니라면 setfileUrls는 [...images]을 할당해 준다.
   // 그리고 [data]가 변할때마다 실행!
 
+  interface IProps {
+    writer: string;
+    title: string;
+    password: string;
+    contents: string;
+    youtubeUrl: string;
+    addressDetail: string;
+  }
+
   // 게시글 등록 버튼과 공백 체크
-  const onClickCreateButton = async (data) => {
+  const onClickCreateButton = async (data: IProps) => {
     const result = await create_board({
       variables: {
         createBoardInput: {

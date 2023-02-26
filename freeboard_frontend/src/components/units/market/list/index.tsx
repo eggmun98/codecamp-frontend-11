@@ -28,6 +28,20 @@ export default function MarKetListPage() {
 
   const { data, fetchMore, refetch } = useQuery(FETCH_USED_ITEMS);
 
+  const ramen = [
+    "/ramen.jpeg",
+    "/ramen1.jpeg",
+    "/ramen2.jpeg",
+    "/ramen3.jpeg",
+    "/ramen4.jpeg",
+    "/ramen5.jpeg",
+    "/ramen6.jpg",
+    "/ramen7.jpg",
+    "/ramen8.jpeg",
+    "/ramen9.jpeg",
+    "/ramen10.jpeg",
+  ];
+
   console.log(data);
   const { onClickMoveToPage } = useMoveToPageMode();
 
@@ -82,11 +96,13 @@ export default function MarKetListPage() {
       return;
     }
 
-    const { __typename, ...rest } = baskets.push(basket);
+    // const { __typename, ...rest } = baskets.push(basket);
+    // 3. 내가 클릭한거 추가하기
+    baskets.push(basket);
 
     // 4. 추가된 상품 저장하기
     localStorage.setItem("baskets", JSON.stringify(baskets));
-    return basket;
+    // return basket;
   };
 
   const [baskets, setBaskets] = useState();
@@ -119,13 +135,14 @@ export default function MarKetListPage() {
             onClick={onClickMoveToPage("/markets/market/" + el._id)}
             key={el._id}
           >
-            {el.images[0] !== "" ? (
-              <L.ImageWrapper
-                src={`https://storage.googleapis.com/${el.images[0]}`}
-              ></L.ImageWrapper>
-            ) : (
-              <L.NoImageWrapper></L.NoImageWrapper>
-            )}
+            <L.ImageWrapper
+              src={
+                el.images[0]
+                  ? `https://storage.googleapis.com/${el.images[0]}`
+                  : `${ramen[Math.floor(Math.random() * 10)]}`
+              }
+            ></L.ImageWrapper>
+
             <div>{el.name}</div>
             <div>{el.price}원</div>
             <button onClick={onClickBesket(el)}>오늘 본 상품</button>
@@ -139,3 +156,11 @@ export default function MarKetListPage() {
 {
   /* <button onClick={onClickBesket(el)}>장바구니 담기</button> */
 }
+
+// {el.images[0] !== "" ? (
+//   <L.ImageWrapper
+//     src={`https://storage.googleapis.com/${el.images[0]}` ? `https://storage.googleapis.com/${el.images[0]}` : `` }
+//   ></L.ImageWrapper>
+// ) : (
+//   <L.NoImageWrapper></L.NoImageWrapper>
+// )}

@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/useMutationItemDelete";
@@ -9,6 +9,7 @@ import Dompurify from "dompurify";
 import MarketAnswerPage from "../marketComment/marketAnswer";
 import InfiniteScroll from "react-infinite-scroller";
 import { v4 as uuidv4 } from "uuid";
+import Link from "next/link";
 
 const FETCH_USEDITEM = gql`
   query fetchUseditem($useditemId: ID!) {
@@ -170,7 +171,7 @@ export default function MarketDetailPage(): JSX.Element {
   // );
 
   // 상품 찜하기
-  const onClickPick = async () => {
+  const onClickPick = async (): Promise<void> => {
     await toggle_used_item_pick({
       variables: {
         useditemId: router.query.number,
@@ -191,13 +192,12 @@ export default function MarketDetailPage(): JSX.Element {
   };
 
   // 상품 댓글 등록 버튼
-  const onClickQuestionCreate = async (datas) => {
+  const onClickQuestionCreate = async (d: any): Promise<void> => {
     buttonRef.current.click();
-    console.log("댓글 등록 :", datas);
     const result = await create_used_item_question({
       variables: {
         createUseditemQuestionInput: {
-          contents: datas.contents,
+          contents: d.contents,
         },
         useditemId: router.query.number,
       },
@@ -211,10 +211,12 @@ export default function MarketDetailPage(): JSX.Element {
   };
 
   // 상품 댓글 삭제 버튼
-  const onClickQuestionDelete = async (event) => {
+  const onClickQuestionDelete = async (
+    event: MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
     await delete_used_item_question({
       variables: {
-        useditemQuestionId: event.target.id,
+        useditemQuestionId: event.currentTarget.id,
       },
       refetchQueries: [
         {
@@ -227,13 +229,19 @@ export default function MarketDetailPage(): JSX.Element {
   };
 
   // 상품 댓글 수정창 열기 버튼
-  const onClickQuestionEdit = (event) => {
-    setMyIndex(Number(event.target.id));
-    console.log(Number(event.currentTarget.id));
+  const onClickQuestionEdit = (event: MouseEvent<HTMLButtonElement>) => {
+    setMyIndex(Number(event.currentTarget.id));
   };
 
+  interface IDataEdit {
+    contents: string;
+  }
+
   // 상품 댓글 수정하는 버튼
-  const onClickQuestionUpdate = async (d, event) => {
+  const onClickQuestionUpdate = async (
+    d: IDataEdit,
+    event: MouseEvent<HTMLFormElement>
+  ): Promise<void> => {
     console.log("이벤트 타겟 아이디", event);
 
     const result = await update_used_item({
@@ -254,8 +262,14 @@ export default function MarketDetailPage(): JSX.Element {
     setMyIndex(-1);
   };
 
+  interface IDataQuestion {
+    contents: string;
+  }
   // 대댓글 작성 버튼
-  const onClickAnswerCreate = async (data, event) => {
+  const onClickAnswerCreate = async (
+    data: IDataQuestion,
+    event: MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
     const result = await create_used_item_question_answer({
       variables: {
         createUseditemQuestionAnswerInput: {
@@ -275,12 +289,12 @@ export default function MarketDetailPage(): JSX.Element {
   };
 
   // 대댓글  창 열기 버튼
-  const onClickAnswerWindow = (event) => {
+  const onClickAnswerWindow = (event: MouseEvent<HTMLButtonElement>) => {
     setAnswerIndex(Number(event.currentTarget.id));
   };
 
   // 상품 구매 버튼
-  const onClickBuy = async () => {
+  const onClickBuy = async (): Promise<void> => {
     await create_point_transaction_of_buying_and_selling({
       variables: {
         useritemId: router.query.number,
@@ -328,7 +342,7 @@ export default function MarketDetailPage(): JSX.Element {
         // 주소로 좌표를 검색합니다
         geocoder.addressSearch(
           data?.fetchUseditem?.useditemAddress?.address,
-          function (result, status) {
+          function (result: any, status: any) {
             // 정상적으로 검색이 완료됐으면
             if (status === window.kakao.maps.services.Status.OK) {
               let coords = new window.kakao.maps.LatLng(
@@ -404,14 +418,14 @@ export default function MarketDetailPage(): JSX.Element {
           <div
             dangerouslySetInnerHTML={{
               __html: Dompurify.sanitize(
-                render && "상품 설명:" + data?.fetchUseditem.contents
+                "상품 설명:" + data?.fetchUseditem.contents
               ),
             }} // render 사용하고 나서부터 Extra attributes from the server: id,style 이런 에러가 뜸
           ></div>
         )}
         {data?.fetchUseditem.images
-          ?.filter((el) => el)
-          .map((el) => (
+          ?.filter((el: string) => el)
+          .map((el: string) => (
             <div key={uuidv4()}>
               <div>상품 이미지</div>
               <img src={`https://storage.googleapis.com/${el}`}></img>
@@ -427,21 +441,26 @@ export default function MarketDetailPage(): JSX.Element {
         >
           상품 삭제
         </button>
-        <button style={{ marginRight: 30 }}>상품 목록</button>
+        <Link href="/markets">
+          <a style={{ marginRight: 30 }}>상품목록</a>
+        </Link>
         <button onClick={onClickBuy} style={{ marginRight: 30 }}>
           구매하기
         </button>
         <button onClick={onClickPick} style={{ marginRight: 30 }}>
           찜하기
         </button>
-        <button
+        {/* <button
           onClick={onClickMoveToPage(
             "/markets/market/" + data?.fetchUseditem._id + "/edit"
           )}
           style={{ marginRight: 30 }}
         >
           상품 수정
-        </button>
+        </button> */}
+        <Link href={"/markets/market/" + data?.fetchUseditem._id + "/edit"}>
+          <a>상품 수정</a>
+        </Link>
       </div>
 
       <div style={{ margin: "30px" }}>
@@ -459,7 +478,7 @@ export default function MarketDetailPage(): JSX.Element {
         </form>
       </div>
       <InfiniteScroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
-        {QuestionsData?.fetchUseditemQuestions.map((el, dex) =>
+        {QuestionsData?.fetchUseditemQuestions.map((el: any, dex: number) =>
           myIndex !== dex ? (
             <div key={el._id} style={{ margin: 30 }}>
               <span>이름: {el.user.name} </span>

@@ -34,7 +34,11 @@ const UPDATE_USED_ITEM_QUESTION_ANSWER = gql`
   }
 `;
 
-export default function MarketAnswerPage(props) {
+interface IProps {
+  el: string;
+}
+
+export default function MarketAnswerPage(props: IProps) {
   const { data } = useQuery(FETCH_USED_ITEM_QUESTIONS_ANSWERS, {
     variables: {
       useditemQuestionId: props.el,
@@ -74,8 +78,12 @@ export default function MarketAnswerPage(props) {
     setMyindex(Number(event.target.id));
   };
 
+  interface IDataEdit {
+    contents: string;
+  }
+
   // 대댓글 수정하는 버튼
-  const onClickAnswerUpdate = async (d, e) => {
+  const onClickAnswerUpdate = async (d: IDataEdit, e): Promise<void> => {
     const result = await update_used_item_question_answer({
       variables: {
         updateUseditemQuestionAnswerInput: {
@@ -90,7 +98,7 @@ export default function MarketAnswerPage(props) {
 
   return (
     <div>
-      {data?.fetchUseditemQuestionAnswers.map((el, dex) =>
+      {data?.fetchUseditemQuestionAnswers.map((el, dex: number) =>
         myindex !== dex ? (
           <div style={{ marginLeft: 30 }}>
             <div>➤{el.contents}</div>

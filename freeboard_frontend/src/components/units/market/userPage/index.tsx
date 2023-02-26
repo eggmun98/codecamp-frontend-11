@@ -63,15 +63,18 @@ export default function UserPage() {
 
   console.log;
 
-  const onClickPoint = async (qqq) => {
+  const onClickPoint = async (u: string) => {
     const result = await create_pint_transaction_of_loading({
       variables: {
-        impUid: qqq,
+        impUid: u,
       },
     });
     alert("충전하였습니다.");
   };
 
+  // interface IDatas {
+  //   point: string;
+  // }
   const onClickPayment = (datas): void => {
     const IMP = window.IMP; // 생략 가능
     IMP.init("imp49910675"); // 예: imp00000000a
@@ -153,7 +156,7 @@ export default function UserPage() {
         <div>오늘 본 목록</div>
 
         {aaa &&
-          aaa.map((el, index) => (
+          aaa.map((el) => (
             <div>
               <div>이름: {el.name}</div>
               <div>가격: {el.price}</div>

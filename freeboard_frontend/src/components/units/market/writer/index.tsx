@@ -44,7 +44,10 @@ declare const window: typeof globalThis & {
   kakao?: any;
 };
 
-export default function MarketWriterPage(props) {
+interface IProps {
+  isEdit: boolean;
+}
+export default function MarketWriterPage(props: IProps): JSX.Element {
   useAuth();
   const router = useRouter();
   const { data } = useQuery(FETCH_USEDITEM, {
@@ -72,7 +75,7 @@ export default function MarketWriterPage(props) {
   console.log("어드레스", address);
 
   // 실질적인 이미지 버튼1
-  const onChangeImageUpload = async (event): JSX.Element => {
+  const onChangeImageUpload = async (event): Promise<void> => {
     const file = event.target.files?.[0]; // file.name = "imageSrc1.png"
     const result = await upload_file({
       variables: { file: file },
@@ -150,8 +153,14 @@ export default function MarketWriterPage(props) {
     },
   };
 
+  interface IDataWriter {
+    name: string;
+    remarks: string;
+    price: number;
+    contents: string;
+  }
   // 상품 등록 버튼
-  const onClickCreateProduct = async (data) => {
+  const onClickCreateProduct = async (data: IDataWriter) => {
     console.log(data);
     const result = await create_used_item({
       variables: {
@@ -172,8 +181,14 @@ export default function MarketWriterPage(props) {
     router.push("/markets/market/" + result.data.createUseditem._id);
   };
 
+  interface IDataEdit {
+    name: string;
+    remarks: string;
+    price: number;
+    contents: string;
+  }
   // 상품 수정 버튼
-  const onClickUpdateProduct = async (data) => {
+  const onClickUpdateProduct = async (data: IDataEdit): Promise<void> => {
     console.log("상품 수정 데이터", data);
     try {
       const result = await update_used_item({
@@ -233,7 +248,7 @@ export default function MarketWriterPage(props) {
         map.setZoomable(false);
 
         // 주소로 좌표를 검색합니다
-        geocoder.addressSearch(address, function (result, status) {
+        geocoder.addressSearch(address, function (result: any, status: any) {
           // 요 aeeress는 주소 라이브러리의 api를 불러와 주소값을 저장함
           // 정상적으로 검색이 완료됐으면
           if (status === window.kakao.maps.services.Status.OK) {

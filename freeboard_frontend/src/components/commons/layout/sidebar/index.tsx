@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMoveToPageMode } from "../../hooks/customs/useMoveToPageMode";
 
@@ -32,13 +33,28 @@ export default function SideBarPage() {
   return (
     <>
       <Wrapper>
-        <Button onClick={onClickMoveToPage("/boards/new")}>새글 작성</Button>
-        <Button onClick={onClickMoveToPage("/notice/writer")}>공지 사항</Button>
+        {/* <Button onClick={onClickMoveToPage("/boads/new")}>새글 작성</Button>  */}
+        <Link href={"/boards/new/"}>
+          <a>새글 작성</a>
+        </Link>
+        {/* <Button onClick={onClickMoveToPage("/notice/writer")}>공지 사항</Button>  */}
+        <Link href={"/notice/writer"}>
+          <a>공지사항</a>
+        </Link>
         <Button>인기 게시글</Button>
         <Button>즐겨 찾기</Button>
-        <Button onClick={onClickMoveToPage("/boards")}>자유 게시판</Button>
-        <Button onClick={onClickMoveToPage("/markets")}>중고 마켓</Button>
-        <Button onClick={onClickMoveToPage("/mypage")}>마이페이지</Button>
+        {/* <Button onClick={onClickMoveToPage("/boards")}>자유 게시판</Button> */}
+        <Link href={"/boards"}>
+          <a>자유 게시판</a>
+        </Link>
+        {/* <Button onClick={onClickMoveToPage("/boards")}>중고 마켓</Button> */}
+        <Link href={"/markets"}>
+          <a>중고 마켓</a>
+        </Link>
+        {/* <Button onClick={onClickMoveToPage("/mypage")}>마이페이지</Button> */}
+        <Link href={"/mypage"}>
+          <a>마이페이지</a>
+        </Link>
       </Wrapper>
     </>
   );
