@@ -5,6 +5,7 @@ import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import _ from "lodash";
 import { IBoard } from "../../../commons/types/generated/types";
 import * as L from "./liststyles";
+import { useRouter } from "next/router";
 
 const FETCH_USED_ITEMS = gql`
   query fetchUseditems($page: Int, $search: String) {
@@ -52,6 +53,8 @@ export default function MarKetListPage() {
     getDebounce(event.currentTarget.value); // event.currentTarget.value를 매개변수로 저 getDebounce함수에 넣으면 됨!!
   };
 
+  const router = useRouter();
+
   const onLoadMore = () => {
     if (data === undefined) return;
     fetchMore({
@@ -77,7 +80,7 @@ export default function MarKetListPage() {
   };
 
   // 오늘 본 상품
-  const onClickBesket = (basket: IBoard) => () => {
+  const onClickBesket = (basket: IBoard) => {
     // 1. 기존에 본 상품 가져오기!
     const baskets: IBoard[] = JSON.parse(
       localStorage.getItem("baskets") ?? "[]"
@@ -107,6 +110,12 @@ export default function MarKetListPage() {
     setBaskets(JSON.parse(localStorage.getItem("baskets") ?? "[]"));
   }, []);
 
+  // 오늘 본 상품에 담으면서 디테일 페이지 이동 버튼!!
+  const onClickBesketMove = (el) => () => {
+    router.push("/markets/market/" + el._id);
+    onClickBesket(el);
+  };
+
   return (
     <L.MainWrapper>
       <L.SearchInput
@@ -122,7 +131,7 @@ export default function MarKetListPage() {
         {data?.fetchUseditems.map((el) => (
           <L.ProductWrapper
             id={el._id}
-            onClick={onClickMoveToPage("/markets/market/" + el._id)}
+            onClick={onClickBesketMove(el)}
             key={el._id}
           >
             <L.ImageWrapper
@@ -135,7 +144,7 @@ export default function MarKetListPage() {
 
             <div>{el.name}</div>
             <div>{el.price}원</div>
-            <button onClick={onClickBesket(el)}>오늘 본 상품</button>
+            {/* <button onClick={onClickBesket(el)}>오늘 본 상품</button>  */}
           </L.ProductWrapper>
         )) ?? <div></div>}
       </L.Scroll>
