@@ -23,26 +23,25 @@ const FETCH_USED_ITEMS = gql`
   }
 `;
 
+const ramen = [
+  "/ramen.jpeg",
+  "/ramen1.jpeg",
+  "/ramen2.jpeg",
+  "/ramen3.jpeg",
+  "/ramen4.jpeg",
+  "/ramen5.jpeg",
+  "/ramen6.jpg",
+  "/ramen7.jpg",
+  "/ramen8.jpeg",
+  "/ramen9.jpeg",
+  "/ramen10.jpeg",
+];
+
 export default function MarKetListPage() {
   useAuth();
 
   const { data, fetchMore, refetch } = useQuery(FETCH_USED_ITEMS);
 
-  const ramen = [
-    "/ramen.jpeg",
-    "/ramen1.jpeg",
-    "/ramen2.jpeg",
-    "/ramen3.jpeg",
-    "/ramen4.jpeg",
-    "/ramen5.jpeg",
-    "/ramen6.jpg",
-    "/ramen7.jpg",
-    "/ramen8.jpeg",
-    "/ramen9.jpeg",
-    "/ramen10.jpeg",
-  ];
-
-  console.log(data);
   const { onClickMoveToPage } = useMoveToPageMode();
 
   const getDebounce = _.debounce((value) => {
@@ -60,7 +59,6 @@ export default function MarKetListPage() {
         page: Math.ceil((data?.fetchUseditems.length ?? 10) / 10) + 1,
       }, //10개의 단위로 1페이지로 나누거라~
       updateQuery: (prev, { fetchMoreResult }) => {
-        // console.log(prev);
         if (fetchMoreResult.fetchUseditems === undefined) {
           // 만약 다음 댓글이 없다면 이전 댓글만 보여줘라~
           return {
@@ -76,13 +74,10 @@ export default function MarKetListPage() {
         };
       },
     });
-    console.log(data);
   };
 
   // 오늘 본 상품
   const onClickBesket = (basket: IBoard) => () => {
-    console.log(basket);
-
     // 1. 기존에 본 상품 가져오기!
     const baskets: IBoard[] = JSON.parse(
       localStorage.getItem("baskets") ?? "[]"
@@ -112,11 +107,6 @@ export default function MarKetListPage() {
     setBaskets(JSON.parse(localStorage.getItem("baskets") ?? "[]"));
   }, []);
 
-  console.log(baskets);
-
-  // const onClickBesketDelete = (dex) => () => {
-  //   alert("장바구니 삭제");
-  // };
   return (
     <L.MainWrapper>
       <L.SearchInput
@@ -152,15 +142,3 @@ export default function MarKetListPage() {
     </L.MainWrapper>
   );
 }
-
-{
-  /* <button onClick={onClickBesket(el)}>장바구니 담기</button> */
-}
-
-// {el.images[0] !== "" ? (
-//   <L.ImageWrapper
-//     src={`https://storage.googleapis.com/${el.images[0]}` ? `https://storage.googleapis.com/${el.images[0]}` : `` }
-//   ></L.ImageWrapper>
-// ) : (
-//   <L.NoImageWrapper></L.NoImageWrapper>
-// )}

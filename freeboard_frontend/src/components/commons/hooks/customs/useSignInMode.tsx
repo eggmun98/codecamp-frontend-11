@@ -35,7 +35,7 @@ export const useSignInMode = () => {
       return;
     }
     setAccessToken(accessToken);
-    localStorage.setItem("accessToken", accessToken);
+    // localStorage.setItem("accessToken", accessToken);
     router.push("/boards");
   };
 

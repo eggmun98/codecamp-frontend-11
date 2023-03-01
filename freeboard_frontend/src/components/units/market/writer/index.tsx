@@ -56,14 +56,12 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
     },
   });
 
-  console.log("수정페이지", data);
-
   const { register, handleSubmit, trigger, setValue } = useForm(); // 나중에 에러 잡을때 contents는 트리거 안에 넣어주기!!
   const [create_used_item] = useMutationItemCreate();
   const [update_used_item] = useMutationItemUpdate();
   const [imageUrls, setImageUrls] = useState(["", "", ""]);
   const fileRef = useRef(null);
-  console.log("이미이유알엘스", imageUrls);
+
   const [upload_file] = useMutation(UPLOAD_FILE);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -72,7 +70,6 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
       ? data?.fetchUseditem.useditemAddress.address
       : ""
   );
-  console.log("어드레스", address);
 
   // 실질적인 이미지 버튼1
   const onChangeImageUpload = async (event): Promise<void> => {
@@ -161,7 +158,6 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   }
   // 상품 등록 버튼
   const onClickCreateProduct = async (data: IDataWriter) => {
-    console.log(data);
     const result = await create_used_item({
       variables: {
         createUseditemInput: {
@@ -177,7 +173,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
       },
     });
     alert("상품 등록하였습니다.");
-    // console.log("result :", result);
+
     router.push("/markets/market/" + result.data.createUseditem._id);
   };
 
@@ -189,7 +185,6 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   }
   // 상품 수정 버튼
   const onClickUpdateProduct = async (data: IDataEdit): Promise<void> => {
-    console.log("상품 수정 데이터", data);
     try {
       const result = await update_used_item({
         variables: {

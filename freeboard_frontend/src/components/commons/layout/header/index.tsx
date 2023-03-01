@@ -104,6 +104,7 @@ const FETCH_USER_LOGGED_IN = gql`
     fetchUserLoggedIn {
       email
       name
+      _id
     }
   }
 `;
@@ -133,7 +134,7 @@ export default function HeaderPage() {
 
   const logoutButton = async () => {
     try {
-      const { data } = await logout_user();
+      await logout_user();
       alert("로그아웃 하였습니다.");
     } catch (err) {
       if (err instanceof Error) console.log(err.message);

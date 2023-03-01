@@ -8,6 +8,10 @@ const FETCH_USED_ITEM_QUESTIONS_ANSWERS = gql`
     fetchUseditemQuestionAnswers(useditemQuestionId: $useditemQuestionId) {
       _id
       contents
+      user {
+        _id
+        name
+      }
     }
   }
 `;
@@ -95,19 +99,25 @@ export default function MarketAnswerPage(props: IProps) {
     setMyindex(-1);
     alert("수정하였습니다.");
   };
-
   return (
     <div>
       {data?.fetchUseditemQuestionAnswers.map((el, dex: number) =>
         myindex !== dex ? (
           <div style={{ marginLeft: 30 }}>
-            <div>➤{el.contents}</div>
-            <button onClick={onClickAnswerDelete} id={el._id}>
-              대댓글 삭제하기
-            </button>
-            <button onClick={onClickAnswerEdit} id={String(dex)}>
-              대댓글 수정하기
-            </button>
+            <div>➤ {el.user.name}</div>
+            <div> {el.contents}</div>
+            {props.data.fetchUserLoggedIn._id === el.user._id ? (
+              <>
+                <button onClick={onClickAnswerDelete} id={el._id}>
+                  대댓글 삭제하기
+                </button>
+                <button onClick={onClickAnswerEdit} id={String(dex)}>
+                  대댓글 수정하기
+                </button>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
         ) : (
           <div>

@@ -20,6 +20,14 @@ const FETCH_USER_LOGGED_IN = gql`
   }
 `;
 
+const UPLOAD_FILE = gql`
+  mutation uploadFile($file: Upload!) {
+    uploadFile(file: $file) {
+      url
+    }
+  }
+`;
+
 const CREATE_POINT_TRANSACTION_OF_LOADING = gql`
   mutation createPointTransactionOfLoading($impUid: ID!) {
     createPointTransactionOfLoading(impUid: $impUid) {
@@ -32,7 +40,25 @@ const FETCH_USED_ITEMSL_PICKED = gql`
   query fetchUseditemsIPicked($search: String, $page: Int) {
     fetchUseditemsIPicked(search: $search, page: $page) {
       _id
+      name
+      remarks
+      contents
+      price
     }
+  }
+`;
+
+const UPDATE_USER = gql`
+  mutation updateUser($updateUserInput: UpdateUserInput!) {
+    updateUser(updateUserInput: $updateUserInput) {
+      _id
+    }
+  }
+`;
+
+const FETCH_USED_ITEM_COUNT_IPICKED = gql`
+  query fetchUseditemsCountIPicked {
+    fetchUseditemsCountIPicked
   }
 `;
 
@@ -44,7 +70,6 @@ export default function UserPage() {
   useAuth();
   const { data } =
     useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
-  console.log("유즈드쿼리인", data);
 
   const { register, handleSubmit } = useForm();
 
@@ -53,15 +78,24 @@ export default function UserPage() {
   const [create_pint_transaction_of_loading] = useMutation(
     CREATE_POINT_TRANSACTION_OF_LOADING
   );
-  console.log(create_pint_transaction_of_loading);
+  const [upload_file] = useMutation(UPLOAD_FILE);
 
-  const { data: PickData } = useQuery(FETCH_USED_ITEMSL_PICKED);
+  const { data: PickData } = useQuery(FETCH_USED_ITEMSL_PICKED, {
+    variables: { search: "" },
+  });
 
-  console.log("PickData입니다", PickData);
+  console.log("픽데이터", PickData);
+
+  const { data: CountData } = useQuery(FETCH_USED_ITEM_COUNT_IPICKED);
+  console.log(CountData);
+
+  const [image, setImage] = useState("");
+
+  console.log(" 픽 데이터", PickData);
 
   const router = useRouter();
 
-  console.log;
+  const [update_user] = useMutation(UPDATE_USER);
 
   const onClickPoint = async (u: string) => {
     const result = await create_pint_transaction_of_loading({
@@ -72,9 +106,28 @@ export default function UserPage() {
     alert("충전하였습니다.");
   };
 
+  const onChangeImageUpload = async (event): Promise<void> => {
+    const file = event.target.files?.[0];
+    const result = await upload_file({
+      variables: { file: file },
+    });
+  };
   // interface IDatas {
   //   point: string;
   // }
+
+  const onClickProfile = async (data) => {
+    const result = await update_user({
+      variables: {
+        updateUserInput: {
+          picture: image,
+          name: data.name,
+        },
+      },
+    });
+    alert("프로필을 수정하였습니다.");
+  };
+
   const onClickPayment = (datas): void => {
     const IMP = window.IMP; // 생략 가능
     IMP.init("imp49910675"); // 예: imp00000000a
@@ -98,7 +151,6 @@ export default function UserPage() {
         // callback
         if (rsp.success === true) {
           // 결제 성공 시 로직,
-          console.log("rep", rsp);
           router.push("/markets/userPage");
 
           onClickPoint(rsp.imp_uid);
@@ -108,7 +160,8 @@ export default function UserPage() {
       }
     );
   };
-  let qqq = "";
+
+  // 오늘 본 상품 불러오기
   const [aaa, setAaa] = useState();
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -116,9 +169,8 @@ export default function UserPage() {
         let localData = JSON.parse(localStorage.getItem(name));
         return localData;
       };
-
       let localData = getDataLocalStorage("baskets");
-      qqq = localData;
+      // qqq = localData;
       setAaa(localData);
     }
   }, []);
@@ -126,6 +178,13 @@ export default function UserPage() {
   return (
     <div>
       <div> {data?.fetchUserLoggedIn.name}님의 페이지 입니다.</div>
+      <button style={{ marginBottom: 30 }}>프로필 수정하기</button>
+      <form onSubmit={handleSubmit(onClickProfile)}>
+        <input {...register("name")}></input>
+        <input type="file" onChange={onChangeImageUpload}></input>
+        <button>프로필 수정하기</button>
+      </form>
+
       <button onClick={onClickMoveToPage("/markets/userPage/passwordEdit")}>
         비밀번호 변경하기
       </button>

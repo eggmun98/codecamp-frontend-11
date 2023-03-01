@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/useMutationItemDelete";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
@@ -72,6 +72,7 @@ const FETCH_USED_ITEM_QUESTIONS = gql`
       contents
       user {
         name
+        _id
       }
     }
   }
@@ -114,6 +115,15 @@ const FETCH_USED_ITEM_QUESTIONS_ANSWERS = gql`
   }
 `;
 
+const FETCH_USER_LOGGED_IN = gql`
+  query {
+    fetchUserLoggedIn {
+      email
+      name
+      _id
+    }
+  }
+`;
 declare const window: typeof globalThis & {
   kakao?: any;
 };
@@ -137,24 +147,6 @@ export default function MarketDetailPage(): JSX.Element {
   const [myIndex, setMyIndex] = useState(-1);
   const [answerIndex, setAnswerIndex] = useState(-1);
 
-  const { onClickMoveToPage } = useMoveToPageMode();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    // formState: { errors },
-  } = useForm();
-  const [delete_used_item] = useMutationItemDelete();
-
-  // 상품 게시글 쿼리
-  const { data } = useQuery(FETCH_USEDITEM, {
-    variables: {
-      useditemId: router.query.number,
-    },
-  });
-
-  // console.log(" 상품 게시글 쿼리:", data.fetchUseditem.seller._id);
-
   // 상품 댓글 쿼리
   const { data: QuestionsData, fetchMore } = useQuery(
     FETCH_USED_ITEM_QUESTIONS,
@@ -165,10 +157,25 @@ export default function MarketDetailPage(): JSX.Element {
     }
   );
 
-  // console.log(
-  //   "퀘스쳔 데이터",
-  //   QuestionsData?.fetchUseditemQuestions[0].contents
-  // );
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+    control,
+  } = useForm();
+  const [delete_used_item] = useMutationItemDelete();
+
+  // 상품 게시글 쿼리
+  const { data } = useQuery(FETCH_USEDITEM, {
+    variables: {
+      useditemId: router.query.number,
+    },
+  });
+
+  // 유저 쿼리
+  const { data: UserData } = useQuery(FETCH_USER_LOGGED_IN);
 
   // 상품 찜하기
   const onClickPick = async (): Promise<void> => {
@@ -193,7 +200,7 @@ export default function MarketDetailPage(): JSX.Element {
 
   // 상품 댓글 등록 버튼
   const onClickQuestionCreate = async (d: any): Promise<void> => {
-    buttonRef.current.click();
+    // buttonRef.current.click();
     const result = await create_used_item_question({
       variables: {
         createUseditemQuestionInput: {
@@ -242,14 +249,12 @@ export default function MarketDetailPage(): JSX.Element {
     d: IDataEdit,
     event: MouseEvent<HTMLFormElement>
   ): Promise<void> => {
-    console.log("이벤트 타겟 아이디", event);
-
     const result = await update_used_item({
       variables: {
         updateUseditemQuestionInput: {
-          contents: d.contents,
+          contents: d.contentsEdit,
         },
-        useditemQuestionId: event.target.id,
+        useditemQuestionId: event.currentTarget.id,
       },
       refetchQueries: [
         {
@@ -263,7 +268,7 @@ export default function MarketDetailPage(): JSX.Element {
   };
 
   interface IDataQuestion {
-    contents: string;
+    contentsQuestion: string;
   }
   // 대댓글 작성 버튼
   const onClickAnswerCreate = async (
@@ -273,9 +278,9 @@ export default function MarketDetailPage(): JSX.Element {
     const result = await create_used_item_question_answer({
       variables: {
         createUseditemQuestionAnswerInput: {
-          contents: data.contents,
+          contents: data.contentsQuestion,
         },
-        useditemQuestionId: event.target.id,
+        useditemQuestionId: event.currentTarget.id,
       },
       refetchQueries: [
         {
@@ -381,7 +386,6 @@ export default function MarketDetailPage(): JSX.Element {
           1,
       }, //10개의 단위로 1페이지로 나누거라~
       updateQuery: (prev, { fetchMoreResult }) => {
-        // console.log(prev);
         if (fetchMoreResult.fetchUseditemQuestions === undefined) {
           // 만약 다음 댓글이 없다면 이전 댓글만 보여줘라~
           return {
@@ -397,7 +401,6 @@ export default function MarketDetailPage(): JSX.Element {
         };
       },
     });
-    console.log(data);
   };
   const [render, setRender] = useState(false);
 
@@ -409,7 +412,7 @@ export default function MarketDetailPage(): JSX.Element {
 
   return (
     <>
-      <form style={{ margin: 30 }}>
+      <div style={{ margin: 30 }}>
         <div>작성자: {data?.fetchUseditem.seller.name}</div>
         <div>상품명: {data?.fetchUseditem.name}</div>
         <div>부 상품 명: {data?.fetchUseditem.remarks}</div>
@@ -431,50 +434,55 @@ export default function MarketDetailPage(): JSX.Element {
               <img src={`https://storage.googleapis.com/${el}`}></img>
             </div>
           ))}
-        <div id="map" style={{ width: 500, height: 400 }}></div>
-      </form>
+
+        {isNaN(data?.fetchUseditem?.useditemAddress?.address) ? (
+          <div id="map" style={{ width: 500, height: 400 }}></div>
+        ) : (
+          <>실패다</>
+        )}
+      </div>
 
       <div>
-        <button
-          onClick={onClickItemDeleteButton}
-          style={{ marginLeft: 30, marginRight: 30 }}
-        >
-          상품 삭제
-        </button>
-        <Link href="/markets">
-          <a style={{ marginRight: 30 }}>상품목록</a>
-        </Link>
-        <button onClick={onClickBuy} style={{ marginRight: 30 }}>
-          구매하기
-        </button>
-        <button onClick={onClickPick} style={{ marginRight: 30 }}>
-          찜하기
-        </button>
-        {/* <button
-          onClick={onClickMoveToPage(
-            "/markets/market/" + data?.fetchUseditem._id + "/edit"
-          )}
-          style={{ marginRight: 30 }}
-        >
-          상품 수정
-        </button> */}
-        <Link href={"/markets/market/" + data?.fetchUseditem._id + "/edit"}>
-          <a>상품 수정</a>
-        </Link>
+        {data?.fetchUseditem.seller._id === UserData?.fetchUserLoggedIn._id ? (
+          <>
+            <Link href={"/markets/market/" + data?.fetchUseditem._id + "/edit"}>
+              <a style={{ marginRight: 30 }}>상품 수정</a>
+            </Link>
+            <Link href="/markets">
+              <a style={{ marginRight: 30 }}>상품목록</a>
+            </Link>
+            <button
+              onClick={onClickItemDeleteButton}
+              style={{ marginRight: 30 }}
+            >
+              상품 삭제
+            </button>
+          </>
+        ) : (
+          <>
+            <button onClick={onClickBuy} style={{ marginRight: 30 }}>
+              구매하기
+            </button>
+            <Link href="/markets">
+              <a style={{ marginRight: 30 }}>상품목록</a>
+            </Link>
+            <button onClick={onClickPick}>찜하기</button>
+          </>
+        )}
       </div>
 
       <div style={{ margin: "30px" }}>
         <form onSubmit={handleSubmit(onClickQuestionCreate)}>
           <div>댓글 등록</div>
           댓글 내용: <input {...register("contents")}></input>
-          <input type="submit" value="인풋창임" />
-          <input
+          <button type="submit">등록</button>
+          {/* <input
             type="button"
             ref={buttonRef}
             onClick={() => reset()}
             value="숨겨진 값 초기화 버튼"
             style={{ display: "none" }}
-          />
+          /> */}
         </form>
       </div>
       <InfiniteScroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
@@ -483,15 +491,25 @@ export default function MarketDetailPage(): JSX.Element {
             <div key={el._id} style={{ margin: 30 }}>
               <span>이름: {el.user.name} </span>
               <span>댓글 내용: {el.contents}</span>
-              <button id={el._id} onClick={onClickQuestionDelete}>
-                댓글 삭제
-              </button>
-              <button id={String(dex)} onClick={onClickQuestionEdit}>
-                댓글 수정
-              </button>
-              <button onClick={onClickAnswerWindow} id={String(dex)}>
-                답변 달기
-              </button>
+              {el.user._id === UserData?.fetchUserLoggedIn._id ? (
+                <>
+                  <button id={el._id} onClick={onClickQuestionDelete}>
+                    댓글 삭제
+                  </button>
+                  <button id={String(dex)} onClick={onClickQuestionEdit}>
+                    댓글 수정
+                  </button>
+                  <button onClick={onClickAnswerWindow} id={String(dex)}>
+                    답변 달기
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={onClickAnswerWindow} id={String(dex)}>
+                    답변 달기
+                  </button>
+                </>
+              )}
               {answerIndex !== dex ? (
                 ""
               ) : (
@@ -501,25 +519,26 @@ export default function MarketDetailPage(): JSX.Element {
                     onSubmit={handleSubmit(onClickAnswerCreate)}
                     id={el._id}
                   >
-                    <input {...register("contents")}></input>
+                    <input {...register("contentsQuestion")}></input>
                     <button>대댓글 달기</button>
                   </form>
                 </div>
               )}
-              <MarketAnswerPage el={el._id}></MarketAnswerPage>{" "}
+              <MarketAnswerPage el={el._id} data={UserData}></MarketAnswerPage>
               {/* 대댓글페이지*/}
             </div>
           ) : (
             <div>
               <form onSubmit={handleSubmit(onClickQuestionUpdate)} id={el._id}>
                 <div>댓글 수정창</div>
-                <input
-                  {...register("contents")}
-                  defaultValue={
-                    QuestionsData.fetchUseditemQuestions[dex].contents
-                  }
-                ></input>
+                <input {...register("contentsEdit")} id={el._id}></input>
 
+                {/* <input
+                  type="text"
+                  name="contents"
+                  defaultValue="input value"
+                  ref={register}
+                /> */}
                 <button id={el._id}>수정하기</button>
               </form>
             </div>
