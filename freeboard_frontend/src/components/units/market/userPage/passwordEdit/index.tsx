@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../../../commons/hooks/customs/useAuth";
+import { IMutation } from "../../../../commons/types/generated/types";
 
 const RESET_USER_PASSWORD = gql`
   mutation resetUserPassword($password: String!) {
@@ -14,11 +15,11 @@ export default function PasswordEditPage() {
   const [reset_user_password] = useMutation(RESET_USER_PASSWORD);
   const { register, handleSubmit } = useForm();
 
-  const onClickPasswordEdit = async (data) => {
+  const onClickPasswordEdit = async (data: { password: string }) => {
     console.log(data.password);
     await reset_user_password({
       variables: {
-        password: String(data.passowrd),
+        password: String(data.password),
       },
     });
     alert("비밀번호를 변경하였습니다.");

@@ -1,12 +1,13 @@
 import _ from "lodash";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { IQuery } from "../../types/generated/types";
 import { useQueryFetchBoards } from "../queries/board/useQueryFetchBoards";
 
 export const getDebounceMode = () => {
   const { data, refetch } = useQueryFetchBoards();
   const [keyword, setKeyword] = useState("");
-  console.log("refetch:", refetch);
-  const onChangeSearchButton = (event): void => {
+  // console.log("refetch:", refetch);
+  const onChangeSearchButton = (event: ChangeEvent<HTMLInputElement>): void => {
     getDebounce(event.target.value);
   };
 

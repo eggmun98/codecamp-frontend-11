@@ -1,35 +1,33 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
-import { useMutationItemDelete } from "../../../commons/hooks/mutations/product/useMutationItemDelete";
+import {
+  BaseSyntheticEvent,
+  ChangeEvent,
+  MouseEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  useForm,
+  Controller,
+  SubmitHandler,
+  FieldValues,
+} from "react-hook-form";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import Dompurify from "dompurify";
 import MarketAnswerPage from "../marketComment/marketAnswer";
 import InfiniteScroll from "react-infinite-scroller";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
-
-const FETCH_USEDITEM = gql`
-  query fetchUseditem($useditemId: ID!) {
-    fetchUseditem(useditemId: $useditemId) {
-      _id
-      name
-      remarks
-      contents
-      price
-      images
-      seller {
-        name
-        _id
-      }
-      useditemAddress {
-        address
-      }
-    }
-  }
-`;
+import { useQueryFetchUsedItem } from "../../../commons/hooks/queries/product/useQueryFetchUsedItem";
+import { useQueryFetchQuestion } from "../../../commons/hooks/queries/product/Question/useQueryFetchQuestion";
+import { FETCH_USED_ITEM_QUESTIONS } from "../../../commons/hooks/queries/product/Question/useQueryFetchQuestion";
+import { useMarketDeleteMode } from "../../../commons/hooks/customs/market/useMarketDeleteMode";
+import { useMutationToggleUsedItemPick } from "../../../commons/hooks/mutations/product/useMutationToggleUsedItemPick";
+import { useMarketPickMode } from "../../../commons/hooks/customs/market/useMarketPickMode";
+import { useQueryFetchUserLoggedIn } from "../../../commons/hooks/queries/sign/useQueryFetchUserLoggedIn";
+import { FETCH_USED_ITEM_QUESTIONS_ANSWERS } from "../../../commons/hooks/queries/product/Answer/useQueryFetchUsedItemAnswers";
 
 const DELETE_USED_ITEM_QUESTION = gql`
   mutation deleteUseditemQuestion($useditemQuestionId: ID!) {
@@ -65,19 +63,6 @@ const CREATE_USED_ITEM_QUESTION_ANSWER = gql`
   }
 `;
 
-const FETCH_USED_ITEM_QUESTIONS = gql`
-  query fetchUseditemQuestions($useditemId: ID!, $page: Int) {
-    fetchUseditemQuestions(useditemId: $useditemId, page: $page) {
-      _id
-      contents
-      user {
-        name
-        _id
-      }
-    }
-  }
-`;
-
 const UPDATE_USED_ITEM_QUESTION = gql`
   mutation updateUseditemQuestion(
     $updateUseditemQuestionInput: UpdateUseditemQuestionInput!
@@ -92,12 +77,6 @@ const UPDATE_USED_ITEM_QUESTION = gql`
   }
 `;
 
-const TOGGLE_USED_ITEM_PICK = gql`
-  mutation toggleUseditemPick($useditemId: ID!) {
-    toggleUseditemPick(useditemId: $useditemId)
-  }
-`;
-
 const CREATE_POINT_TRANSACTION_OF_BUYING_AND_SELLING = gql`
   mutation createPointTransactionOfBuyingAndSelling($useritemId: ID!) {
     createPointTransactionOfBuyingAndSelling(useritemId: $useritemId) {
@@ -106,24 +85,6 @@ const CREATE_POINT_TRANSACTION_OF_BUYING_AND_SELLING = gql`
   }
 `;
 
-const FETCH_USED_ITEM_QUESTIONS_ANSWERS = gql`
-  query fetchUseditemQuestionAnswers($useditemQuestionId: ID!) {
-    fetchUseditemQuestionAnswers(useditemQuestionId: $useditemQuestionId) {
-      _id
-      contents
-    }
-  }
-`;
-
-const FETCH_USER_LOGGED_IN = gql`
-  query {
-    fetchUserLoggedIn {
-      email
-      name
-      _id
-    }
-  }
-`;
 declare const window: typeof globalThis & {
   kakao?: any;
 };
@@ -131,7 +92,7 @@ declare const window: typeof globalThis & {
 export default function MarketDetailPage(): JSX.Element {
   useAuth();
 
-  const buttonRef = useRef(null);
+  // const buttonRef = useRef(null);
   const router = useRouter();
   const [create_used_item_question] = useMutation(CREATE_USED_ITEM_QUESION);
   const [delete_used_item_question] = useMutation(DELETE_USED_ITEM_QUESTION);
@@ -139,7 +100,6 @@ export default function MarketDetailPage(): JSX.Element {
   const [create_used_item_question_answer] = useMutation(
     CREATE_USED_ITEM_QUESTION_ANSWER
   );
-  const [toggle_used_item_pick] = useMutation(TOGGLE_USED_ITEM_PICK);
   const [create_point_transaction_of_buying_and_selling] = useMutation(
     CREATE_POINT_TRANSACTION_OF_BUYING_AND_SELLING
   );
@@ -147,59 +107,26 @@ export default function MarketDetailPage(): JSX.Element {
   const [myIndex, setMyIndex] = useState(-1);
   const [answerIndex, setAnswerIndex] = useState(-1);
 
-  // 상품 댓글 쿼리
-  const { data: QuestionsData, fetchMore } = useQuery(
-    FETCH_USED_ITEM_QUESTIONS,
-    {
-      variables: {
-        useditemId: router.query.number,
-      },
-    }
-  );
+  interface IDataEdit {
+    contentsEdit: string;
+  }
 
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
     formState: { errors },
-    control,
-  } = useForm();
-  const [delete_used_item] = useMutationItemDelete();
+  } = useForm<IDataEdit>();
 
-  // 상품 게시글 쿼리
-  const { data } = useQuery(FETCH_USEDITEM, {
-    variables: {
-      useditemId: router.query.number,
-    },
-  });
-
-  // 유저 쿼리
-  const { data: UserData } = useQuery(FETCH_USER_LOGGED_IN);
-
-  // 상품 찜하기
-  const onClickPick = async (): Promise<void> => {
-    await toggle_used_item_pick({
-      variables: {
-        useditemId: router.query.number,
-      },
-    });
-    alert("찜하기 하였습니다.");
-  };
-
-  // 상품 게시글 삭제 버튼
-  const onClickItemDeleteButton = async () => {
-    await delete_used_item({
-      variables: {
-        useditemId: router.query.number,
-      },
-    });
-    alert("글이 삭제되었습니다.");
-    router.push("/markets");
-  };
+  const { data } = useQueryFetchUsedItem(); // 게시글 쿼리
+  const { data: QuestionsData, fetchMore } = useQueryFetchQuestion(); // 댓글 쿼리
+  const { data: UserData } = useQueryFetchUserLoggedIn(); // 유저쿼리
+  const { onClickPick } = useMarketPickMode(); // 찜하기 함수
+  const { onClickItemDeleteButton } = useMarketDeleteMode(); // 상품 게시글 삭제 버튼
 
   // 상품 댓글 등록 버튼
-  const onClickQuestionCreate = async (d: any): Promise<void> => {
+  const onClickQuestionCreate = async (d: {
+    contents: string;
+  }): Promise<void> => {
     // buttonRef.current.click();
     const result = await create_used_item_question({
       variables: {
@@ -240,21 +167,19 @@ export default function MarketDetailPage(): JSX.Element {
     setMyIndex(Number(event.currentTarget.id));
   };
 
-  interface IDataEdit {
-    contents: string;
-  }
-
   // 상품 댓글 수정하는 버튼
   const onClickQuestionUpdate = async (
-    d: IDataEdit,
-    event: MouseEvent<HTMLFormElement>
-  ): Promise<void> => {
+    data: IDataEdit,
+    event: BaseSyntheticEvent<object, any, any> | undefined
+    // id : number
+  ) => {
     const result = await update_used_item({
       variables: {
         updateUseditemQuestionInput: {
-          contents: d.contentsEdit,
+          contents: data.contentsEdit,
         },
-        useditemQuestionId: event.currentTarget.id,
+        // useditemQuestionId: id,
+        useditemQuestionId: event?.target.id,
       },
       refetchQueries: [
         {
@@ -273,14 +198,14 @@ export default function MarketDetailPage(): JSX.Element {
   // 대댓글 작성 버튼
   const onClickAnswerCreate = async (
     data: IDataQuestion,
-    event: MouseEvent<HTMLButtonElement>
-  ): Promise<void> => {
+    event: ChangeEvent<HTMLButtonElement>
+  ) => {
     const result = await create_used_item_question_answer({
       variables: {
         createUseditemQuestionAnswerInput: {
           contents: data.contentsQuestion,
         },
-        useditemQuestionId: event.currentTarget.id,
+        useditemQuestionId: event.target.id,
       },
       refetchQueries: [
         {
@@ -307,16 +232,7 @@ export default function MarketDetailPage(): JSX.Element {
     });
     alert("상품을 구매하였습니다.");
   };
-  //
 
-  //
-
-  //
-  //
-
-  //
-
-  //
   // 카카오 맵 지도
   useEffect(() => {
     const script = document.createElement("script");
@@ -402,14 +318,6 @@ export default function MarketDetailPage(): JSX.Element {
       },
     });
   };
-  const [render, setRender] = useState(false);
-
-  useEffect(() => {
-    setRender(true);
-  }, []);
-
-  // return <Typography dangerouslySetInnerHTML={{ __html: render && content }} />;
-
   return (
     <>
       <div style={{ margin: 30 }}>
@@ -423,7 +331,7 @@ export default function MarketDetailPage(): JSX.Element {
               __html: Dompurify.sanitize(
                 "상품 설명:" + data?.fetchUseditem.contents
               ),
-            }} // render 사용하고 나서부터 Extra attributes from the server: id,style 이런 에러가 뜸
+            }}
           ></div>
         )}
         {data?.fetchUseditem.images
@@ -532,7 +440,6 @@ export default function MarketDetailPage(): JSX.Element {
               <form onSubmit={handleSubmit(onClickQuestionUpdate)} id={el._id}>
                 <div>댓글 수정창</div>
                 <input {...register("contentsEdit")} id={el._id}></input>
-
                 {/* <input
                   type="text"
                   name="contents"

@@ -2,12 +2,12 @@ import * as D from "./BoardDetail.styles";
 import { useRouter } from "next/router";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useQueryFetchBoard } from "../../../commons/hooks/queries/board/useQueryFetchBoard";
-import { useBoardDeleteMode } from "../../../commons/hooks/customs/useBoardDeleteMode";
-import { useBoardLikeMode } from "../../../commons/hooks/customs/useBoardLikeMode";
-import { useBoardDisLikeMode } from "../../../commons/hooks/customs/useBoardDIsLikeMode";
+import { useBoardDeleteMode } from "../../../commons/hooks/customs/board/useBoardDeleteMode";
+import { useBoardLikeMode } from "../../../commons/hooks/customs/board/useBoardLikeMode";
+import { useBoardDisLikeMode } from "../../../commons/hooks/customs/board/useBoardDIsLikeMode";
 import { onPointMode } from "../../../commons/hooks/customs/onPointMode";
 
-export default function BoardDetailUI() {
+export default function BoardDetailUI(): JSX.Element {
   const router = useRouter();
   const { onClickMoveToPage } = useMoveToPageMode();
   const { onClickDeleteButton } = useBoardDeleteMode();
@@ -53,8 +53,8 @@ export default function BoardDetailUI() {
         {/* <D.ImageBox src="/img1.png"></D.ImageBox>  */}
         <D.ImageWrapper>
           {data?.fetchBoard.images
-            ?.filter((el) => el)
-            .map((el) => (
+            ?.filter((el: string) => el)
+            .map((el: string) => (
               <D.ImageBox
                 key={el}
                 src={`https://storage.googleapis.com/${el}`}

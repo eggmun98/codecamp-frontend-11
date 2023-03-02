@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useMutationItemCreate } from "../../../commons/hooks/mutations/product/useMutationItemCreate";
 import { useMutationItemUpdate } from "../../../commons/hooks/mutations/product/useMutationItemUpdate";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Modal } from "antd";
 import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
@@ -72,7 +72,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   );
 
   // 실질적인 이미지 버튼1
-  const onChangeImageUpload = async (event): Promise<void> => {
+  const onChangeImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // file.name = "imageSrc1.png"
     const result = await upload_file({
       variables: { file: file },

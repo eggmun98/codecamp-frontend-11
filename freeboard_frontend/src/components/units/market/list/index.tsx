@@ -20,6 +20,7 @@ const FETCH_USED_ITEMS = gql`
         name
       }
       images
+      pickedCount
     }
   }
 `;
@@ -55,6 +56,7 @@ export default function MarKetListPage() {
 
   const router = useRouter();
 
+  // 무한 스크롤 함수
   const onLoadMore = () => {
     if (data === undefined) return;
     fetchMore({
@@ -63,7 +65,6 @@ export default function MarKetListPage() {
       }, //10개의 단위로 1페이지로 나누거라~
       updateQuery: (prev, { fetchMoreResult }) => {
         if (fetchMoreResult.fetchUseditems === undefined) {
-          // 만약 다음 댓글이 없다면 이전 댓글만 보여줘라~
           return {
             fetchUseditems: [...prev.fetchUseditems],
           };
@@ -73,14 +74,14 @@ export default function MarKetListPage() {
             ...prev.fetchUseditems,
             ...fetchMoreResult.fetchUseditems,
           ],
-          // 전체 댓글: 이전 댓글들 + 다음 댓글들
+          // 전체 댓글: 이전 상품들 + 다음 상품들
         };
       },
     });
   };
 
   // 오늘 본 상품
-  const onClickBesket = (basket: IBoard) => {
+  const onClickBasket = (basket: IBoard) => {
     // 1. 기존에 본 상품 가져오기!
     const baskets: IBoard[] = JSON.parse(
       localStorage.getItem("baskets") ?? "[]"
@@ -90,7 +91,7 @@ export default function MarKetListPage() {
     const temp = baskets.filter((el) => el._id === basket._id);
     if (temp.length >= 1) {
       // temp의 길이가 1이상이거나 같다면 오류메세지 띄우기!!
-      alert("이미 담으신 물품 ㅇ비니다!!");
+      // alert("이미 담으신 물품 ㅇ비니다!!");
       return;
     }
 
@@ -103,17 +104,19 @@ export default function MarKetListPage() {
     // return basket;
   };
 
-  const [baskets, setBaskets] = useState();
+  // const [baskets, setBaskets] = useState();
 
-  useEffect(() => {
-    // Perform localStorage action
-    setBaskets(JSON.parse(localStorage.getItem("baskets") ?? "[]"));
-  }, []);
+  // useEffect(() => {
+  //   // Perform localStorage action
+  //   setBaskets(JSON.parse(localStorage.getItem("baskets") ?? "[]"));
+  // }, []);
+
+  // interface qqq
 
   // 오늘 본 상품에 담으면서 디테일 페이지 이동 버튼!!
-  const onClickBesketMove = (el) => () => {
+  const onClickBasketMove = (el) => () => {
     router.push("/markets/market/" + el._id);
-    onClickBesket(el);
+    onClickBasket(el);
   };
 
   return (
@@ -128,25 +131,34 @@ export default function MarKetListPage() {
         <button>필터</button>
       </div>
       <L.Scroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
-        {data?.fetchUseditems.map((el) => (
-          <L.ProductWrapper
-            id={el._id}
-            onClick={onClickBesketMove(el)}
-            key={el._id}
-          >
-            <L.ImageWrapper
-              src={
-                el.images[0]
-                  ? `https://storage.googleapis.com/${el.images[0]}`
-                  : `${ramen[Math.floor(Math.random() * 10)]}`
-              }
-            ></L.ImageWrapper>
+        {data?.fetchUseditems.map(
+          (el: {
+            name: string;
+            images: string[];
+            _id: string;
+            price: string;
+            pickedCount: string;
+          }) => (
+            <L.ProductWrapper
+              id={el._id}
+              onClick={onClickBasketMove(el)}
+              key={el._id}
+            >
+              <L.ImageWrapper
+                src={
+                  el.images[0]
+                    ? `https://storage.googleapis.com/${el.images[0]}`
+                    : `${ramen[Math.floor(Math.random() * 10)]}`
+                }
+              ></L.ImageWrapper>
 
-            <div>{el.name}</div>
-            <div>{el.price}원</div>
-            {/* <button onClick={onClickBesket(el)}>오늘 본 상품</button>  */}
-          </L.ProductWrapper>
-        )) ?? <div></div>}
+              <div>{el.name}</div>
+              <div>{el.price}원</div>
+              <div>{el.pickedCount}</div>
+              {/* <button onClick={onClickBesket(el)}>오늘 본 상품</button>  */}
+            </L.ProductWrapper>
+          )
+        ) ?? <div></div>}
       </L.Scroll>
     </L.MainWrapper>
   );

@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as U from "./SignUp.styles";
 import { useForm } from "react-hook-form";
-import { useSignUpMode } from "../../../commons/hooks/customs/useSignUpMode";
+import { useSignUpMode } from "../../../commons/hooks/customs/sign/useSignUpMode";
 
 export default function SignUpPage() {
   const { register, handleSubmit, formState } = useForm({});

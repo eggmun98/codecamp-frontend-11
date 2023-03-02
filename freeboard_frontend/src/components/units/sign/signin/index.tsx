@@ -3,7 +3,7 @@ import * as I from "./SignIn.styles";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./SignIn.validation";
 import Input01 from "../../../../commons/input";
-import { useSignInMode } from "../../../commons/hooks/customs/useSignInMode";
+import { useSignInMode } from "../../../commons/hooks/customs/sign/useSignInMode";
 
 export default function SignInPage() {
   const { onClickLoginButton } = useSignInMode();

@@ -1,7 +1,13 @@
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 
-export const wrapAsync = (asyncFunc: () => Promise<void>) => () => {
-  void asyncFunc();
+export const wrapAsync =
+  <E>(asyncFunc: (event: E) => Promise<void>) =>
+  (event: E) => {
+    void asyncFunc(event);
+  }; // 이렇게 제네럴타입 한다면 알아서 타입추론이 될거임 즉 이것을 다르 함수에 감싸도 그 함수의 타입으로 타입추론이 되기 때문에 유지보수에서 좋을거임!
+
+export const wrapFileAsync = (asyncFunc: (event) => Promise<void>) => () => {
+  void asyncFunc(event);
 };
 
 export const wrapFormAsync =

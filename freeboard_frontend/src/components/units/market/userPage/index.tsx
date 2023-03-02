@@ -2,7 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { pick } from "lodash";
 import { useRouter } from "next/router";
 import Script from "next/script";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
@@ -75,7 +75,7 @@ export default function UserPage() {
 
   const { onClickMoveToPage } = useMoveToPageMode();
 
-  const [create_pint_transaction_of_loading] = useMutation(
+  const [create_point_transaction_of_loading] = useMutation(
     CREATE_POINT_TRANSACTION_OF_LOADING
   );
   const [upload_file] = useMutation(UPLOAD_FILE);
@@ -98,7 +98,7 @@ export default function UserPage() {
   const [update_user] = useMutation(UPDATE_USER);
 
   const onClickPoint = async (u: string) => {
-    const result = await create_pint_transaction_of_loading({
+    await create_point_transaction_of_loading({
       variables: {
         impUid: u,
       },
@@ -106,7 +106,9 @@ export default function UserPage() {
     alert("충전하였습니다.");
   };
 
-  const onChangeImageUpload = async (event): Promise<void> => {
+  const onChangeImageUpload = async (
+    event: ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     const file = event.target.files?.[0];
     const result = await upload_file({
       variables: { file: file },
@@ -116,7 +118,7 @@ export default function UserPage() {
   //   point: string;
   // }
 
-  const onClickProfile = async (data) => {
+  const onClickProfile = async (data: { name: string }) => {
     const result = await update_user({
       variables: {
         updateUserInput: {
@@ -128,7 +130,7 @@ export default function UserPage() {
     alert("프로필을 수정하였습니다.");
   };
 
-  const onClickPayment = (datas): void => {
+  const onClickPayment = (datas: { point: number }): void => {
     const IMP = window.IMP; // 생략 가능
     IMP.init("imp49910675"); // 예: imp00000000a
 
@@ -161,19 +163,36 @@ export default function UserPage() {
     );
   };
 
-  // 오늘 본 상품 불러오기
-  const [aaa, setAaa] = useState();
+  // interface Pers
+
+  // // 오늘 본 상품 불러오기
+  interface qqq {
+    name: string;
+    price: number;
+  }
+
+  const [aaa, setAaa] = useState<qqq[]>();
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const getDataLocalStorage = (name) => {
-        let localData = JSON.parse(localStorage.getItem(name));
-        return localData;
+      const getDataLocalStorage = () => {
+        let localData = JSON.parse(localStorage.getItem("baskets") ?? "");
+        setAaa(localData);
+        // return localData;
       };
-      let localData = getDataLocalStorage("baskets");
-      // qqq = localData;
-      setAaa(localData);
+      getDataLocalStorage();
+      // let localData = getDataLocalStorage("baskets");
+      // // qqq = localData;
+      // setAaa(localData);
     }
   }, []);
+  // console.log("aaa는 무엇인가", aaa?.length);
+  // useEffect(() => {
+  //   const arr = new Array(10).fill("sdfdsf").localStorage.getItem("baskets");
+  //   console.log(
+  //     arr.filter((el) => el.includes("name")),
+  //     "하하하하하"
+  //   );
+  // }, []);
 
   return (
     <div>
@@ -191,10 +210,7 @@ export default function UserPage() {
       <div> 프로필 사진</div>
       <div> 이름: </div>
       <div> 가입 날짜:</div>
-      <div>
-        {" "}
-        포인트: {data?.fetchUserLoggedIn.userPoint?.amount}원 있습니다.
-      </div>
+      <div>포인트: {data?.fetchUserLoggedIn.userPoint?.amount}원 있습니다.</div>
       <div> 이메일: </div>
 
       <Script
@@ -209,18 +225,35 @@ export default function UserPage() {
 
       <div style={{ marginBottom: 30 }}>
         <div>찜한 목록</div>
+        {PickData?.fetchUseditemsIPicked.map(
+          (el: { name: string; contents: string }) => (
+            <div>
+              <div>{el.name}</div>
+              <div>{el.contents}</div>
+            </div>
+          )
+        )}
       </div>
 
       <div>
         <div>오늘 본 목록</div>
 
-        {aaa &&
-          aaa.map((el) => (
+        {aaa && (
+          <>
             <div>
-              <div>이름: {el.name}</div>
-              <div>가격: {el.price}</div>
+              <div>이름: {aaa[aaa.length - 1].name}</div>
+              <div>가격: {aaa[aaa.length - 1].price}</div>
             </div>
-          ))}
+            <div>
+              <div>이름: {aaa[aaa.length - 2].name}</div>
+              <div>가격: {aaa[aaa.length - 2].price}</div>
+            </div>
+            <div>
+              <div>이름: {aaa[aaa.length - 3].name}</div>
+              <div>가격: {aaa[aaa.length - 3].price}</div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,20 +1,12 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
-
-const FETCH_USED_ITEM_QUESTIONS_ANSWERS = gql`
-  query fetchUseditemQuestionAnswers($useditemQuestionId: ID!) {
-    fetchUseditemQuestionAnswers(useditemQuestionId: $useditemQuestionId) {
-      _id
-      contents
-      user {
-        _id
-        name
-      }
-    }
-  }
-`;
+import {
+  FETCH_USED_ITEM_QUESTIONS_ANSWERS,
+  useQueryFetchUsedItemAnswers,
+} from "../../../../commons/hooks/queries/product/Answer/useQueryFetchUsedItemAnswers";
+import { IQuery } from "../../../../commons/types/generated/types";
 
 const DELETE_USED_ITEM_QUESTION_ANSWER = gql`
   mutation deleteUseditemQuestionAnswer($useditemQuestionAnswerId: ID!) {
@@ -39,15 +31,28 @@ const UPDATE_USED_ITEM_QUESTION_ANSWER = gql`
 `;
 
 interface IProps {
-  el: string;
+  el: string[];
+  data: {
+    fetchUserLoggedIn: {
+      _id: string;
+    };
+  };
+}
+
+interface IMarketAnswer {
+  // onClickAnswerDelete?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onClickAnswerUpdate: (event: ChangeEvent<HTMLFormElement>) => void;
 }
 
 export default function MarketAnswerPage(props: IProps) {
-  const { data } = useQuery(FETCH_USED_ITEM_QUESTIONS_ANSWERS, {
-    variables: {
-      useditemQuestionId: props.el,
-    },
-  });
+  const { data } = useQuery<Pick<IQuery, "fetchUseditemQuestionAnswers">>(
+    FETCH_USED_ITEM_QUESTIONS_ANSWERS,
+    {
+      variables: {
+        useditemQuestionId: props.el,
+      },
+    }
+  );
 
   const [myindex, setMyindex] = useState(-1);
 
@@ -62,7 +67,7 @@ export default function MarketAnswerPage(props: IProps) {
 
   const router = useRouter();
   // 대댓글 삭제버튼
-  const onClickAnswerDelete = async (event) => {
+  const onClickAnswerDelete = async (event: ChangeEvent<HTMLButtonElement>) => {
     await delete_used_item_question_answer({
       variables: {
         useditemQuestionAnswerId: event.target.id,
@@ -78,7 +83,7 @@ export default function MarketAnswerPage(props: IProps) {
   };
 
   // 대댓글 수정창 열기 버튼
-  const onClickAnswerEdit = (event) => {
+  const onClickAnswerEdit = (event: ChangeEvent<HTMLInputElement>) => {
     setMyindex(Number(event.target.id));
   };
 
@@ -87,7 +92,10 @@ export default function MarketAnswerPage(props: IProps) {
   }
 
   // 대댓글 수정하는 버튼
-  const onClickAnswerUpdate = async (d: IDataEdit, e): Promise<void> => {
+  const onClickAnswerUpdate = async (
+    d: IDataEdit,
+    e: ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     const result = await update_used_item_question_answer({
       variables: {
         updateUseditemQuestionAnswerInput: {
@@ -99,9 +107,18 @@ export default function MarketAnswerPage(props: IProps) {
     setMyindex(-1);
     alert("수정하였습니다.");
   };
+
+  interface IEl {
+    user: {
+      name: string;
+      _id: string;
+    };
+    _id: string;
+    contents: string;
+  }
   return (
     <div>
-      {data?.fetchUseditemQuestionAnswers.map((el, dex: number) =>
+      {data?.fetchUseditemQuestionAnswers.map((el: IEl, dex: number) =>
         myindex !== dex ? (
           <div style={{ marginLeft: 30 }}>
             <div>➤ {el.user.name}</div>

@@ -4,10 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useQueryFetchBoards } from "../../../commons/hooks/queries/board/useQueryFetchBoards";
 import { useQueryFetchBoarCount } from "../../../commons/hooks/queries/board/useQueryFetchBoardCount";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import _ from "lodash";
+import { IBoard } from "../../../commons/types/generated/types";
 
-export default function BoardListUI() {
+export default function BoardListUI(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPageMode();
   const { data, refetch } = useQueryFetchBoards();
   console.log("게시판 리스트 데이터 :", data);
@@ -20,7 +21,7 @@ export default function BoardListUI() {
     refetch({ page: 1, search: search });
     setKeyword(search);
   }, 500);
-  const onChangeSearchButton = (event): void => {
+  const onChangeSearchButton = (event: ChangeEvent<HTMLInputElement>): void => {
     getDebounce(event.target.value);
   };
   const getDot = (str: string) => {
