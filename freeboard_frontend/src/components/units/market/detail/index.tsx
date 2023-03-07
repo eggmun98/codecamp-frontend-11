@@ -328,7 +328,7 @@ export default function MarketDetailPage(): JSX.Element {
           <div
             dangerouslySetInnerHTML={{
               __html: Dompurify.sanitize(
-                "상품 설명:" + data?.fetchUseditem.contents
+                "상품 설명:" + data?.fetchUseditem?.contents
               ),
             }}
           ></div>

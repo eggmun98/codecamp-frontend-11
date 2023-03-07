@@ -95,10 +95,6 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
     data?.fetchUseditem?.useditemAddress?.address
   );
 
-  const [address2, setAddress2] = useState(
-    address !== "" ? address : data?.fetchUseditem.useditemAddress?.address
-  );
-
   // 실질적인 이미지 버튼1
   const onChangeImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // file.name = "imageSrc1.png"
@@ -321,7 +317,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   const onChangeContents = (value: string) => {
     setValue(
       "contents",
-      value === "<p><br></p>" ? data?.fetchUseditem?.contents ?? " " : value
+      value === "<p><br></p>" ? data?.fetchUseditem?.contents ?? "" : value
     );
     console.log("aaaaa", value);
     setQqq(qqq);
@@ -358,8 +354,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
           <W.ReactQuill2
             onChange={onChangeContents}
             modules={modules}
-            value={undefined ? data?.fetchUseditem.contents : qqq}
-
+            value={data?.fetchUseditem.contents}
             // {...register("contents")}
           ></W.ReactQuill2>
           <div>이미지 등록</div>
