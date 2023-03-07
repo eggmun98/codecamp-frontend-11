@@ -11,6 +11,13 @@ import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import * as W from "./writerStyles";
+import {
+  IQuery,
+  IQueryFetchUseditemArgs,
+} from "../../../commons/types/generated/types";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useRecoilState } from "recoil";
 
 const UPLOAD_FILE = gql`
   mutation uploadFile($file: Upload!) {
@@ -47,16 +54,35 @@ declare const window: typeof globalThis & {
 interface IProps {
   isEdit: boolean;
 }
+
+interface IDataWriter {
+  name: string;
+  remarks: string;
+  price: number;
+  contents: string;
+}
+
+const schema = yup.object({
+  name: yup.string().required("dddddd"),
+});
+
 export default function MarketWriterPage(props: IProps): JSX.Element {
   useAuth();
   const router = useRouter();
-  const { data } = useQuery(FETCH_USEDITEM, {
+  const { data } = useQuery<
+    Pick<IQuery, "fetchUseditem">,
+    IQueryFetchUseditemArgs
+  >(FETCH_USEDITEM, {
     variables: {
-      useditemId: router.query.number,
+      useditemId: String(router.query.number),
     },
   });
 
-  const { register, handleSubmit, trigger, setValue } = useForm(); // 나중에 에러 잡을때 contents는 트리거 안에 넣어주기!!
+  const { register, handleSubmit, trigger, setValue, formState } =
+    useForm<IDataWriter>({
+      mode: "onChange",
+      resolver: yupResolver(schema),
+    }); // 나중에 에러 잡을때 contents는 트리거 안에 넣어주기!!
   const [create_used_item] = useMutationItemCreate();
   const [update_used_item] = useMutationItemUpdate();
   const [imageUrls, setImageUrls] = useState(["", "", ""]);
@@ -66,9 +92,11 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
 
   const [address, setAddress] = useState(
-    data?.fetchUseditem.useditemAddress.address
-      ? data?.fetchUseditem.useditemAddress.address
-      : ""
+    data?.fetchUseditem?.useditemAddress?.address
+  );
+
+  const [address2, setAddress2] = useState(
+    address !== "" ? address : data?.fetchUseditem.useditemAddress?.address
   );
 
   // 실질적인 이미지 버튼1
@@ -217,8 +245,11 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   //   카카오맵 지도
 
   useEffect(() => {
-    const script = document.createElement("script");
+    setAddress(
+      address ? address : data?.fetchUseditem?.useditemAddress?.address
+    );
 
+    const script = document.createElement("script");
     script.src =
       "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=546bab6b1ad8e036b1f679bbb9af2e7c&libraries=services";
 
@@ -267,7 +298,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
         });
       });
     };
-  }, [address]);
+  }, [address, data?.fetchUseditem.useditemAddress?.address]);
 
   //
 
@@ -285,8 +316,15 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
     setIsOpen((prev) => !prev);
   };
 
+  const [qqq, setQqq] = useState("");
+
   const onChangeContents = (value: string) => {
-    setValue("contents", value === "<p><br></p>" ? "" : value);
+    setValue(
+      "contents",
+      value === "<p><br></p>" ? data?.fetchUseditem?.contents ?? " " : value
+    );
+    console.log("aaaaa", value);
+    setQqq(qqq);
   };
 
   return (
@@ -304,7 +342,9 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
             {...register("name")}
             defaultValue={data?.fetchUseditem.name}
           ></W.InputStyle01>
-          <div>요약 </div>
+          {/* <div>요약</div> */}
+          <div>요약 {formState.errors.name?.message}</div>
+
           <W.InputStyle01
             {...register("remarks")}
             defaultValue={data?.fetchUseditem.remarks}
@@ -312,13 +352,15 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
           <div>가격</div>
           <W.InputStyle01
             {...register("price")}
-            defaultValue={data?.fetchUseditem.price}
+            defaultValue={Number(data?.fetchUseditem.price ?? "")}
           ></W.InputStyle01>
           <div>상품 내용 </div>
           <W.ReactQuill2
             onChange={onChangeContents}
             modules={modules}
-            defaultValue={data?.fetchUseditem.contents}
+            value={undefined ? data?.fetchUseditem.contents : qqq}
+
+            // {...register("contents")}
           ></W.ReactQuill2>
           <div>이미지 등록</div>
 

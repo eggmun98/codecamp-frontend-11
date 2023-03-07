@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FETCH_USED_ITEM_QUESTIONS_ANSWERS,
@@ -39,20 +39,16 @@ interface IProps {
   };
 }
 
-interface IMarketAnswer {
-  // onClickAnswerDelete?: (event: ChangeEvent<HTMLInputElement>) => void;
-  onClickAnswerUpdate: (event: ChangeEvent<HTMLFormElement>) => void;
+interface IData {
+  contents: string;
 }
 
 export default function MarketAnswerPage(props: IProps) {
-  const { data } = useQuery<Pick<IQuery, "fetchUseditemQuestionAnswers">>(
-    FETCH_USED_ITEM_QUESTIONS_ANSWERS,
-    {
-      variables: {
-        useditemQuestionId: props.el,
-      },
-    }
-  );
+  const { data } = useQuery(FETCH_USED_ITEM_QUESTIONS_ANSWERS, {
+    variables: {
+      useditemQuestionId: props.el,
+    },
+  });
 
   const [myindex, setMyindex] = useState(-1);
 
@@ -63,14 +59,14 @@ export default function MarketAnswerPage(props: IProps) {
     UPDATE_USED_ITEM_QUESTION_ANSWER
   );
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<IData>();
 
   const router = useRouter();
   // 대댓글 삭제버튼
-  const onClickAnswerDelete = async (event: ChangeEvent<HTMLButtonElement>) => {
+  const onClickAnswerDelete = async (event: MouseEvent<HTMLButtonElement>) => {
     await delete_used_item_question_answer({
       variables: {
-        useditemQuestionAnswerId: event.target.id,
+        useditemQuestionAnswerId: event.currentTarget.id,
       },
       refetchQueries: [
         {
@@ -83,25 +79,18 @@ export default function MarketAnswerPage(props: IProps) {
   };
 
   // 대댓글 수정창 열기 버튼
-  const onClickAnswerEdit = (event: ChangeEvent<HTMLInputElement>) => {
-    setMyindex(Number(event.target.id));
+  const onClickAnswerEdit = (event: MouseEvent<HTMLButtonElement>) => {
+    setMyindex(Number(event.currentTarget.id));
   };
 
-  interface IDataEdit {
-    contents: string;
-  }
-
   // 대댓글 수정하는 버튼
-  const onClickAnswerUpdate = async (
-    d: IDataEdit,
-    e: ChangeEvent<HTMLInputElement>
-  ): Promise<void> => {
+  const onClickAnswerUpdate = (el: { _id: string }) => async (data: IData) => {
     const result = await update_used_item_question_answer({
       variables: {
         updateUseditemQuestionAnswerInput: {
-          contents: d.contents,
+          contents: data.contents,
         },
-        useditemQuestionAnswerId: e.target.id,
+        useditemQuestionAnswerId: el._id,
       },
     });
     setMyindex(-1);
@@ -139,7 +128,7 @@ export default function MarketAnswerPage(props: IProps) {
         ) : (
           <div>
             대댓글 수정창
-            <form onSubmit={handleSubmit(onClickAnswerUpdate)} id={el._id}>
+            <form onSubmit={handleSubmit(onClickAnswerUpdate(el))}>
               <input {...register("contents")}></input>
               <button>대댓글 수정하기</button>
             </form>

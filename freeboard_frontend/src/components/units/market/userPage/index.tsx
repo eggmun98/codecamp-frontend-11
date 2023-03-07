@@ -71,7 +71,11 @@ export default function UserPage() {
   const { data } =
     useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
 
-  const { register, handleSubmit } = useForm();
+  interface abc {
+    name: string;
+    point: string;
+  }
+  const { register, handleSubmit } = useForm<abc>();
 
   const { onClickMoveToPage } = useMoveToPageMode();
 
@@ -130,7 +134,7 @@ export default function UserPage() {
     alert("프로필을 수정하였습니다.");
   };
 
-  const onClickPayment = (datas: { point: number }): void => {
+  const onClickPayment = (datas: { point: string }): void => {
     const IMP = window.IMP; // 생략 가능
     IMP.init("imp49910675"); // 예: imp00000000a
 
@@ -153,7 +157,7 @@ export default function UserPage() {
         // callback
         if (rsp.success === true) {
           // 결제 성공 시 로직,
-          router.push("/markets/userPage");
+          router.push("/");
 
           onClickPoint(rsp.imp_uid);
         } else {

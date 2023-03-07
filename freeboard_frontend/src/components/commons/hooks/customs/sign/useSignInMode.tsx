@@ -1,9 +1,11 @@
 import { useMutation, gql } from "@apollo/client";
+import { query } from "firebase/firestore/lite";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../../../../commons/stores";
 
 import { LOGIN_USER } from "../../mutations/board/useMutationLoginUser";
+import { FETCH_USER_LOGGED_IN } from "../../queries/sign/useQueryFetchUserLoggedIn";
 
 const LOGIN_USER_EXAMPLE = gql`
   mutation LoginUserExample($email: String!, $password: String!) {
@@ -26,6 +28,11 @@ export const useSignInMode = () => {
         email: data.email,
         password: data.password,
       },
+      refetchQueries: [
+        {
+          query: FETCH_USER_LOGGED_IN,
+        },
+      ],
     });
     const accessToken = result.data?.loginUserExample.accessToken;
     console.log(accessToken);

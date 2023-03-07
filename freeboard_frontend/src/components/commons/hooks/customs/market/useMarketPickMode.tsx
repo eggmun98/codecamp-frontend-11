@@ -12,7 +12,7 @@ export const useMarketPickMode = () => {
       },
     });
     alert("찜하기 하였습니다.");
-    console.log("토글 픽", toggle_used_item_pick);
+    // console.log("토글 픽", toggle_used_item_pick);
   };
 
   return { onClickPick };

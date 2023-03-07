@@ -96,7 +96,7 @@ export default function MarketDetailPage(): JSX.Element {
   const router = useRouter();
   const [create_used_item_question] = useMutation(CREATE_USED_ITEM_QUESION);
   const [delete_used_item_question] = useMutation(DELETE_USED_ITEM_QUESTION);
-  const [update_used_item] = useMutation(UPDATE_USED_ITEM_QUESTION);
+  const [update_used_item] = useMutation(UPDATE_USED_ITEM_QUESTION); // 이거 오타임 수정하셈~~~~~~~~~~~*****************
   const [create_used_item_question_answer] = useMutation(
     CREATE_USED_ITEM_QUESTION_ANSWER
   );
@@ -109,6 +109,8 @@ export default function MarketDetailPage(): JSX.Element {
 
   interface IDataEdit {
     contentsEdit: string;
+    contents: string;
+    contentsQuestion: string;
   }
 
   const {
@@ -192,20 +194,17 @@ export default function MarketDetailPage(): JSX.Element {
     setMyIndex(-1);
   };
 
-  interface IDataQuestion {
-    contentsQuestion: string;
-  }
   // 대댓글 작성 버튼
   const onClickAnswerCreate = async (
-    data: IDataQuestion,
-    event: ChangeEvent<HTMLButtonElement>
+    data: IDataEdit,
+    event: BaseSyntheticEvent<object, any, any> | undefined
   ) => {
     const result = await create_used_item_question_answer({
       variables: {
         createUseditemQuestionAnswerInput: {
           contents: data.contentsQuestion,
         },
-        useditemQuestionId: event.target.id,
+        useditemQuestionId: event?.target.id,
       },
       refetchQueries: [
         {
@@ -342,13 +341,8 @@ export default function MarketDetailPage(): JSX.Element {
               <img src={`https://storage.googleapis.com/${el}`}></img>
             </div>
           ))}
-
-        {isNaN(data?.fetchUseditem?.useditemAddress?.address) ? (
-          <div id="map" style={{ width: 500, height: 400 }}></div>
-        ) : (
-          <>실패다</>
-        )}
       </div>
+      <div id="map" style={{ width: 500, height: 400 }}></div>
 
       <div>
         {data?.fetchUseditem.seller._id === UserData?.fetchUserLoggedIn._id ? (

@@ -3,7 +3,7 @@ import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { useMoveToPageMode } from "../../../commons/hooks/customs/useMoveToPageMode";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import _ from "lodash";
-import { IBoard } from "../../../commons/types/generated/types";
+import { IBoard, IUseditem } from "../../../commons/types/generated/types";
 import * as L from "./liststyles";
 import { useRouter } from "next/router";
 
@@ -74,16 +74,16 @@ export default function MarKetListPage() {
             ...prev.fetchUseditems,
             ...fetchMoreResult.fetchUseditems,
           ],
-          // 전체 댓글: 이전 상품들 + 다음 상품들
+          // 전체 상품: 이전 상품들 + 다음 상품들
         };
       },
     });
   };
 
   // 오늘 본 상품
-  const onClickBasket = (basket: IBoard) => {
+  const onClickBasket = (basket: IUseditem) => {
     // 1. 기존에 본 상품 가져오기!
-    const baskets: IBoard[] = JSON.parse(
+    const baskets: IUseditem[] = JSON.parse(
       localStorage.getItem("baskets") ?? "[]"
     );
 
@@ -111,10 +111,16 @@ export default function MarKetListPage() {
   //   setBaskets(JSON.parse(localStorage.getItem("baskets") ?? "[]"));
   // }, []);
 
-  // interface qqq
+  interface qqq {
+    name: string;
+    images: string[];
+    _id: string;
+    price: string;
+    pickedCount: string;
+  }
 
   // 오늘 본 상품에 담으면서 디테일 페이지 이동 버튼!!
-  const onClickBasketMove = (el) => () => {
+  const onClickBasketMove = (el: IUseditem) => () => {
     router.push("/markets/market/" + el._id);
     onClickBasket(el);
   };
@@ -131,34 +137,26 @@ export default function MarKetListPage() {
         <button>필터</button>
       </div>
       <L.Scroll pageStart={0} loadMore={onLoadMore} hasMore={true}>
-        {data?.fetchUseditems.map(
-          (el: {
-            name: string;
-            images: string[];
-            _id: string;
-            price: string;
-            pickedCount: string;
-          }) => (
-            <L.ProductWrapper
-              id={el._id}
-              onClick={onClickBasketMove(el)}
-              key={el._id}
-            >
-              <L.ImageWrapper
-                src={
-                  el.images[0]
-                    ? `https://storage.googleapis.com/${el.images[0]}`
-                    : `${ramen[Math.floor(Math.random() * 10)]}`
-                }
-              ></L.ImageWrapper>
+        {data?.fetchUseditems.map((el: IUseditem) => (
+          <L.ProductWrapper
+            id={el._id}
+            onClick={onClickBasketMove(el)}
+            key={el._id}
+          >
+            <L.ImageWrapper
+              src={
+                el.images?.[0]
+                  ? `https://storage.googleapis.com/${el.images[0]}`
+                  : `${ramen[Math.floor(Math.random() * 10)]}`
+              }
+            ></L.ImageWrapper>
 
-              <div>{el.name}</div>
-              <div>{el.price}원</div>
-              <div>{el.pickedCount}</div>
-              {/* <button onClick={onClickBesket(el)}>오늘 본 상품</button>  */}
-            </L.ProductWrapper>
-          )
-        ) ?? <div></div>}
+            <div>{el.name}</div>
+            <div>{el.price}원</div>
+            <div>{el.pickedCount}</div>
+            {/* <button onClick={onClickBesket(el)}>오늘 본 상품</button>  */}
+          </L.ProductWrapper>
+        )) ?? <div></div>}
       </L.Scroll>
     </L.MainWrapper>
   );

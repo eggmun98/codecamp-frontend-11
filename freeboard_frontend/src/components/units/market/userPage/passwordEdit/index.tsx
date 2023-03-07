@@ -9,17 +9,21 @@ const RESET_USER_PASSWORD = gql`
   }
 `;
 
+interface IData {
+  password: number;
+}
+
 export default function PasswordEditPage() {
   useAuth();
 
   const [reset_user_password] = useMutation(RESET_USER_PASSWORD);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<IData>();
 
-  const onClickPasswordEdit = async (data: { password: string }) => {
+  const onClickPasswordEdit = async (data: { password: number }) => {
     console.log(data.password);
     await reset_user_password({
       variables: {
-        password: String(data.password),
+        password: data.password,
       },
     });
     alert("비밀번호를 변경하였습니다.");
