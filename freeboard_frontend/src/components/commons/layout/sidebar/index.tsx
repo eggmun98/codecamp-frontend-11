@@ -45,8 +45,9 @@ export default function SideBarPage() {
         <Button>즐겨 찾기</Button>
         {/* <Button onClick={onClickMoveToPage("/boards")}>자유 게시판</Button> */}
         <Link href={"/boards"}>
-          <a>자유 게시판</a>
+          <a style={{ color: "red" }}>자유 게시판</a>
         </Link>
+        <div onClick={onClickMoveToPage("/boards")}></div>
         {/* <Button onClick={onClickMoveToPage("/boards")}>중고 마켓</Button> */}
         <Link href={"/markets"}>
           <a>중고 마켓</a>

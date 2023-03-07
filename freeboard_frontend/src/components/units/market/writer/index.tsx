@@ -320,7 +320,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
       value === "<p><br></p>" ? data?.fetchUseditem?.contents ?? "" : value
     );
     console.log("aaaaa", value);
-    setQqq(qqq);
+    setQqq(value === "<p><br>p>" ? data?.fetchUseditem.contents ?? "" : value);
   };
 
   return (
@@ -354,7 +354,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
           <W.ReactQuill2
             onChange={onChangeContents}
             modules={modules}
-            value={data?.fetchUseditem.contents}
+            value={qqq ? qqq : data?.fetchUseditem.contents}
             // {...register("contents")}
           ></W.ReactQuill2>
           <div>이미지 등록</div>
