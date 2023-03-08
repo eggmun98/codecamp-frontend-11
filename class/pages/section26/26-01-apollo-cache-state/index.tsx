@@ -59,7 +59,7 @@ export default function StaticRoutingMovedPage(): JSX.Element {
                 (el) => readField("_id", el) !== deletedId
               ); // el._id를 그대로 못불러오니 readField 함수를 이용하여한다 readField("_id", el)뜻은 el에서 _id를 가져온다
               return [...filteredPrev];
-              //이전 값이 prev로 담아져 옴
+              // 이전 값이 prev로 담아져 옴
               //   const deletedId = data.deleteBoard; // 삭제 완료된 ID
               //   const filteredPrev = prev.filter((el) => el._id !== deletedId); // 삭제 안된것들만 다시 돌려줘! // prev안에 el이 객체로 안들어와서 el._id 못쓸거임
               //   return [...filteredPrev]; // 삭제된 id를 제외한 나머지 9개만 리턴!!

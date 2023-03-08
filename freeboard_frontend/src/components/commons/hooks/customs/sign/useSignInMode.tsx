@@ -1,11 +1,16 @@
-import { useMutation, gql } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { query } from "firebase/firestore/lite";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
+import { getAccessToken } from "../../../../../commons/libraries/getAccessToken";
 import { accessTokenState } from "../../../../../commons/stores";
 
 import { LOGIN_USER } from "../../mutations/board/useMutationLoginUser";
-import { FETCH_USER_LOGGED_IN } from "../../queries/sign/useQueryFetchUserLoggedIn";
+import {
+  FETCH_USER_LOGGED_IN,
+  useQueryFetchUserLoggedIn,
+} from "../../queries/sign/useQueryFetchUserLoggedIn";
 
 const LOGIN_USER_EXAMPLE = gql`
   mutation LoginUserExample($email: String!, $password: String!) {
@@ -21,6 +26,10 @@ export const useSignInMode = () => {
   const [login_user] = useMutation(LOGIN_USER);
   const [login_User_Example] = useMutation(LOGIN_USER_EXAMPLE);
 
+  useEffect(() => {
+    getAccessToken();
+  });
+
   const onClickLoginButton = async (data): Promise<void> => {
     console.log(data);
     const result = await login_User_Example({
@@ -35,7 +44,7 @@ export const useSignInMode = () => {
       ],
     });
     const accessToken = result.data?.loginUserExample.accessToken;
-    console.log(accessToken);
+    console.log("@@@@@@@@@@@@", accessToken);
 
     if (accessToken === undefined) {
       alert("로그인에 실패하였습니다. 다시 시도해주세요!");
@@ -43,7 +52,8 @@ export const useSignInMode = () => {
     }
     setAccessToken(accessToken);
     // localStorage.setItem("accessToken", accessToken);
-    router.push("/boards");
+
+    router.push("/markets");
   };
 
   return { onClickLoginButton };

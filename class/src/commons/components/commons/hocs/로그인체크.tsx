@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { getAccessToken } from "../libraries/getAccessToken";
-import { restoreAccessTokenLoadable } from "../stores";
-import { useRecoilValueLoadable } from "recoil";
+import { accessTokenState, restoreAccessTokenLoadable } from "../stores";
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
 
 export const 로그인체크 = (컴포넌트: any) => (프롭스: any) => {
   const router = useRouter();

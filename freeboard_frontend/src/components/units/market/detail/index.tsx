@@ -28,6 +28,8 @@ import { useMutationToggleUsedItemPick } from "../../../commons/hooks/mutations/
 import { useMarketPickMode } from "../../../commons/hooks/customs/market/useMarketPickMode";
 import { useQueryFetchUserLoggedIn } from "../../../commons/hooks/queries/sign/useQueryFetchUserLoggedIn";
 import { FETCH_USED_ITEM_QUESTIONS_ANSWERS } from "../../../commons/hooks/queries/product/Answer/useQueryFetchUsedItemAnswers";
+import { accessTokenState } from "../../../../commons/stores";
+import { useRecoilState } from "recoil";
 
 const DELETE_USED_ITEM_QUESTION = gql`
   mutation deleteUseditemQuestion($useditemQuestionId: ID!) {
@@ -333,6 +335,17 @@ export default function MarketDetailPage(): JSX.Element {
             }}
           ></div>
         )}
+        {data?.fetchUseditem.tags.map((el) => (
+          <div
+            style={{
+              border: "1px  solid  black",
+              color: "red",
+              margin: 10,
+            }}
+          >
+            {el}
+          </div>
+        ))}
         {data?.fetchUseditem.images
           ?.filter((el: string) => el)
           .map((el: string) => (

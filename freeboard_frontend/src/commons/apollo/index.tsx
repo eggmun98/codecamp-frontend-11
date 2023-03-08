@@ -29,6 +29,7 @@ export default function ApolloSetting(props: IApolloSettingProps): JSX.Element {
     // console.log(result);
     // setAccessToken(result ?? "");
     void aaa.toPromise().then((newAccessToken) => {
+      console.log(newAccessToken, "apollo");
       setAccessToken(newAccessToken ?? "");
     });
   }, []);
@@ -69,7 +70,7 @@ export default function ApolloSetting(props: IApolloSettingProps): JSX.Element {
   });
 
   const client = new ApolloClient({
-    link: ApolloLink.from([uploadLink]),
+    link: ApolloLink.from([errorLink, uploadLink]),
     // uri: "http://backend-practice.codebootcamp.co.kr/graphql",
     cache: GLOBAL_STATE, // 이렇게 해줌으로써 페이지 이동될 때마다 그래프큐엘이 실행되는거 막아줌!!
   });

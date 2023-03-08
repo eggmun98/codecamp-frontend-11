@@ -10,6 +10,7 @@ export const FETCH_USEDITEM = gql`
       contents
       price
       images
+      tags
       seller {
         name
         _id

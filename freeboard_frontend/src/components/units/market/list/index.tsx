@@ -6,6 +6,8 @@ import _ from "lodash";
 import { IBoard, IUseditem } from "../../../commons/types/generated/types";
 import * as L from "./liststyles";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../../../commons/stores";
 
 const FETCH_USED_ITEMS = gql`
   query fetchUseditems($page: Int, $search: String) {
@@ -40,7 +42,10 @@ const ramen = [
 ];
 
 export default function MarKetListPage() {
-  useAuth();
+  const accessToken = useRecoilState(accessTokenState)[0];
+  console.log("====================");
+  console.log("detiail accesstoken", accessToken);
+  // useAuth();
 
   const { data, fetchMore, refetch } = useQuery(FETCH_USED_ITEMS);
 

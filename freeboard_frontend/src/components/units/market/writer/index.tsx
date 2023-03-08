@@ -35,6 +35,7 @@ const FETCH_USEDITEM = gql`
       remarks
       contents
       price
+      tags
       images
       seller {
         name
@@ -87,6 +88,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   const [update_used_item] = useMutationItemUpdate();
   const [imageUrls, setImageUrls] = useState(["", "", ""]);
   const fileRef = useRef(null);
+  const [tag, setTag] = useState("");
 
   const [upload_file] = useMutation(UPLOAD_FILE);
   const [isOpen, setIsOpen] = useState(false);
@@ -179,9 +181,11 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
     remarks: string;
     price: number;
     contents: string;
+    tag: string[];
   }
   // 상품 등록 버튼
   const onClickCreateProduct = async (data: IDataWriter) => {
+    console.log(data.tag.split("#").filter((el: string) => el !== ""));
     const result = await create_used_item({
       variables: {
         createUseditemInput: {
@@ -189,6 +193,10 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
           remarks: data.remarks,
           price: Number(data.price),
           contents: data.contents,
+          tags: data.tag
+            .split("#")
+            .filter((el: string) => el !== "")
+            .map((el) => "#" + el),
           images: [...imageUrls],
           useditemAddress: {
             address: address,
@@ -206,6 +214,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
     remarks: string;
     price: number;
     contents: string;
+    tag: string[];
   }
   // 상품 수정 버튼
   const onClickUpdateProduct = async (data: IDataEdit): Promise<void> => {
@@ -217,6 +226,10 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
             remarks: data.remarks,
             price: Number(data.price),
             contents: data.contents,
+            tags: data.tag
+              .split("#")
+              .filter((el: string) => el !== "")
+              .map((el) => "#" + el),
             useditemAddress: {
               address: address,
             },
@@ -300,6 +313,10 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
 
   //
 
+  const onChangeTag = (e) => {
+    setTag(e.target.value.split("#").filter((el) => el !== ""));
+  };
+
   //
 
   const handleComplete = (Data: Address) => {
@@ -357,6 +374,15 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
             value={qqq ? qqq : data?.fetchUseditem.contents}
             // {...register("contents")}
           ></W.ReactQuill2>
+          <div>
+            <div>태그 입력</div>
+            <input
+              style={{ width: 500 }}
+              {...register("tag")}
+              defaultValue={data?.fetchUseditem?.tags?.join("")}
+            ></input>
+          </div>
+
           <div>이미지 등록</div>
 
           {imageUrls.map((el, index) => (
