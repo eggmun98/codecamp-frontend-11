@@ -1,19 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import {
-  BaseSyntheticEvent,
-  ChangeEvent,
-  MouseEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  useForm,
-  Controller,
-  SubmitHandler,
-  FieldValues,
-} from "react-hook-form";
+import { BaseSyntheticEvent, MouseEvent, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import Dompurify from "dompurify";
 import MarketAnswerPage from "../marketComment/marketAnswer";
@@ -24,12 +12,9 @@ import { useQueryFetchUsedItem } from "../../../commons/hooks/queries/product/us
 import { useQueryFetchQuestion } from "../../../commons/hooks/queries/product/Question/useQueryFetchQuestion";
 import { FETCH_USED_ITEM_QUESTIONS } from "../../../commons/hooks/queries/product/Question/useQueryFetchQuestion";
 import { useMarketDeleteMode } from "../../../commons/hooks/customs/market/useMarketDeleteMode";
-import { useMutationToggleUsedItemPick } from "../../../commons/hooks/mutations/product/useMutationToggleUsedItemPick";
+
 import { useMarketPickMode } from "../../../commons/hooks/customs/market/useMarketPickMode";
 import { useQueryFetchUserLoggedIn } from "../../../commons/hooks/queries/sign/useQueryFetchUserLoggedIn";
-import { FETCH_USED_ITEM_QUESTIONS_ANSWERS } from "../../../commons/hooks/queries/product/Answer/useQueryFetchUsedItemAnswers";
-import { accessTokenState } from "../../../../commons/stores";
-import { useRecoilState } from "recoil";
 
 const DELETE_USED_ITEM_QUESTION = gql`
   mutation deleteUseditemQuestion($useditemQuestionId: ID!) {
@@ -208,12 +193,12 @@ export default function MarketDetailPage(): JSX.Element {
         },
         useditemQuestionId: event?.target.id,
       },
-      refetchQueries: [
-        {
-          query: FETCH_USED_ITEM_QUESTIONS_ANSWERS,
-          variables: { useditemId: router.query.number },
-        },
-      ],
+      // refetchQueries: [
+      //   {
+      //     query: FETCH_USED_ITEM_QUESTIONS_ANSWERS,
+      //     variables: { useditemId: router.query.number },
+      //   },
+      // ],
     });
     alert("대댓글 달았음");
     setAnswerIndex(-1);
@@ -335,7 +320,7 @@ export default function MarketDetailPage(): JSX.Element {
             }}
           ></div>
         )}
-        {data?.fetchUseditem.tags.map((el) => (
+        {data?.fetchUseditem.tags.map((el: string) => (
           <div
             style={{
               border: "1px  solid  black",

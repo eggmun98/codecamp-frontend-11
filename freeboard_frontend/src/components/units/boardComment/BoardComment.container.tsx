@@ -80,7 +80,7 @@ export default function BoardCommentPage() {
   // 수정창 내용 체크
   const upContentsCheck = (event: ChangeEvent<HTMLInputElement>) => {
     setUpContents(event.target.value);
-    setUpLength(event.target.value.length);
+    setUpLength(Number(event.target.value.length));
     setUpLengthBoolean(true); // 트루면 현재 댓글 길이
   };
 
@@ -249,7 +249,6 @@ export default function BoardCommentPage() {
         };
       },
     });
-    console.log(CommentsData);
   };
 
   return (

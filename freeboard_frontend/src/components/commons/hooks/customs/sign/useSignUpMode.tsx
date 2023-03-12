@@ -5,7 +5,11 @@ export const useSignUpMode = () => {
   const router = useRouter();
   const [create_user] = useMutationCreateUser();
 
-  const onClickSignUp = async (data) => {
+  const onClickSignUp = async (data: {
+    email: string;
+    password: string;
+    name: string;
+  }) => {
     const result = await create_user({
       variables: {
         createUserInput: {

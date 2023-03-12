@@ -13,3 +13,8 @@ export const restoreAccessTokenLoadable = selector({
     return newAccessToken;
   },
 });
+
+export const storeGetBaskets = atom({
+  key: "storeGetBaskets",
+  default: 0,
+});

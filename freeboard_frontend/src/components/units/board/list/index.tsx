@@ -11,7 +11,7 @@ import { IBoard } from "../../../commons/types/generated/types";
 export default function BoardListUI(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPageMode();
   const { data, refetch } = useQueryFetchBoards();
-  console.log("게시판 리스트 데이터 :", data);
+
   const { data: dataCount } = useQueryFetchBoarCount();
   // const { onChangeSearchButton, keyword, getDebounce } = getDebounceMode();
 
@@ -30,8 +30,13 @@ export default function BoardListUI(): JSX.Element {
 
   const start = number * 10;
   const originalLast = dataCount?.fetchBoardsCount;
-  console.log("오리지널라스트", originalLast);
-  console.log("스타트", start);
+
+  interface IEl {
+    writer: string;
+    _id: string;
+    title: string;
+    createdAt: string;
+  }
 
   return (
     <L.Wrapper>
@@ -54,7 +59,7 @@ export default function BoardListUI(): JSX.Element {
             </L.TableHead>
           </tr>
         </thead>
-        {data?.fetchBoards.map((el, index) => (
+        {data?.fetchBoards.map((el, index: number) => (
           <tbody key={index}>
             <tr>
               <L.TableData style={{ textAlign: "start", paddingLeft: "50px" }}>

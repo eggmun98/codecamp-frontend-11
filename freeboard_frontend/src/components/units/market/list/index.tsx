@@ -7,7 +7,7 @@ import { IBoard, IUseditem } from "../../../commons/types/generated/types";
 import * as L from "./liststyles";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
-import { accessTokenState } from "../../../../commons/stores";
+import { accessTokenState, storeGetBaskets } from "../../../../commons/stores";
 
 const FETCH_USED_ITEMS = gql`
   query fetchUseditems($page: Int, $search: String) {
@@ -43,8 +43,7 @@ const ramen = [
 
 export default function MarKetListPage() {
   const accessToken = useRecoilState(accessTokenState)[0];
-  console.log("====================");
-  console.log("detiail accesstoken", accessToken);
+
   // useAuth();
 
   const { data, fetchMore, refetch } = useQuery(FETCH_USED_ITEMS);
@@ -85,6 +84,8 @@ export default function MarKetListPage() {
     });
   };
 
+  const [getBaskets, setGetBaskets] = useRecoilState(storeGetBaskets);
+
   // 오늘 본 상품
   const onClickBasket = (basket: IUseditem) => {
     // 1. 기존에 본 상품 가져오기!
@@ -96,25 +97,20 @@ export default function MarKetListPage() {
     const temp = baskets.filter((el) => el._id === basket._id);
     if (temp.length >= 1) {
       // temp의 길이가 1이상이거나 같다면 오류메세지 띄우기!!
-      // alert("이미 담으신 물품 ㅇ비니다!!");
       return;
     }
 
-    // const { __typename, ...rest } = baskets.push(basket);
     // 3. 내가 클릭한거 추가하기
     baskets.push(basket);
 
     // 4. 추가된 상품 저장하기
     localStorage.setItem("baskets", JSON.stringify(baskets));
     // return basket;
+
+    setGetBaskets(JSON.parse(localStorage.baskets).length);
+
+    console.log("9999999999", getBaskets);
   };
-
-  // const [baskets, setBaskets] = useState();
-
-  // useEffect(() => {
-  //   // Perform localStorage action
-  //   setBaskets(JSON.parse(localStorage.getItem("baskets") ?? "[]"));
-  // }, []);
 
   interface qqq {
     name: string;

@@ -31,7 +31,6 @@ export const useSignInMode = () => {
   });
 
   const onClickLoginButton = async (data): Promise<void> => {
-    console.log(data);
     const result = await login_User_Example({
       variables: {
         email: data.email,
@@ -44,7 +43,6 @@ export const useSignInMode = () => {
       ],
     });
     const accessToken = result.data?.loginUserExample.accessToken;
-    console.log("@@@@@@@@@@@@", accessToken);
 
     if (accessToken === undefined) {
       alert("로그인에 실패하였습니다. 다시 시도해주세요!");

@@ -9,9 +9,16 @@ import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_BOARD, UPDATE_BOARD, FETCH_BOARD } from "./BoardWrite.queries";
 import { IUpdateBoardInput } from "../../../commons/types/generated/types";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { schema } from "./BoardWrite.validation";
 import { useQueryFetchBoard } from "../../../commons/hooks/queries/board/useQueryFetchBoard";
+
+interface IData {
+  writer: string;
+  title: string;
+  password: string;
+  contents: string;
+  youtubeUrl: string;
+  addressDetail: string;
+}
 
 export default function BoardWriteUI(props: any): JSX.Element {
   const router = useRouter();
@@ -27,7 +34,7 @@ export default function BoardWriteUI(props: any): JSX.Element {
 
   const [fileUrls, setFileUrls] = useState(["", "", ""]);
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<IData>({
     // resolver: yupResolver(schema),
     // mode: "onChange",
   });
@@ -44,24 +51,15 @@ export default function BoardWriteUI(props: any): JSX.Element {
 
   useEffect(() => {
     const images = boardData?.fetchBoard.images;
-    console.log("image:는?? ", images);
+
     if (images !== undefined && images !== null) setFileUrls([...images]);
   }, [boardData]);
   // 서버에서 이미지 데이터를 가져온다 그리고 const images 변수에 담는다
   // 그리고 만약 images가 언디파인드랑 널값이 아니라면 setfileUrls는 [...images]을 할당해 준다.
   // 그리고 [data]가 변할때마다 실행!
 
-  interface IProps {
-    writer: string;
-    title: string;
-    password: string;
-    contents: string;
-    youtubeUrl: string;
-    addressDetail: string;
-  }
-
   // 게시글 등록 버튼과 공백 체크
-  const onClickCreateButton = async (data: IProps) => {
+  const onClickCreateButton = async (data: IData) => {
     const result = await create_board({
       variables: {
         createBoardInput: {
@@ -115,7 +113,7 @@ export default function BoardWriteUI(props: any): JSX.Element {
 
   const handleComplete = (boardData: any) => {
     addressShowModal();
-    console.log(boardData);
+
     setAddress(boardData.address);
     setZipcode(boardData.zonecode);
     // setZipcode(data.zipcode);
@@ -237,6 +235,18 @@ export default function BoardWriteUI(props: any): JSX.Element {
               onChangeFileUrls={onChangeFileUrls}
             />
           ))}
+          {/* 
+           useRef는 각각 써줘야 한다. 그게 무슨 말이나면 useRef는 돔을 건드리기 때문에 즉 useRef를 쓴다면 useRef를 최종적으로 쓴게 먹을거다
+           그래서 위의 방식처럼 컴포넌트를 반복문으로 뿌려준다면 각 고유의 컴포넌트 3개가 생길거다
+           그러면 그 각 컴포넌트에 useRef가 선언 되었기 때문에 
+           useRef가 각각 생성된다
+           즉 현재 저 반복문은 3개의 컴포넌트를 만들어 주니
+           3개의 useRef가 만들어 진다는거다.
+           그러면 useRef가 다 다르니 각각으로 작동이 될거다
+           이렇게 useRef를 각각 안쓰고 하나로 쓴다면 
+           하나가 같이 작동되어서 즉 배열의 인덱스가 0 1 2 라면 즉 마지막 2만 작동이 될거다
+           즉 0 번째 컴포넌트를 눌러도 2 번째 컴포넌트가 작동이 될거다!
+        */}
         </W.ImageWrapper>
         <W.OptionWrapper>
           <W.Label>메인설정</W.Label>

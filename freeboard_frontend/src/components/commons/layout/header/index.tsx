@@ -6,6 +6,8 @@ import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { IMutation, IQuery } from "../../types/generated/types";
 import { useMoveToPageMode } from "../../hooks/customs/useMoveToPageMode";
+import { useRecoilState } from "recoil";
+import { storeGetBaskets } from "../../../../commons/stores";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -127,7 +129,6 @@ export default function HeaderPage() {
     const result = await client.query({
       query: FETCH_USER_LOGGED_IN,
     });
-    console.log("onClickButton result:", result);
   };
 
   const [logout_user] = useMutation<Pick<IMutation, "logoutUser">>(LOGOUT_USER);
@@ -141,11 +142,13 @@ export default function HeaderPage() {
     }
   };
 
+  const [getBaskets, setGetBaskets] = useRecoilState(storeGetBaskets);
+
   return (
     <>
       <Wrapper>
         <LeftWrapper onClick={onClickMoveToPage("/boards")}>
-          {/* <LogoImg src="/header/myLogo.png"></LogoImg>  */}
+          <div>{getBaskets}</div>
 
           <LogoTitle>Precious Time</LogoTitle>
         </LeftWrapper>

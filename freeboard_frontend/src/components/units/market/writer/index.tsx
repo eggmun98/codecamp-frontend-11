@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useMutationItemCreate } from "../../../commons/hooks/mutations/product/useMutationItemCreate";
 import { useMutationItemUpdate } from "../../../commons/hooks/mutations/product/useMutationItemUpdate";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Modal } from "antd";
 import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
@@ -17,7 +17,6 @@ import {
 } from "../../../commons/types/generated/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useRecoilState } from "recoil";
 
 const UPLOAD_FILE = gql`
   mutation uploadFile($file: Upload!) {
@@ -87,7 +86,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   const [create_used_item] = useMutationItemCreate();
   const [update_used_item] = useMutationItemUpdate();
   const [imageUrls, setImageUrls] = useState(["", "", ""]);
-  const fileRef = useRef(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [tag, setTag] = useState("");
 
   const [upload_file] = useMutation(UPLOAD_FILE);
@@ -98,14 +97,16 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   );
 
   // 실질적인 이미지 버튼1
-  const onChangeImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]; // file.name = "imageSrc1.png"
-    const result = await upload_file({
-      variables: { file: file },
-    });
-    onChangeImageUrls(result.data?.uploadFile.url, Number(event.target.id));
-    //  result.data?.uploadFile.url = imageSrc1.png
-  };
+  const onChangeImageUpload =
+    (index: number) => async (event: ChangeEvent<HTMLInputElement>) => {
+      console.log("djkdlsjslfkdjl", index);
+      const file = event.target.files?.[0]; // file.name = "imageSrc1.png"
+      const result = await upload_file({
+        variables: { file: file },
+      });
+      onChangeImageUrls(result.data?.uploadFile.url, index);
+      //  result.data?.uploadFile.url = imageSrc1.png
+    };
 
   // 이미지 버튼 함수2
   const onChangeImageUrls = (imageUrl: string, index: number) => {
@@ -115,9 +116,13 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
   };
 
   // 숨겨진 이미지 버튼3
-  // const onClickImageNonoMode = () => {
-  //   fileRef.current?.click();
-  // };
+  const onClickImageNonoMode = () => {
+    if (fileRef.current !== null) {
+      fileRef.current.click();
+    }
+  };
+  // useRef는 각각 써줘야 한다!!
+  // 그래서 멘토님께서 이미지 컴포넌트를 나누어서 한거다
 
   const modules = {
     toolbar: {
@@ -181,11 +186,10 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
     remarks: string;
     price: number;
     contents: string;
-    tag: string[];
+    tag: string;
   }
   // 상품 등록 버튼
   const onClickCreateProduct = async (data: IDataWriter) => {
-    console.log(data.tag.split("#").filter((el: string) => el !== ""));
     const result = await create_used_item({
       variables: {
         createUseditemInput: {
@@ -194,6 +198,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
           price: Number(data.price),
           contents: data.contents,
           tags: data.tag
+            .replaceAll(" ", "")
             .split("#")
             .filter((el: string) => el !== "")
             .map((el) => "#" + el),
@@ -214,7 +219,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
     remarks: string;
     price: number;
     contents: string;
-    tag: string[];
+    tag: string;
   }
   // 상품 수정 버튼
   const onClickUpdateProduct = async (data: IDataEdit): Promise<void> => {
@@ -227,6 +232,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
             price: Number(data.price),
             contents: data.contents,
             tags: data.tag
+              .replaceAll(" ", "")
               .split("#")
               .filter((el: string) => el !== "")
               .map((el) => "#" + el),
@@ -244,10 +250,6 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
       if (error instanceof Error) alert(error.message);
     }
   };
-
-  //
-
-  //
 
   //
 
@@ -313,10 +315,6 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
 
   //
 
-  const onChangeTag = (e) => {
-    setTag(e.target.value.split("#").filter((el) => el !== ""));
-  };
-
   //
 
   const handleComplete = (Data: Address) => {
@@ -336,7 +334,7 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
       "contents",
       value === "<p><br></p>" ? data?.fetchUseditem?.contents ?? "" : value
     );
-    console.log("aaaaa", value);
+
     setQqq(value === "<p><br>p>" ? data?.fetchUseditem.contents ?? "" : value);
   };
 
@@ -391,12 +389,12 @@ export default function MarketWriterPage(props: IProps): JSX.Element {
                 style={{ width: 50, height: 50 }}
                 // onClick={onClickImageNonoMode}
                 src={"https:/storage.googleapis.com/" + imageUrls[index]}
+                onClick={onClickImageNonoMode}
               ></img>
               <input
                 type="file"
-                id={String(index)}
-                // style={{ display: "none" }}
-                onChange={onChangeImageUpload}
+                ref={fileRef}
+                onChange={onChangeImageUpload(index)}
               ></input>
             </div>
           ))}

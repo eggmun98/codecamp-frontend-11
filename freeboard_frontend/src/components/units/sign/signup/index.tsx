@@ -1,10 +1,17 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as U from "./SignUp.styles";
 import { useForm } from "react-hook-form";
 import { useSignUpMode } from "../../../commons/hooks/customs/sign/useSignUpMode";
+import { introspectionFromSchema } from "graphql";
 
-export default function SignUpPage() {
-  const { register, handleSubmit, formState } = useForm({});
+interface IData {
+  email: string;
+  password: string;
+  passwordCheck: string;
+  name: string;
+}
+
+export default function SignUpPage(): JSX.Element {
+  const { register, handleSubmit } = useForm<IData>();
   const { onClickSignUp } = useSignUpMode();
 
   return (

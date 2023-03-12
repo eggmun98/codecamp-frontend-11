@@ -88,14 +88,9 @@ export default function UserPage() {
     variables: { search: "" },
   });
 
-  console.log("픽데이터", PickData);
-
   const { data: CountData } = useQuery(FETCH_USED_ITEM_COUNT_IPICKED);
-  console.log(CountData);
 
   const [image, setImage] = useState("");
-
-  console.log(" 픽 데이터", PickData);
 
   const router = useRouter();
 
@@ -181,14 +176,10 @@ export default function UserPage() {
       const getDataLocalStorage = () => {
         let localData = JSON.parse(localStorage.getItem("baskets") ?? "");
         setAaa(localData);
-        // return localData;
       };
       getDataLocalStorage();
-      // let localData = getDataLocalStorage("baskets");
-      // // qqq = localData;
-      // setAaa(localData);
     }
-  }, []);
+  }, [aaa]);
   // console.log("aaa는 무엇인가", aaa?.length);
   // useEffect(() => {
   //   const arr = new Array(10).fill("sdfdsf").localStorage.getItem("baskets");

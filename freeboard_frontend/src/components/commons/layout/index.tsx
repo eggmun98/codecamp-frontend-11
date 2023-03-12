@@ -6,6 +6,9 @@ import SubBarPage from "./subbar";
 import FooterPage from "./footer";
 import { gql } from "@apollo/client";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
+import { storeGetBaskets } from "../../../commons/stores";
+import { useEffect } from "react";
 
 export const FETCH_BOARDS = gql`
   query fetchBoards($page: Int) {
@@ -52,9 +55,13 @@ export default function LayoutPage(props) {
   const HIDDEN_LAYOUT = ["/boards", "/mypage"];
   const HIDDEN_SIGN = ["/sign/signup", "/sign/signin"];
 
-  console.log(router);
   const hidden_layout = HIDDEN_LAYOUT.includes(router.asPath);
   const hidden_sign = HIDDEN_SIGN.includes(router.asPath);
+
+  const [_, setDdd] = useRecoilState(storeGetBaskets);
+  useEffect(() => {
+    setDdd(JSON.parse(localStorage.baskets).length);
+  }, []);
 
   return (
     <MainDesign>

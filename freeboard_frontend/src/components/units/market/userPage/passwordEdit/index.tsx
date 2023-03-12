@@ -20,7 +20,6 @@ export default function PasswordEditPage() {
   const { register, handleSubmit } = useForm<IData>();
 
   const onClickPasswordEdit = async (data: { password: number }) => {
-    console.log(data.password);
     await reset_user_password({
       variables: {
         password: data.password,
