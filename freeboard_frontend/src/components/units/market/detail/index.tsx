@@ -243,8 +243,8 @@ export default function MarketDetailPage(): JSX.Element {
         // 주소-좌표 변환 객체를 생성합니다
         let geocoder = new window.kakao.maps.services.Geocoder();
 
-        map.setDraggable(false);
-        map.setZoomable(false);
+        // map.setDraggable(false);
+        // map.setZoomable(false);
 
         // 주소로 좌표를 검색합니다
         geocoder.addressSearch(
@@ -340,7 +340,7 @@ export default function MarketDetailPage(): JSX.Element {
             </div>
           ))}
       </div>
-      <div id="map" style={{ width: 500, height: 400 }}></div>
+      <div id="map" style={{ width: 1200, height: 800 }}></div>
 
       <div>
         {data?.fetchUseditem.seller._id === UserData?.fetchUserLoggedIn._id ? (

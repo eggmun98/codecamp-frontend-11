@@ -57,7 +57,6 @@ const logomove = keyframes`
     transform: translate(0px, 0px)
   }
 
-
 `;
 
 const LeftWrapper = styled.div`

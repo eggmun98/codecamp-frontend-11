@@ -33,6 +33,8 @@ export default function NoticeWriterPage() {
       title: title,
       contents: contents,
     });
+    alert("글을 작성하였습니다!");
+    console.log("board이다이다", board);
   };
   return (
     <>
