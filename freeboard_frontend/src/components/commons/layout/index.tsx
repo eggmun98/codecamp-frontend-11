@@ -59,9 +59,9 @@ export default function LayoutPage(props) {
   const hidden_sign = HIDDEN_SIGN.includes(router.asPath);
 
   const [_, setDdd] = useRecoilState(storeGetBaskets);
-  useEffect(() => {
-    setDdd(JSON.parse(localStorage.baskets).length);
-  }, []);
+  // useEffect(() => {
+  //   setDdd(JSON.parse(localStorage.baskets).length);
+  // }, []);
 
   return (
     <MainDesign>

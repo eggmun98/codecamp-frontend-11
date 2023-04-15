@@ -22,7 +22,7 @@ export default function StaticRoutingMovedPage() {
   return (
     <div>
       {data?.fetchBoards.map((el) => (
-        <div>
+        <div key={el._id}>
           <span>
             <input type="checkbox"></input>
           </span>
