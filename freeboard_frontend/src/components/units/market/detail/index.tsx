@@ -113,6 +113,7 @@ export default function MarketDetailPage(): JSX.Element {
   const { onClickItemDeleteButton } = useMarketDeleteMode(); // 상품 게시글 삭제 버튼
 
   // 깃 테스를 위해 임시로 생성
+  // 깃 테스를 위해 임시로 생성2
 
   // 상품 댓글 등록 버튼
   const onClickQuestionCreate = async (d: {
