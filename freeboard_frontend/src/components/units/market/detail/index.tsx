@@ -112,8 +112,9 @@ export default function MarketDetailPage(): JSX.Element {
   const { onClickPick } = useMarketPickMode(); // 찜하기 함수
   const { onClickItemDeleteButton } = useMarketDeleteMode(); // 상품 게시글 삭제 버튼
 
-  // 깃 테스를 위해 임시로 생성
-  // 깃 테스를 위해 임시로 생성2
+  // 깃 테스트를 위해 임시로 생성
+  // 깃 테스트를 위해 임시로 생성2
+  // 깃 테스트를 위해 임시로 생성3
 
   // 상품 댓글 등록 버튼
   const onClickQuestionCreate = async (d: {
